@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc,fixuphtml" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Text Blocks (Second Preview)</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../resources/jdk-default.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="../resources/spec-changes.css" />
+<script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+
+<body>
+  
+<header id="title-block-header">
+<h1 class="title">Text Blocks (Second Preview)</h1>
+
+<p>Copyright &copy; 2020 Oracle and/or its affiliates · All Rights Reserved · <a href="http://www.oracle.com/technetwork/java/javase/terms/license/java14speclicense.html">License</a></p>
+
+<p>This document describes changes to <a href="../../html/index.html">The Java&reg; Language Specification, Java SE 14 Edition</a> to support text blocks, a preview feature of Java SE 14.</p>
+
+<p>See <a href="https://openjdk.java.net/jeps/368">JEP 368</a> for an overview of the feature.</p>
+
+<p>Changes are described with respect to existing sections of the JLS. New text is indicated <strong>like this</strong> and deleted text is indicated <del>like this</del>. Explanation and discussion, as needed, is set aside in grey boxes.</p>
+</header>
+
+<nav id="TOC" title="Table Of Contents">
+<ul>
+<li><a href="text-blocks-jls.html#jls-1">Chapter 1: Introduction</a><ul>
+<li><a href="text-blocks-jls.html#jls-1.5">1.5 Preview Features</a></li>
+</ul></li>
+<li><a href="text-blocks-jls.html#jls-3">Chapter 3: Lexical Structure</a><ul>
+<li><a href="text-blocks-jls.html#jls-3.10">3.10 Literals</a><ul>
+<li><a href="text-blocks-jls.html#jls-3.10.4">3.10.4 Character Literals</a></li>
+<li><a href="text-blocks-jls.html#jls-3.10.5">3.10.5 String Literals</a></li>
+<li><a href="text-blocks-jls.html#jls-3.10.6"><strong>3.10.6 Text Blocks</strong></a></li>
+<li><a href="text-blocks-jls.html#jls-3.10.7"><del>3.10.6</del> <strong>3.10.7</strong> Escape Sequences <del>for Character and String Literals</del></a></li>
+<li><a href="text-blocks-jls.html#jls-3.10.8"><del>3.10.7</del> <strong>3.10.8</strong> The Null Literal</a></li>
+</ul></li>
+</ul></li>
+<li><a href="text-blocks-jls.html#other-changes">Other Changes</a></li>
+</ul>
+</nav>
+<main>
+<h2 id="jls-1">Chapter 1: Introduction</h2>
+<h3 id="jls-1.5">1.5 Preview Features</h3>
+<div class="inserted">
+<p>The following are essential API elements associated with Text Blocks:</p>
+<ul>
+<li>The method <code>stripIndent</code> in <code>String</code></li>
+<li>The method <code>translateEscapes</code> in <code>String</code></li>
+</ul>
+</div>
+<h2 id="jls-3">Chapter 3: Lexical Structure</h2>
+<h3 id="jls-3.10">3.10 Literals</h3>
+<p>A <em>literal</em> is the source code representation of a value of a primitive type (<a href="../../../se13/html/jls-4.html#jls-4.2">4.2</a>), the <code>String</code> type (<a href="../../../se13/html/jls-4.html#jls-4.3.3">4.3.3</a>), or the null type (<a href="../../../se13/html/jls-4.html#jls-4.1">4.1</a>).</p>
+<dl>
+<dt><em>Literal</em>:</dt>
+<dd><em>IntegerLiteral</em>
+</dd>
+<dd><em>FloatingPointLiteral</em>
+</dd>
+<dd><em>BooleanLiteral</em>
+</dd>
+<dd><em>CharacterLiteral</em>
+</dd>
+<dd><em>StringLiteral</em>
+</dd>
+<dd><strong><em>TextBlock</em></strong>
+</dd>
+<dd><em>NullLiteral</em>
+</dd>
+</dl>
+<h4 id="jls-3.10.4">3.10.4 Character Literals</h4>
+<p>A <em>character literal</em> is expressed as a character or an escape sequence (<a href="text-blocks-jls.html#jls-3.10.6">3.10.6</a>), enclosed in ASCII single quotes. (The single-quote, or apostrophe, character is <code>\u0027</code>.)</p>
+<dl>
+<dt><em>CharacterLiteral:</em></dt>
+<dd><code>'</code> <em>SingleCharacter</em> <code>'</code>
+</dd>
+<dd><code>'</code> <em>EscapeSequence</em> <code>'</code>
+</dd>
+<dt><em>SingleCharacter:</em></dt>
+<dd><em>InputCharacter</em> <em>but not</em> <code>'</code> <em>or</em> <code>\</code>
+</dd>
+</dl>
+<blockquote>
+<p>See <a href="text-blocks-jls.html#jls-3.10.6">3.10.6</a> for the definition of <em>EscapeSequence</em>.</p>
+</blockquote>
+<p>A character literal is always of type <code>char</code> (<a href="../../../se13/html/jls-4.html#jls-4.2.1">4.2.1</a>).</p>
+<!-- Content -->
+<p>Character literals can only represent UTF-16 code units (<a href="../../../se13/html/jls-3.html#jls-3.1">3.1</a>), i.e., they are limited to values from <code>\u0000</code> to <code>\uffff</code>. Supplementary characters must be represented either as a surrogate pair within a <code>char</code> sequence, or as an integer, depending on the API they are used with.</p>
+<p><strong>The <em>content</em> of a character literal is the <em>SingleCharacter</em> or the <em>EscapeSequence</em> which follows the opening <code>'</code>.</strong></p>
+<p>It is a compile-time error for the character following the <del><em>SingleCharacter</em> or <em>EscapeSequence</em></del> <strong>content</strong> to be other than a <code>'</code>.</p>
+<p>It is a compile-time error for a line terminator (<a href="../../../se13/html/jls-3.html#jls-3.4">3.4</a>) to appear after the opening <code>'</code> and before the closing <code>'</code>.</p>
+<blockquote>
+<p>As specified in <a href="../../../se13/html/jls-3.html#jls-3.4">3.4</a>, the characters CR and LF are never an <em>InputCharacter</em>; each is recognized as constituting a <em>LineTerminator</em><strong>, so it may not appear in a string literal, even in the escape sequence <code>\</code> <em>LineTerminator</em>.</strong></p>
+</blockquote>
+<p><strong>The character represented a character literal is the content of the character literal with any escape sequence interpreted, as if by execution of <code>String::translateEscapes</code> on the content.</strong></p>
+<blockquote>
+<p>The following are examples of <code>char</code> literals:</p>
+<ul>
+<li><code>'a'</code></li>
+<li><code>'%'</code></li>
+<li><code>'\t'</code></li>
+<li><code>'\\'</code></li>
+<li><code>'\''</code></li>
+<li><code>'\u03a9'</code></li>
+<li><code>'\uFFFF'</code></li>
+<li><code>'\177'</code></li>
+<li><code>'™'</code></li>
+</ul>
+</blockquote>
+<blockquote>
+<p>Because Unicode escapes are processed very early, it is not correct to write <code>'\u000a'</code> for a character literal whose value is linefeed (LF); the Unicode escape <code>\u000a</code> is transformed into an actual linefeed in translation step 1 (<a href="../../../se13/html/jls-3.html#jls-3.3">3.3</a>) and the linefeed becomes a <em>LineTerminator</em> in step 2 (<a href="../../../se13/html/jls-3.html#jls-3.4">3.4</a>), and so the character literal is not valid in step 3. Instead, one should use the escape sequence <code>'\n'</code> (<a href="text-blocks-jls.html#jls-3.10.6">3.10.6</a>). Similarly, it is not correct to write <code>'\u000d'</code> for a character literal whose value is carriage return (CR). Instead, use <code>'\r'</code>. Finally, it is not possible to write <code>'\u0027'</code> for a character literal containing an apostrophe (<code>'</code>).</p>
+</blockquote>
+<blockquote>
+<p>In C and C++, a character literal may contain representations of more than one character, but the value of such a character literal is implementation-defined. In the Java programming language, a character literal always represents exactly one character.</p>
+</blockquote>
+<h4 id="jls-3.10.5">3.10.5 String Literals</h4>
+<p>A <em>string literal</em> consists of zero or more characters enclosed in double quotes. Characters <strong>such as newlines</strong> may be represented by escape sequences (<a href="text-blocks-jls.html#jls-3.10.7">3.10.7</a>) <del>- one escape sequence for characters in the range U+0000 to U+FFFF, two escape sequences for the UTF-16 surrogate code units of characters in the range U+010000 to U+10FFFF</del>.</p>
+<dl>
+<dt><em>StringLiteral:</em></dt>
+<dd><code>"</code> {<em>StringCharacter</em>} <code>"</code>
+</dd>
+<dt><em>StringCharacter:</em></dt>
+<dd><em>InputCharacter</em> but not <code>"</code> or <code>\</code>
+</dd>
+<dd><em>EscapeSequence</em>
+</dd>
+</dl>
+<p>A string literal is always of type <code>String</code> (<a href="../../../se13/html/jls-4.html#jls-4.3.3">4.3.3</a>).</p>
+<!-- Content -->
+<p><strong>The <em>content</em> of a string literal is the sequence of characters that begins immediately after the opening <code>"</code> and ends immediately before the closing matching <code>"</code>.</strong></p>
+<p>It is a compile-time error for a line terminator to appear <strong>in the content of a string literal</strong> <del>after the opening <code>"</code> and before the closing matching <code>"</code></del>.</p>
+<blockquote>
+<p>As specified in <a href="../../../se13/html/jls-3.html#jls-3.4">3.4</a>, the characters CR and LF are never an <em>InputCharacter</em>; each is recognized as constituting a <em>LineTerminator</em><strong>, so it may not appear in a string literal, even in the escape sequence <code>\</code> <em>LineTerminator</em>.</strong></p>
+</blockquote>
+<p><strong>The string represented by a string literal is the content of the string literal with every escape sequence interpreted, as if by execution of <code>String::translateEscapes</code> on the content.</strong></p>
+<blockquote>
+<p>The following are examples of string literals:</p>
+<pre><code>&quot;&quot;                    // the empty string
+&quot;\&quot;&quot;                  // a string containing &quot; alone
+&quot;This is a string&quot;    // a string containing 16 characters
+&quot;This is a &quot; +        // actually a string-valued constant expression,
+    &quot;two-line string&quot;    // formed from two string literals</code></pre>
+<p>Because Unicode escapes are processed very early, it is not correct to write <code>"\u000a"</code> for a string literal containing a single linefeed (LF); the Unicode escape <code>\u000a</code> is transformed into an actual linefeed in translation step 1 (<a href="../../../se13/html/jls-3.html#jls-3.3">3.3</a>) and the linefeed becomes a <em>LineTerminator</em> in step 2 (<a href="../../../se13/html/jls-3.html#jls-3.4">3.4</a>), and so the string literal is not valid in step 3. Instead, one should write <code>"\n"</code> (<a href="text-blocks-jls.html#jls-3.10.6">3.10.6</a>). Similarly, it is not correct to write <code>"\u000d"</code> for a string literal containing a single carriage return (CR). Instead, use <code>"\r"</code>. Finally, it is not possible to write <code>"\u0022"</code> for a string literal containing a double quotation mark (<code>"</code>).</p>
+<p>A long string literal can always be broken up into shorter pieces and written as a (possibly parenthesized) expression using the string concatenation operator <code>+</code> (<a href="../../../se13/html/jls-15.html#jls-15.18.1">15.18.1</a>).</p>
+</blockquote>
+<p><strong>At run time,</strong> a string literal is a reference to an instance of class <code>String</code> (<a href="../../../se13/html/jls-4.html#jls-4.3.1">4.3.1</a>, <a href="../../../se13/html/jls-4.html#jls-4.3.3">4.3.3</a>) <strong>that denotes the string represented by the string literal</strong>.</p>
+<p>Moreover, a string literal always refers to the <em>same</em> instance of class <code>String</code>. This is because string literals - or, more generally, strings that are the values of constant expressions (<a href="../../../se13/html/jls-15.html#jls-15.28">15.28</a>) - are "interned" so as to share unique instances, using the method <code>String.intern</code> (<a href="../../../se13/html/jls-12.html#jls-12.5">12.5</a>).</p>
+<h4 id="jls-3.10.6"><strong>3.10.6 Text Blocks</strong></h4>
+<div class="inserted">
+<p>A <em>text block</em> consists of zero or more characters enclosed by opening and closing delimiters. Characters may be represented by escape sequences (<a href="text-blocks-jls.html#jls-3.10.7">3.10.7</a>), but the newline and double quote characters that must be represented with escape sequences in a string literal may be represented directly in a text block.</p>
+<dl>
+<dt><em>TextBlock</em>:</dt>
+<dd>" " " <em>{</em> <em>TextBlockWhiteSpace</em> <em>}</em> <em>LineTerminator</em> <em>{</em> <em>TextBlockCharacter</em> <em>}</em> " " "
+</dd>
+<dt><em>TextBlockWhiteSpace</em>:</dt>
+<dd><em>WhiteSpace</em> but not <em>LineTerminator</em>
+</dd>
+<dt><em>TextBlockCharacter</em>:</dt>
+<dd><em>InputCharacter</em> but not \
+</dd>
+<dd><em>EscapeSequence</em>
+</dd>
+<dd><em>LineTerminator</em>
+</dd>
+</dl>
+<blockquote>
+<p>The following productions from <a href="../../../se13/html/jls-3.html#jls-3.3">3.3</a>, <a href="../../../se13/html/jls-3.html#jls-3.4">3.4</a>, and <a href="../../../se13/html/jls-3.html#jls-3.6">3.6</a> are shown here for convenience:</p>
+<dl>
+<dt><em>WhiteSpace</em>:</dt>
+<dd>the ASCII SP character, also known as "space"
+</dd>
+<dd>the ASCII HT character, also known as "horizontal tab"
+</dd>
+<dd>the ASCII FF character, also known as "form feed"
+</dd>
+<dd><em>LineTerminator</em>
+</dd>
+<dt><em>LineTerminator</em>:</dt>
+<dd>the ASCII LF character, also known as "newline"
+</dd>
+<dd>the ASCII CR character, also known as "return"
+</dd>
+<dd>the ASCII CR character followed by the ASCII LF character
+</dd>
+<dt><em>InputCharacter</em>:</dt>
+<dd><em>UnicodeInputCharacter</em> but not CR or LF
+</dd>
+<dt><em>UnicodeInputCharacter</em>:</dt>
+<dd><em>UnicodeEscape</em>
+</dd>
+<dd><em>RawInputCharacter</em>
+</dd>
+<dt><em>UnicodeEscape</em>:</dt>
+<dd>\ <em>UnicodeMarker HexDigit HexDigit HexDigit HexDigit</em>
+</dd>
+<dt><em>RawInputCharacter</em>:</dt>
+<dd>any Unicode character
+</dd>
+</dl>
+</blockquote>
+<p>A text block is always of type <code>String</code> (<a href="../../../se13/html/jls-4.html#jls-4.3.3">4.3.3</a>).</p>
+<!-- Delimiters -->
+<p>The <em>opening delimiter</em> is a sequence that starts with three double quote characters (<code>"""</code>), continues with zero or more space, tab, and form feed characters, and concludes with a line terminator.</p>
+<p>The <em>closing delimiter</em> is a sequence of three double quote characters.</p>
+<!-- Content -->
+<p>The <em>content</em> of a text block is the sequence of characters that begins immediately after the line terminator of the opening delimiter, and ends immediately before the first double quote of the closing delimiter.</p>
+<p>Unlike in a string literal (<a href="text-blocks-jls.html#jls-3.10.5">3.10.5</a>), it is <em>not</em> a compile-time error for a line terminator to appear in the content of a text block.</p>
+<div class="example">
+<p>Example 3.10.6-1. Text Blocks</p>
+<p>When multi-line strings are desired, a text block is usually more readable than a concatenation of string literals. For example, compare these alternative representations of a snippet of HTML:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode default"><code class="sourceCode default"><a class="sourceLine" id="cb2-1" title="1">String html = &quot;&lt;html&gt;\n&quot; +</a>
+<a class="sourceLine" id="cb2-2" title="2">              &quot;    &lt;body&gt;\n&quot; +</a>
+<a class="sourceLine" id="cb2-3" title="3">              &quot;        &lt;p&gt;Hello, world&lt;/p&gt;\n&quot; +</a>
+<a class="sourceLine" id="cb2-4" title="4">              &quot;    &lt;/body&gt;\n&quot; +</a>
+<a class="sourceLine" id="cb2-5" title="5">              &quot;&lt;/html&gt;\n&quot;;</a>
+<a class="sourceLine" id="cb2-6" title="6"></a>
+<a class="sourceLine" id="cb2-7" title="7">String html = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb2-8" title="8">              &lt;html&gt;</a>
+<a class="sourceLine" id="cb2-9" title="9">                  &lt;body&gt;</a>
+<a class="sourceLine" id="cb2-10" title="10">                      &lt;p&gt;Hello, world&lt;/p&gt;</a>
+<a class="sourceLine" id="cb2-11" title="11">                  &lt;/body&gt;</a>
+<a class="sourceLine" id="cb2-12" title="12">              &lt;/html&gt;</a>
+<a class="sourceLine" id="cb2-13" title="13">              &quot;&quot;&quot;;</a></code></pre></div>
+<p>Here are some examples of text blocks:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode default"><code class="sourceCode default"><a class="sourceLine" id="cb3-1" title="1">String season = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb3-2" title="2">                winter&quot;&quot;&quot;;    // the six characters w i n t e r</a>
+<a class="sourceLine" id="cb3-3" title="3"></a>
+<a class="sourceLine" id="cb3-4" title="4">String period = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb3-5" title="5">                winter</a>
+<a class="sourceLine" id="cb3-6" title="6">                &quot;&quot;&quot;;          // the seven characters w i n t e r LF</a>
+<a class="sourceLine" id="cb3-7" title="7"></a>
+<a class="sourceLine" id="cb3-8" title="8">String greeting =</a>
+<a class="sourceLine" id="cb3-9" title="9">    &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb3-10" title="10">    Hi, &quot;Bob&quot;</a>
+<a class="sourceLine" id="cb3-11" title="11">    &quot;&quot;&quot;;        // the ten characters H i , SP &quot; B o b &quot; LF</a>
+<a class="sourceLine" id="cb3-12" title="12"></a>
+<a class="sourceLine" id="cb3-13" title="13">String salutation =</a>
+<a class="sourceLine" id="cb3-14" title="14">    &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb3-15" title="15">    Hi,</a>
+<a class="sourceLine" id="cb3-16" title="16">     &quot;Bob&quot;</a>
+<a class="sourceLine" id="cb3-17" title="17">    &quot;&quot;&quot;;        // the eleven characters H i , LF SP &quot; B o b &quot; LF</a>
+<a class="sourceLine" id="cb3-18" title="18"></a>
+<a class="sourceLine" id="cb3-19" title="19">String empty = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb3-20" title="20">               &quot;&quot;&quot;;      // the empty string (zero length)</a>
+<a class="sourceLine" id="cb3-21" title="21"></a>
+<a class="sourceLine" id="cb3-22" title="22">String quote = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb3-23" title="23">               &quot;</a>
+<a class="sourceLine" id="cb3-24" title="24">               &quot;&quot;&quot;;      // the two characters &quot; LF</a>
+<a class="sourceLine" id="cb3-25" title="25"></a>
+<a class="sourceLine" id="cb3-26" title="26">String backslash = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb3-27" title="27">                   \\</a>
+<a class="sourceLine" id="cb3-28" title="28">                   &quot;&quot;&quot;;  // the two characters \ LF</a></code></pre></div>
+</div>
+<p>The use of the escape sequences <code>\"</code> and <code>\n</code> is permitted in a text block, but not necessary or recommended. However, representing the sequence <code>"""</code> in a text block requires the escaping of at least one <code>"</code> character, to avoid mimicking the closing delimiter.</p>
+<div class="example">
+<p>Example 3.10.6-2. Escape sequences in text blocks</p>
+<p>The following snippet of text would be less readable if the " characters were escaped:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode default"><code class="sourceCode default"><a class="sourceLine" id="cb4-1" title="1">String story = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb4-2" title="2">    &quot;When I use a word,&quot; Humpty Dumpty said,</a>
+<a class="sourceLine" id="cb4-3" title="3">    in rather a scornful tone, &quot;it means just what I</a>
+<a class="sourceLine" id="cb4-4" title="4">    choose it to mean - neither more nor less.&quot;</a>
+<a class="sourceLine" id="cb4-5" title="5">    &quot;The question is,&quot; said Alice, &quot;whether you</a>
+<a class="sourceLine" id="cb4-6" title="6">    can make words mean so many different things.&quot;</a>
+<a class="sourceLine" id="cb4-7" title="7">    &quot;The question is,&quot; said Humpty Dumpty,</a>
+<a class="sourceLine" id="cb4-8" title="8">    &quot;which is to be master - that&#39;s all.&quot;&quot;&quot;&quot;;</a></code></pre></div>
+<p>If a text block is to denote another text block, then it is recommended to escape the first " of the embedded opening and closing delimiters:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode default"><code class="sourceCode default"><a class="sourceLine" id="cb5-1" title="1">String code =</a>
+<a class="sourceLine" id="cb5-2" title="2">    &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb5-3" title="3">    String text = \&quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb5-4" title="4">        A text block inside a text block</a>
+<a class="sourceLine" id="cb5-5" title="5">    \&quot;&quot;&quot;;</a>
+<a class="sourceLine" id="cb5-6" title="6">    &quot;&quot;&quot;;</a></code></pre></div>
+</div>
+<!-- Processing -->
+<p>The string represented by a text block is <em>not</em> the literal sequence of characters in the content. Instead, the string represented by a text block is the result of applying the following transformations to the content, in order:</p>
+<ol type="1">
+<li><p>Line terminators are <em>normalized</em> to the ASCII LF character, as follows:</p>
+<ol type="i">
+<li><p>An ASCII CR character followed by an ASCII LF character is translated to an ASCII LF character.</p></li>
+<li><p>An ASCII CR character is translated to an ASCII LF character.</p></li>
+</ol></li>
+<li><p>Incidental white space is removed, as if by execution of <code>String::stripIndent</code> on the characters resulting from step 1.</p>
+<!-- Brian: Moving *any* line — closing or not — to the left or
+right has the same effect: if you move it left past the leftmost
+non-whitespace character, it reduces the indent stripping, and if
+you move it right past the leftmost non-whitespace character, it
+has no effect. --></li>
+<li><p>Escape sequences are interpreted, as if by execution of <code>String::translateEscapes</code> on the characters resulting from step 2.</p></li>
+</ol>
+<div class="example">
+<p>Example 3.10.6-3. Order of transformations on text block content</p>
+<p>Interpreting escape sequences last allows developers to use \n, \f, and \r for vertical formatting of a string without affecting the normalization of line terminators, and to use \b and \t for horizontal formatting of a string without affecting the removal of incidental white space. For example, consider this text block that mentions the escape sequence \r (CR):</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode default"><code class="sourceCode default"><a class="sourceLine" id="cb6-1" title="1">String html = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb6-2" title="2">              &lt;html&gt;\r</a>
+<a class="sourceLine" id="cb6-3" title="3">                  &lt;body&gt;\r</a>
+<a class="sourceLine" id="cb6-4" title="4">                      &lt;p&gt;Hello, world&lt;/p&gt;\r</a>
+<a class="sourceLine" id="cb6-5" title="5">                  &lt;/body&gt;\r</a>
+<a class="sourceLine" id="cb6-6" title="6">              &lt;/html&gt;\r</a>
+<a class="sourceLine" id="cb6-7" title="7">              &quot;&quot;&quot;;</a></code></pre></div>
+<p>The \r escapes are not interpreted until after the line terminators have been normalized to LF. Using Unicode escapes to visualize LF (\u000A) and CR (\u000D), and using | to visualize the left margin, the final result is:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode default"><code class="sourceCode default"><a class="sourceLine" id="cb7-1" title="1">|&lt;html&gt;\u000D\u000A</a>
+<a class="sourceLine" id="cb7-2" title="2">|    &lt;body&gt;\u000D\u000A</a>
+<a class="sourceLine" id="cb7-3" title="3">|        &lt;p&gt;Hello, world&lt;/p&gt;\u000D\u000A</a>
+<a class="sourceLine" id="cb7-4" title="4">|    &lt;/body&gt;\u000D\u000A</a>
+<a class="sourceLine" id="cb7-5" title="5">|&lt;/html&gt;\u000D\u000A</a></code></pre></div>
+</div>
+<p>When this specification says that a text block <em>contains</em> a particular character or sequence of characters, or that a particular character or sequence of characters is <em>in</em> a text block, it means that the string represented by the text block (as opposed to the content of the text block) contains the character or sequence of characters.</p>
+<!-- Run time -->
+<p>At run time, a text block is a reference to an instance of class <code>String</code> that denotes the string represented by the text block.</p>
+<p>A text block always refers to the <em>same</em> instance of class <code>String</code>. This is because the strings represented by text blocks - or, more generally, strings that are the values of constant expressions (<a href="../../../se13/html/jls-15.html#jls-15.28">15.28</a>) - are "interned" so as to share unique instances (<a href="../../../se13/html/jls-12.html#jls-12.5">12.5</a>).</p>
+<div class="example">
+<p>Example 3.10.6-4. Text blocks evaluate to strings</p>
+<p>Text blocks can be used wherever an expression of type <code>String</code> is allowed, such as in string concatenation (<a href="../../../se13/html/jls-15.html#jls-15.18.1">15.18.1</a>), in method invocation on class <code>String</code>, and in annotations with <code>String</code> elements:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode default"><code class="sourceCode default"><a class="sourceLine" id="cb8-1" title="1">System.out.println(&quot;abc&quot; + &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb8-2" title="2">                           cde</a>
+<a class="sourceLine" id="cb8-3" title="3">                           &quot;&quot;&quot;);</a>
+<a class="sourceLine" id="cb8-4" title="4"></a>
+<a class="sourceLine" id="cb8-5" title="5">String math = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb8-6" title="6">              1+1 equals</a>
+<a class="sourceLine" id="cb8-7" title="7">              &quot;&quot;&quot; + &quot; &quot; + String.valueOf(2);</a>
+<a class="sourceLine" id="cb8-8" title="8"></a>
+<a class="sourceLine" id="cb8-9" title="9">String cde = &quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb8-10" title="10">             abcde&quot;&quot;&quot;.substring(2);</a>
+<a class="sourceLine" id="cb8-11" title="11"></a>
+<a class="sourceLine" id="cb8-12" title="12">@Precondition(&quot;&quot;&quot;</a>
+<a class="sourceLine" id="cb8-13" title="13">    rate &gt; 0 &amp;&amp;</a>
+<a class="sourceLine" id="cb8-14" title="14">    rate &lt;= MAX_REFRESH_RATE</a>
+<a class="sourceLine" id="cb8-15" title="15">&quot;&quot;&quot;)</a>
+<a class="sourceLine" id="cb8-16" title="16">public void setRefreshRate(int rate) { ... }</a></code></pre></div>
+</div>
+</div>
+<h4 id="jls-3.10.7"><del>3.10.6</del> <strong>3.10.7</strong> Escape Sequences <del>for Character and String Literals</del></h4>
+<p>In character literals (<a href="text-blocks-jls.html#jls-3.10.4">3.10.4</a>), string literals (<a href="text-blocks-jls.html#jls-3.10.5">3.10.5</a>), <strong>and text blocks (<a href="text-blocks-jls.html#jls-3.10.6">3.10.6</a>)</strong>, the <del>character and string</del> <em>escape sequences</em> allow for the representation of some nongraphic characters without using Unicode escapes (<a href="../../../se13/html/jls-3.html#jls-3.3">3.3</a>), as well as the single quote, double quote, and backslash characters.</p>
+<dl>
+<dt><em>EscapeSequence</em>:</dt>
+<dd><code>\ b</code> <em>(backspace BS, Unicode <code>\u0008</code>)</em>
+</dd>
+<dd><strong><code>\ s</code> <em>(space SP, Unicode <code>\u0020</code>)</em></strong>
+</dd>
+<dd><code>\ t</code> <em>(horizontal tab HT, Unicode <code>\u0009</code>)</em>
+</dd>
+<dd><code>\ f</code> <em>(form feed FF, Unicode <code>\u000c</code>)</em>
+</dd>
+<dd><code>\ n</code> <em>(linefeed LF, Unicode <code>\u000a</code>)</em>
+</dd>
+<dd><code>\ r</code> <em>(carriage return CR, Unicode <code>\u000d</code>)</em>
+</dd>
+<dd><strong><code>\</code> <em>LineTerminator</em> <em>(line continuation, no Unicode representation)</em></strong>
+</dd>
+<dd><code>\ "</code> <em>(double quote <code>"</code>, Unicode <code>\u0022</code>)</em>
+</dd>
+<dd><code>\ '</code> <em>(single quote <code>'</code>, Unicode <code>\u0027</code>)</em>
+</dd>
+<dd><code>\ \</code> <em>(backslash <code>\</code>, Unicode <code>\u005c</code>)</em>
+</dd>
+<dd><em>OctalEscape</em> <em>(octal value, Unicode <code>\u0000</code> to <code>\u00ff</code>)</em>
+</dd>
+</dl>
+<p>...</p>
+<blockquote>
+<p>Octal escapes are provided for compatibility with C, but can express only Unicode values <code>\u0000</code> through <code>\u00FF</code>, so Unicode escapes are usually preferred.</p>
+</blockquote>
+<p>It is a compile-time error if the character following a backslash in an escape sequence is not <strong>a <em>LineTerminator</em> or</strong> an ASCII <code>b</code>, <strong><code>s</code>,</strong> <code>t</code>, <code>f</code>, <code>n</code>, <code>r</code>, <code>"</code>, <code>'</code>, <code>\</code>, <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, <code>5</code>, <code>6</code>, or <code>7</code>.</p>
+<p><strong>An escape sequence in the content of a character literal, string literal, or text block is <em>interpreted</em> by replacing its <code>\</code> and trailing characters with the single character denoted by the Unicode escape in the <em>EscapeSequence</em> grammar. The line continuation escape sequence has no corresponding Unicode escape, so is interpreted by replacing it with nothing.</strong></p>
+<p><strong>The line continuation escape sequence may appear in a text block, but cannot appear in a character literal (<a href="text-blocks-jls.html#jls-3.10.4">3.10.4</a>) or a string literal (<a href="text-blocks-jls.html#jls-3.10.5">3.10.5</a>) because each disallows a <em>LineTerminator</em>.</strong></p>
+<h4 id="jls-3.10.8"><del>3.10.7</del> <strong>3.10.8</strong> The Null Literal</h4>
+<p>The null type has one value, the null reference, represented by the <em>null literal</em> <code>null</code>, which is formed from ASCII characters.</p>
+<dl>
+<dt><em>NullLiteral:</em></dt>
+<dd><code>null</code>
+</dd>
+</dl>
+<p>A null literal is always of the null type (<a href="../../../se13/html/jls-4.html#jls-4.1">4.1</a>).</p>
+<h2 id="other-changes">Other Changes</h2>
+<div class="editorial">
+<p>The following changes should also be made:</p>
+<ul>
+<li><p>3.1, final paragraph: add mention of text blocks.</p></li>
+<li><p>3.7, final paragraph: add mention of text blocks.</p></li>
+<li><p>4.3.3, third paragraph: add mention of text blocks.</p></li>
+<li><p>12.5, second paragraph, list should start as follows:</p>
+<p>"Loading of a class or interface that contains a string literal (§3.10.5) <strong>or a text block (§3.10.6)</strong> may create a new <code>String</code> object to represent the <strong>string literal or text block.</strong> (This will not occur if <del>a string</del> <strong>an instance of <code>String</code></strong> denoting the same sequence of Unicode code points <strong>as the string literal or text block</strong> has previously been interned.)"</p></li>
+<li><p>15.8.1, fifth bullet: add mention of text blocks.</p></li>
+<li><p>15.28, first bullet: add mention of text blocks:</p>
+<p>"Literals of primitive type (§3.10.1, §3.10.2, §3.10.3, §3.10.4<del>, §3.10.5</del>) <strong>, and string literals (§3.10.5), and text blocks (§3.10.6).</strong>"</p></li>
+<li><p>JVMS 4.7.16.1, <code>const_value_index</code>: rephrase from "denotes either a primitive constant value or a String literal as the value of ..." to "denotes a constant of either a primitive type or the type <code>String</code> as the value of ...".</p></li>
+</ul>
+<p>Some clarification of terminology around "escapes" is desirable:</p>
+<ul>
+<li><p>3.3: A compiler for the Java programming language ("Java compiler") first recognizes Unicode escapes in its input, ... and passing all other characters unchanged. <del>Representing supplementary characters requires two consecutive Unicode escapes.</del> This translation step results in a sequence of Unicode input characters. ... <strong>One Unicode escape can represent characters in the range U+0000 to U+FFFF. Representing supplementary characters in the range U+010000 to U+10FFFF requires two consecutive Unicode escapes.</strong></p></li>
+<li><p>3.5: The input characters and line terminators that result from <strong>Unicode</strong> escape processing ...</p></li>
+<li><p>Update cross-references to <em>3.10.8: The Null Literal</em> from 3.8, 3.9, 4.1, 15.8.1, and 15.12.3.</p></li>
+</ul>
+</div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Preface to the Java SE 7 Edition</title>
+      <link rel="stylesheet" type="text/css" href="../../../javaspec.css">
+      <meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1">
+      <link rel="home" href="index.html" title="The Java&reg; Language Specification">
+      <link rel="up" href="index.html" title="The Java&reg; Language Specification">
+      <link rel="prev" href="index.html" title="The Java&reg; Language Specification">
+      <link rel="next" href="jls-0-preface3.html" title="Preface to the Third Edition">
+      <link rel="copyright" href="jls-0-front.html" title="Legal Notice">
+   <script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" id="logo">
+<img src="https://docs.oracle.com/javase/webdesign/other/im/oralogo_small.gif" alt="Oracle Logo"><br><p><a href="https://docs.oracle.com/javase/7/docs/">Java SE</a> &gt; <a href="../../../index.html">Java SE Specifications</a> &gt; <a href="index.html">Java Language Specification</a></p>
+      </div>
+      <div class="navheader">
+         <table width="100%" summary="Navigation header">
+            <tr>
+               <th colspan="3" align="center">Preface to the Java SE 7 Edition</th>
+            </tr>
+            <tr>
+               <td width="20%" align="left"><a accesskey="p" href="index.html">Prev</a>&nbsp;
+               </td>
+               <th width="60%" align="center">&nbsp;</th>
+               <td width="20%" align="right">&nbsp;<a accesskey="n" href="jls-0-preface3.html">Next</a></td>
+            </tr>
+         </table>
+         <hr>
+      </div>
+      <div lang="en" class="preface" title="Preface to the Java SE 7 Edition">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="jls-0-preface7"></a>Preface to the Java SE 7 Edition
+                  </h2>
+               </div>
+               <div>
+                  <div class="author">
+                     <h3 class="author">Alex Buckley</h3>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <p>The <span class="trademark">Java</span>&reg; SE 7 Edition of <em class="citetitle">The Java Language Specification</em> describes all the features
+            that have been added to the Java programming language in Java SE 7. It also
+            integrates changes made to the Java programming language under maintenance since the
+            Third Edition in 2005.
+         </p>
+         <p>Readers may send feedback about errors and ambiguities in <em class="citetitle">The Java Language Specification</em>
+            to <code class="literal">jls-comments_ww@oracle.com</code>.
+         </p>
+         <p>The majority of new features in this edition were specified by
+            JSR 334, <em class="citetitle">Small Enhancements to the Java Programming
+               Language</em>, led by Joe Darcy with an Expert Group of Joshua
+            Bloch, Bruce Chapman, Alexey Kudravtsev, Mark Mahieu, Tim Peierls, and
+            Olivier Thomann. The origins of these features lie
+            in <em class="citetitle">Project Coin</em>, an OpenJDK project started in
+            2009 with the goal of "Making things programmers do every day
+            easier". The project solicited proposals from the Java community for
+            broadly useful language features that were, in comparison with "large"
+            features like generics, relatively "small" in their specification,
+            implementation, and testing.
+         </p>
+         <p>Thousands of emails and six dozen proposals later, proposals
+            were accepted from Joshua Bloch (the <code class="literal">try</code>-with-resources statement),
+            Derek Foster/Bruce Chapman (improvements to literals), Neal Gafter
+            (multi-<code class="literal">catch</code> and precise rethrow), Bob Lee (simplified variable
+            arity method invocation), and Jeremy Manson (improved type inference
+            for instance creation, a.k.a. the "diamond" syntax). The popular
+            "strings in switch" feature was also accepted. Special thanks are due
+            to Tom Ball, Stephen Colebourne, R&eacute;mi Forax, Shams Mahmood Imam, James
+            Lowden, and all those who submitted interesting proposals and
+            thoughtful comments to Project Coin. Over the course of the project,
+            there were essential contributions from Mandy Chung, Jon Gibbons,
+            Brian Goetz, David Holmes, and Dan Smith in areas ranging from library
+            support to language specification. Stuart Marks led a "coinification"
+            effort to apply the features to the Oracle JDK codebase, both to
+            validate their utility and to develop conventions for wider
+            use.
+         </p>
+         <p>The "diamond" syntax and precise rethrow give type inference a
+            new visibility in the Java programming language. To a great extent, inference is
+            worthwhile only if it produces types no less specific than those in a
+            manifestly-typed program prior to Java SE 7. Otherwise, new code may
+            find inference insufficient, and migration from manifest to inferred
+            types in existing code will be risky. To mitigate the risk, Joe Darcy
+            and Maurizio Cimadamore measured the effectiveness of different
+            inference schemes on a large corpus of open source Java code. Such
+            "quantitative language design" greatly improves confidence in the
+            suitability and safety of the final feature. The challenge of growing
+            a mature language with millions of developers is partially offset by
+            the ability of language designers to learn from developers' actual
+            code.
+         </p>
+         <p>The Java SE 7 platform adds features that cater for non-Java
+            languages, effectively expanding the computational model of the
+            platform. Without changes, the Java programming language would be unable to access or
+            even express some of these features. Its static type system comes
+            under particular stress when invoking code written in dynamically
+            typed languages. Consequently, method invocation in the Java programming language has
+            been modified to support method handle invocation as defined by JSR
+            292, <em class="citetitle">Dynamically Typed Languages on the Java
+               Platform</em>.
+         </p>
+         <p>The Java Compatibility Kit (JCK) team whose work helps validate
+            this specification are due an enormous vote of thanks: Leonid
+            Arbouzov, Alexey Gavrilov, Yulia Novozhilova, Sergey Reznick, and
+            Victor Rudometov. Many other colleagues at Oracle (past or present)
+            have also given valuable support to this specification: Uday
+            Dhanikonda, Janet Koenig, Adam Messinger, Mark Reinhold, Georges Saab,
+            Bill Shannon, and Bernard Traversat.
+         </p>
+         <p>The following individuals have all provided many valuable
+            comments which improved this specification: J. Stephen Adamczyk, Peter
+            Ah&eacute;, Davide Ancona, Michael Bailey, Dmitry Batrak, Joshua Bloch, Kevin
+            Bourrillion, Richard Bosworth, Martin Bravenboer, Martin Buchholz,
+            Didier Cruette, Glenn Colman, Neal Gafter, Jim Holmlund, Ric Holt,
+            Philippe Mulet, Bill Pugh, Vladimir Reshetnikov, John Spicer, Robert
+            Stroud, and Mattias Ulbrich.
+         </p>
+         <p>This edition is the first to be written in the DocBook XML
+            format. Metadata in the XML markup forms a kind of static type system,
+            classifying each paragraph by its role, such as a definition or an
+            error. The reward is much crisper conformance testing. Many thanks go
+            to Robert Stayton for sharing his considerable DocBook expertise and
+            for helping to render DocBook in the traditional look and feel of
+            <em class="citetitle">The Java Language Specification</em>.
+         </p>
+      </div>
+      <div class="navfooter">
+         <hr>
+         <table width="100%" summary="Navigation footer">
+            <tr>
+               <td width="40%" align="left"><a accesskey="p" href="index.html">Prev</a>&nbsp;
+               </td>
+               <td width="20%" align="center">&nbsp;</td>
+               <td width="40%" align="right">&nbsp;<a accesskey="n" href="jls-0-preface3.html">Next</a></td>
+            </tr>
+            <tr>
+               <td width="40%" align="left" valign="top">The <span class="trademark">Java</span>&reg; Language Specification&nbsp;
+               </td>
+               <td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td>
+               <td width="40%" align="right" valign="top">&nbsp;Preface to the Third Edition</td>
+            </tr>
+         </table>
+      </div>
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" class="navfooter">
+         <hr><a href="jls-0-front.html">
+                Legal Notice
+              </a></div>
+   </body>
+</html>

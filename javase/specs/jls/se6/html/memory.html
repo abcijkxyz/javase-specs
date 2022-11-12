@@ -1,0 +1,1099 @@
+<html>
+<head>
+<title> Threads and Locks</title>
+<meta name="collection" content="community">
+<script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+<body BGCOLOR=#eeeeff text=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="defAssign.html">Prev</a> | <a href="syntax.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<hr><br>
+
+<a name="61803"></a>
+<p><strong>
+CHAPTER
+ 17 </strong></p>
+<a name="61809"></a>
+<h1>Threads and Locks</h1>
+<hr><p>
+<a name="44127"></a>
+While most of the discussion in the preceding chapters is concerned only with the behavior of code as executed a single statement or expression at a time, that is, by a single <em>thread</em>, each Java virtual machine can support many threads of execution at once. These threads independently execute code that operates on values and objects residing in a shared main memory. Threads may be supported by having many hardware processors, by time-slicing a single hardware processor, or by time-slicing many hardware processors.<p>
+<a name="56289"></a>
+Threads are represented by the  <code>Thread</code> class.  The only way for a user to create a thread is to create an object of this class; each thread is associated with such an object.  A thread will start when the  <code>start()</code> method is invoked on the corresponding  <code>Thread</code> object.<p>
+<a name="56297"></a>
+The behavior of threads, particularly when not correctly synchronized, can be confusing and counterintuitive. This chapter describes the semantics of multithreaded programs; it includes rules for which values may be seen by a read of shared memory that is updated by multiple threads. As the specification is similar to the <i>memory models</i> for different hardware architectures, these semantics are known as the <i>Java programming language memory model</i>. When no confusion can arise, we will simply refer to these rules as "the memory model".<p>
+<a name="56307"></a>
+These semantics do not prescribe how a multithreaded program should be executed. Rather, they describe the behaviors that multithreaded programs are allowed to exhibit. Any execution strategy that generates only allowed behaviors is an acceptable execution strategy. <p>
+<a name="56318"></a>
+<a name="17.1"></a>
+<h2>17.1    Locks</h2>
+<a name="56319"></a>
+The Java programming language provides multiple mechanisms for communicating between threads.  The most basic of these methods is <i>synchronization</i>, which is implemented using <i>monitors</i>.  Each object in Java is associated with a monitor, which a thread can <i>lock</i> or <i>unlock</i>.  Only one thread at a time may hold a lock on a monitor. Any other threads attempting to lock that monitor are blocked until they can obtain a lock on that monitor. A thread t may lock a particular monitor multiple times; each unlock reverses the effect of one lock operation.<p>
+<a name="56336"></a>
+The <code>synchronized</code> statement <a href="statements.html#255769">(&#167;14.19)</a> computes a reference to an object; it then attempts to perform a lock action on that object's monitor and does not proceed further until the lock action has successfully completed.  After the lock action has been performed, the body of the <code>synchronized</code> statement is executed. If execution of the body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.<p>
+<a name="56344"></a>
+A <code>synchronized</code> method <a href="classes.html#260369">(&#167;8.4.3.6)</a> automatically performs a lock action when it is invoked; its body is not executed until the lock action has successfully completed. If the method is an instance method, it locks the monitor associated with the instance for which it was invoked (that is, the object that will be known as <code>this</code> during execution of the body of the method). If the method is static, it locks the monitor associated with the <code>Class</code> object that represents the class in which the method is defined. If execution of the method's body is ever completed, either normally or abruptly, an unlock action is automatically performed on that same monitor.<p>
+<a name="56355"></a>
+The Java programming language neither prevents nor requires detection of deadlock conditions. Programs where threads hold (directly or indirectly) locks on multiple objects should use conventional techniques for deadlock avoidance, creating higher-level locking primitives that don't deadlock, if necessary.<p>
+<a name="56361"></a>
+Other mechanisms, such as reads and writes of volatile variables and classes provided in the j<code>ava.util.concurrent </code>package, provide alternative ways of synchronization.<p>
+<a name="56365"></a>
+<a name="17.2"></a>
+<h2>17.2    Notation in Examples</h2>
+<a name="56366"></a>
+The memory model specified herein is not fundamentally based in the object oriented nature of the Java programming language. For conciseness and simplicity in our examples, we often exhibit code fragments without class or method definitions, or explicit dereferencing.  Most examples consist of two or more threads containing statements with access to local variables, shared global variables or instance fields of an object. We typically use variables names such as <code>r1</code> or <code>r2 </code>to indicate variables local to a method or thread. Such variables are not accessible by other threads.<p>
+<a name="65094"></a>
+<b>Restrictions of partial orders and functions.</b> We use <i>f</i> |<sub><i>d</i></sub> to denote the function given by restricting the domain of <i>f</i> to <i>d</i>: for all <i>x</i> in <i>d</i>, <i>f</i> |<sub><i>d</i></sub>(<i>x</i>) = <i>f</i>(<i>x</i>) and for all <i>x</i> not in <i>d</i>, <i>f</i> |<i><sub>d</sub></i>(<i>x</i>) is undefined. Similarly, we use <i>p</i>|<i><sub>d</sub></i> to represent the restriction of the partial order <i>p</i> to the elements in <i>d</i>: for all <i>x</i>,<i>y</i> in <i>d</i>, <i>p</i>(<i>x</i>, <i>y</i>) if and only if <i>p</i>|<i><sub>d</sub></i>(<i>x</i>, <i>y</i>) = <i>p</i>(<i>x</i>). If either <i>x</i> or <i>y</i> are not in <i>d</i>, then it is not the case that <i>p</i>|<i><sub>d</sub></i>(<i>x</i>, <i>y</i>).<p>
+<a name="56381"></a>
+<a name="17.3"></a>
+<h2>17.3    Incorrectly Synchronized Programs Exhibit Surprising Behaviors</h2>
+<a name="56383"></a>
+The semantics of the Java programming language  allow compilers and microprocessors to perform optimizations that can interact with incorrectly synchronized code in ways that can produce behaviors that seem paradoxical.
+<p><b>Trace 17.1</b>: Surprising results caused by statement reordering - original code</p>
+<Table Border="3">
+<a name="61719"></a>
+<tr><th><a name="61726"></a>
+Thread 1<p>
+<th><a name="61735"></a>
+Thread 2<p>
+
+<tr><td><a name="61699"></a>
+1: r2 = A;<p>
+<td><a name="61701"></a>
+3: r1 = B;<p>
+
+<tr><td><a name="61703"></a>
+2: B = 1;<p>
+<td><a name="61705"></a>
+4: A = 2;<p>
+
+
+</Table>
+
+<p>
+<a name="56392"></a>
+<p><b>Trace 17.2</b>: Surprising results caused by statement reordering - valid compiler transformation</p>
+<Table Border="3">
+<a name="61751"></a>
+<tr><th><a name="61755"></a>
+Thread 1<p>
+<th><a name="61757"></a>
+Thread 2<p>
+
+<tr><td><a name="61759"></a>
+B = 1;<p>
+<td><a name="61761"></a>
+r1 = B;<p>
+
+<tr><td><a name="61763"></a>
+r2 = A;<p>
+<td><a name="61765"></a>
+A = 2;<p>
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+<p>
+<a name="56433"></a>
+Consider, for example, the example shown in <a href="memory.html#61719">Trace 17.1</a>.  This program uses local variables <code>r1</code> and <code>r2</code> and shared variables <code>A </code>and <code>B</code>. Initially,  <code>A == B == 0.</code> <p>
+<a name="56436"></a>
+It may appear that the result <code>r2 == 2, r1 == 1</code> is impossible.  Intuitively, either instruction 1 or instruction 3 should come first in an execution.  If instruction 1 comes first, it should not be able to see the write at instruction 4.  If instruction 3 comes first, it should not be able to see the write at instruction 2.<p>
+<a name="56443"></a>
+If some execution exhibited this behavior, then we would know that instruction 4 came before instruction 1, which came before instruction 2, which came before instruction 3, which came before instruction 4.  This is, on the face of it, absurd.<p>
+<a name="56448"></a>
+However, compilers are allowed to reorder the instructions in either thread, when this does not affect the execution of that thread in isolation. If instruction 1 is reordered with instruction 2, as shown in <a href="memory.html#61751">Trace 17.2</a>, then it is easy to see how the result  <code>r2 == 2</code> and  <code>r1 == 1</code> might occur.<p>
+<a name="56455"></a>
+To some programmers, this behavior may seem "broken". However, it should be noted that this code is improperly synchronized: <p>
+<ul><a name="56459"></a>
+<li>there is a write in one thread,
+<a name="58232"></a>
+<li>a read of the same variable by another thread,
+<a name="58235"></a>
+<li>and the write and read are not ordered by synchronization.
+</ul><a name="56463"></a>
+This situation is an example of a <i>data race</i> <a href="memory.html#64086">(&#167;17.4.5)</a>. When code contains a data race, counterintuitive results are often possible.<p>
+<a name="56468"></a>
+Several mechanisms can produce the reordering in <a href="memory.html#61751">Trace 17.2</a>. The just-in-time compiler and the processor may rearrange code.  In addition, the memory hierarchy of the architecture on which a virtual machine is run may make it appear as if code is being reordered.  In this chapter, we shall refer to anything that can reorder code as a compiler.
+<p><b>Trace 17.3</b>: Surprising results caused by forward substitution</p>
+<Table Border="3">
+<a name="61816"></a>
+<tr><th><a name="61820"></a>
+Thread 1<p>
+<th><a name="61822"></a>
+Thread 2<p>
+
+<tr><td><a name="61824"></a>
+r1 = p;<p>
+<td><a name="61826"></a>
+r6 = p;<p>
+
+<tr><td><a name="61828"></a>
+r2 = r1.x;<p>
+<td><a name="61830"></a>
+r6.x = 3;<p>
+
+<tr><td><a name="61832"></a>
+r3 = q;<p>
+<td><a name="61834"></a>
+<p>
+
+<tr><td><a name="61836"></a>
+r4 = r3.x;<p>
+<td><a name="61838"></a>
+<p>
+
+<tr><td><a name="61840"></a>
+r5 = r1.x;<p>
+<td><a name="61842"></a>
+<p>
+
+<tr><th><a name="61844"></a>
+<p>
+<th><a name="61846"></a>
+<p>
+
+
+</Table>
+
+
+<p>
+<a name="65072"></a>
+<p><b>Trace 17.4</b>: Surprising results caused by forward substitution</p>
+<Table Border="3">
+<a name="65041"></a>
+<tr><th><a name="65045"></a>
+Thread 1<p>
+<th><a name="65047"></a>
+Thread 2<p>
+
+<tr><td><a name="65049"></a>
+r1 = p;<p>
+<td><a name="65051"></a>
+r6 = p;<p>
+
+<tr><td><a name="65053"></a>
+r2 = r1.x;<p>
+<td><a name="65055"></a>
+r6.x = 3;<p>
+
+<tr><td><a name="65057"></a>
+r3 = q;<p>
+<td><a name="65059"></a>
+<p>
+
+<tr><td><a name="65061"></a>
+r4 = r3.x;<p>
+<td><a name="65063"></a>
+<p>
+
+<tr><td><a name="65065"></a>
+r5 = r2;<p>
+<td><a name="65067"></a>
+<p>
+
+<tr><th><a name="65069"></a>
+<p>
+<th><a name="65071"></a>
+<p>
+
+
+</Table>
+
+
+<p>
+<a name="56531"></a>
+Another example of surprising results can be seen in <a href="memory.html#61816">Trace 17.3</a>. Initially:  <code>p == q</code>,  <code>p.x == 0. </code>This program is also incorrectly synchronized; it writes to shared memory without enforcing any ordering between those writes.  <p>
+<a name="59961"></a>
+One common compiler optimization involves having the value read for  <code>r2</code> reused for  <code>r5</code>: they are both reads of  <code>r1.x</code> with no intervening write. This situation is shown in <a href="memory.html#65041">Trace 17.4</a>.<p>
+<a name="59972"></a>
+Now consider the case where the assignment to  <code>r6.x</code> in Thread 2 happens between the first read of <code>r1.x</code> and the read of  <code>r3.x</code> in Thread 1.  If the compiler decides to reuse the value of  <code>r2</code> for the  <code>r5</code>, then  <code>r2</code> and  <code>r5</code> will have the value 0, and  <code>r4</code> will have the value 3. From the perspective of the programmer, the value stored at  <code>p.x</code> has changed from 0 to 3 and then changed back.<p>
+<a name="60233"></a>
+<a name="17.4"></a>
+<h2>17.4    Memory Model</h2>
+<a name="60235"></a>
+A <i>memory model</i> describes, given a program and an execution trace of that program, whether the execution trace is a legal execution of the program.  The Java programming language memory model works by examining each read in an execution trace and checking that the write observed by that read is valid according to certain rules.<p>
+<a name="60237"></a>
+The memory model describes possible behaviors of a program.  An implementation is free to produce any code it likes, as long as all resulting executions of a program produce a result that can be predicted by the memory model.  <p>
+<a name="66145"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="66146"></a>
+ This provides a great deal of freedom for the implementor to perform a myriad of code transformations, including the reordering of actions and removal of unnecessary synchronization.<p>
+ <hr>
+<a name="66153"></a>
+ <p>
+<a name="60241"></a>
+The memory model determines what values can be read at every point in the program.  The actions of each thread in isolation must behave as governed by the semantics of that thread, with the exception that the values seen by each read are determined by the memory model. When we refer to this, we say that the program obeys <i>intra-thread semantics</i>. Intra-thread semantics are the semantics for single threaded programs, and allow the complete prediction of the behavior of a thread based on the values seen by read actions within the thread.  To determine if the actions of thread <i>t</i> in an execution are legal, we simply evaluate the implementation of thread <i>t</i> as it would be performed in a single threaded context, as defined in the rest of this specification.<p>
+<a name="64697"></a>
+Each time the evaluation of thread <i>t</i> generates an inter-thread action, it must match the inter-thread action <i>a</i> of <i>t</i> that comes next in program order. If <i>a</i> is a read, then further evaluation of <i>t</i> uses the value seen by <i>a</i> as determined by the memory model.<p>
+<a name="61866"></a>
+This section provides the specification of the Java programming language memory model except for issues dealing with final fields, which are described in <a href="memory.html#66562">&#167;17.5</a>.<p>
+<a name="61871"></a>
+<a name="17.4.1"></a>
+<h3>17.4.1    Shared Variables</h3>
+<a name="64074"></a>
+Memory that can be shared between threads is called <i>shared memory</i> or <i>heap memory</i>.<p>
+<a name="64077"></a>
+All instance fields, static fields and array elements are stored in heap memory. In this chapter, we use the term <i>variable</i> to refer to both fields and array elements. Local variables <a href="statements.html#5920">(&#167;14.4)</a>, formal method parameters <a href="classes.html#38698">(&#167;8.4.1)</a> or exception handler parameters are never shared between threads and are unaffected by the memory model.<p>
+<a name="64721"></a>
+Two accesses to (reads of or writes to) the same variable are said to be <i>conflicting</i> if at least one of the accesses is a write.<p>
+<a name="64057"></a>
+<a name="17.4.2"></a>
+<h3>17.4.2    Actions</h3>
+<a name="61875"></a>
+An <i>inter-thread action</i> is an action performed by one thread that can be detected or directly influenced by another thread. There are several kinds of inter-thread action that a program may perform:<p>
+<ul><a name="65279"></a>
+<li><i>Read</i> (normal, or non-volatile). Reading a variable.
+<a name="65278"></a>
+<li><i>Write</i> (normal, or non-volatile). Writing a variable.
+<a name="65301"></a>
+<li><i>Synchronization actions</i>, which are:
+<ul>
+<a name="65317"></a>
+<li><i>Volatile read</i>. A volatile read of a variable.
+<a name="65320"></a>
+<li><i>Volatile write</i>. A volatile write of a variable.
+<a name="65323"></a>
+<li><i>Lock</i>. Locking a monitor
+<a name="65326"></a>
+<li><i>Unlock</i>. Unlocking a monitor.
+<a name="65330"></a>
+<li>The (synthetic) first and last action of a thread
+<a name="65331"></a>
+<li>Actions that start a thread or detect that a thread has terminated, as described in <a href="memory.html#64058">&#167;17.4.4</a>.
+</ul>
+<a name="65309"></a>
+<li><i>External Actions</i>. An external action is an action that may be observable outside of an execution, and has a result based on an environment external to the execution.
+<a name="65310"></a>
+<li><i>Thread divergence actions</i> <a href="memory.html#62184">(&#167;17.4.9)</a>. A thread divergence action is only performed by a thread that is in an infinite loop in which no memory, synchronization or external  actions are performed. If a thread performs a thread divergence action, it will be followed by an infinite number of thread divergence actions.
+<a name="66180"></a>
+</ul>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="66181"></a>
+ Thread divergence actions are introduced to model how a thread may cause all other threads to stall and fail to make progress<p>
+ <hr>
+<a name="66182"></a>
+ <p>
+</ul><a name="65266"></a>
+This specification is only concerned with inter-thread actions. We do not need to concern ourselves with intra-thread actions (e.g., adding two local variables and storing the result in a third local variable). As previously mentioned, all threads need to obey the correct intra-thread semantics for Java programs. We will usually refere to inter-thread actions more succinctly as simply <i>actions</i>.<p>
+<a name="65338"></a>
+An action a is described by a tuple &lt; <i>t</i>, <i>k</i>, <i>v</i>, <i>u</i> &gt;, comprising:<p>
+<ul><a name="61878"></a>
+<li><i>t</i> - the thread performing the action
+<a name="64587"></a>
+<li><i>k</i> - the kind of action
+<a name="64626"></a>
+<li><i>v</i> - the variable or monitor involved in the action. For lock actions, <i>v</i> is the monitor being locked; for unlock actions, it is the monitor being unlocked. If the action is (volatile or non-volatile) read, <i>v</i> is the variable being read. If the action is a (volatile or non-volatile) write, <i>v</i> is the variable being written
+<a name="64627"></a>
+<li><i>u</i> - an arbitrary unique identifier for the action
+</ul><a name="64003"></a>
+An external action tuple contains an additional component, which contains the results of the external action as perceived by the thread performing the action. This may be information as to the success or failure of the action, and any values read by the action.<p>
+<a name="64004"></a>
+Parameters to the external action (e.g., which bytes are written to which socket) are not part of the external action tuple. These parameters are set up by other actions within the thread and can be determined by examining the intra-thread semantics. They are not explicitly discussed in the memory model.<p>
+<a name="64005"></a>
+In non-terminating executions, not all external actions are observable. Non-terminating executions and observable actions are discussed  in <a href="memory.html#62184">&#167;17.4.9</a>.<p>
+<a name="64669"></a>
+<a name="17.4.3"></a>
+<h3>17.4.3    Programs and Program Order</h3>
+<a name="64069"></a>
+Among all the inter-thread actions performed by each thread <i>t</i>, the <i>program order</i> of <i>t</i> is a total order that reflects the order in which these actions would be performed according to the intra-thread semantics of <i>t</i>.<p>
+<a name="64903"></a>
+A set of actions is <i>sequentially consistent</i> if all actions occur in a total order (the execution order) that is consistent with program order and furthermore, each read <i>r</i> of a variable <i>v</i> sees the value written by the write <i>w</i> to <i>v</i> such that:<p>
+<ul><a name="64904"></a>
+<li><i>w</i> comes before <i>r</i> in the execution order, and
+<a name="64905"></a>
+<li>there is no other write <i>w'</i> such that <i>w</i> comes before <i>w'</i> and <i>w'</i> comes before <i>r</i> in the execution order.
+</ul><a name="64916"></a>
+Sequential consistency is a very strong guarantee that is made about visibility and ordering in an execution of a program. Within a sequentially consistent execution, there is a total order over all individual actions (such as reads and writes) which is consistent with the order of the program, and each individual action is atomic and is immediately visible to every thread.<p>
+<a name="64918"></a>
+If a program has no data races, then all executions of the program will appear to be sequentially consistent.<p>
+<a name="64919"></a>
+Sequential consistency and/or freedom from data races still allows errors arising from groups of operations that need to be perceived atomically and are not.<p>
+<a name="65344"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="65345"></a>
+ If we were to use sequential consistency as our memory model, many of the compiler and processor optimizations that we have discussed would be illegal.  For example, in <a href="memory.html#61816">Trace 17.3</a>, as soon as the write of 3 to  <code>p.x</code> occurred, subsequent reads of that location would be required to see that value. <p>
+ <hr>
+<a name="65347"></a>
+ <p>
+<a name="64058"></a>
+<a name="17.4.4"></a>
+<h3>17.4.4    Synchronization Order</h3>
+<a name="64102"></a>
+Every execution has a <i>synchronization order</i>. A synchronization order is a total order over all of the synchronization actions of an execution. For each thread <i>t</i>, the synchronization order of the synchronization actions <a href="memory.html#64057">(&#167;17.4.2)</a> in <i>t</i> is consistent with the program order <a href="memory.html#64669">(&#167;17.4.3)</a> of <i>t</i>. <p>
+<a name="64402"></a>
+Synchronization actions induce the <i>synchronized-with</i> relation on actions, defined as follows: <p>
+<ul><a name="64403"></a>
+<li>An unlock action on monitor <i>m</i> synchronizes-with all subsequent lock actions on <i>m</i> (where subsequent is defined according to the synchronization order).
+<a name="64404"></a>
+<li>A write to a volatile variable <a href="classes.html#36930">(&#167;8.3.1.4)</a> <i>v</i> synchronizes-with all subsequent reads of <i>v</i> by any thread (where subsequent is defined according to the synchronization order).
+<a name="64405"></a>
+<li>An action that starts a thread synchronizes-with the first action in the thread it starts.
+<a name="64473"></a>
+<li>The write of the default value (zero, <code>false</code> or <code>null</code>) to each variable synchronizes-with the first action in every thread. Although it may seem a little strange to write a default value to a variable before the object containing the variable is allocated, conceptually every object is created at the start of the program with its default initialized values.
+<a name="64406"></a>
+<li>The final action in a thread <i>T1</i> synchronizes-with any action in another thread <i>T2</i> that detects that <i>T1</i> has terminated. <i>T2</i> may accomplish this by calling <code>T1.isAlive()</code> or <code>T1.join()</code>.
+<a name="64468"></a>
+<li>If thread <i>T1</i> interrupts thread <i>T2</i>, the interrupt by <i>T1</i> synchronizes-with any point where any other thread (including <i>T2</i>) determines that <i>T2</i> has been interrupted (by having an <code>InterruptedException</code> thrown or by invoking <code>Thread.interrupted</code> or <code>Thread.isInterrupted</code>).
+</ul><a name="64118"></a>
+The source of a synchronizes-with edge is called a release, and the destination is called an <i>acquire</i>.<p>
+<a name="64086"></a>
+<a name="17.4.5"></a>
+<h3>17.4.5    Happens-before Order</h3>
+<a name="64127"></a>
+Two actions can be ordered by a <i>happens-before</i> relationship. If one action happens-before another, then the first is visible to and ordered before the second. <p>
+<a name="64137"></a>
+If we have two actions <i>x</i> and <i>y</i>, we write <i><i>hb</i></i>(<i>x</i>, <i>y</i>) to indicate that <i>x</i> happens-before <i>y</i>. <p>
+<ul><a name="64354"></a>
+<li>If <i>x</i> and <i>y</i> are actions of the same thread and <i>x</i> comes before <i>y</i> in program order, then <i><i>hb</i></i>(<i>x</i>, <i>y</i>).
+<a name="64447"></a>
+<li>There is a happens-before edge from the end of a constructor of an object to the start of a finalizer <a href="execution.html#44748">(&#167;12.6)</a> for that object.
+<a name="64454"></a>
+<li>If an action <i>x</i> synchronizes-with a following action <i>y</i>, then we also have <i>hb</i>(<i>x</i>, <i>y</i>).
+<a name="64357"></a>
+<li>If <i>hb</i>(<i>x</i>, <i>y</i>) and <i>hb</i>(<i>y</i>, <i>z</i>), then <i>hb</i>(<i>x</i>, <i>z</i>).
+</ul><a name="64481"></a>
+It should be noted that the presence of a happens-before relationship between two actions does not necessarily imply that they have to take place in that order in an implementation. If the reordering produces results consistent with a legal execution, it is not illegal.<p>
+<a name="67766"></a>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="65385"></a>
+ <p>
+<a name="64482"></a>
+ For example, the write of a default value to every field of an object constructed by a thread need not happen before the beginning of that thread, as long as no read ever observes that fact. <p>
+<a name="64483"></a>
+More specifically, if two actions share a happens-before relationship, they do not necessarily have to appear to have happened in that order to any code with which they do not share a happens-before relationship.  Writes in one thread that are in a data race with reads in another thread may, for example, appear to occur out of order to those reads.<p>
+<hr>
+<a name="65386"></a>
+ <p>
+<a name="67739"></a>
+<a name="67764"></a>
+The <code>wait</code> methods of class <code>Object</code> have lock and unlock actions associated with them; their happens-before relationships are defined by these associated actions.  These methods are described further in <a href="memory.html#57537">&#167;17.8</a>.<p>
+<a name="64506"></a>
+The happens-before relation defines when data races take place. <p>
+<a name="66233"></a>
+A set of synchronization edges, <i>S</i>, is <i>sufficient</i> if it is the minimal set such that the transitive closure of <i>S</i> with the program order determines all of the happens-before edges in the execution.  This set is unique.<p>
+<hr>
+<a name="67765"></a>
+<p>
+<b>Discussion</b>
+</p>
+<a name="64527"></a>
+ <p>
+<a name="64528"></a>
+ It follows from the above definitions that:<p>
+<ul><a name="64508"></a>
+<li>An unlock on a monitor happens-before every subsequent lock on that monitor.
+<a name="64509"></a>
+<li>A write to a volatile field <a href="classes.html#36930">(&#167;8.3.1.4)</a> happens-before every subsequent read of that field.
+<a name="64510"></a>
+<li>A call to <code>start()</code> on a thread happens-before any actions in the started thread.
+<a name="64512"></a>
+<li>All actions in a thread happen-before any other thread successfully returns from a  <code>join()</code> on that thread.
+<a name="67742"></a>
+<li>The default initialization of any object happens-before any other actions (other than default-writes) of a program.
+<a name="67743"></a>
+ <p>
+</ul><a name="67770"></a>
+<hr>
+<p>
+When a program contains two conflicting accesses <a href="memory.html#61871">(&#167;17.4.1)</a> that are not ordered by a happens-before relationship, it is said to contain a <i>data race</i>.  <p>
+<a name="66377"></a>
+The semantics of operations other than inter-thread actions, such as reads of array lengths <a href="arrays.html#64347">(&#167;10.7)</a>, executions of checked casts (<a href="conversions.html#20232">&#167;5.5</a>, <a href="expressions.html#238146">&#167;15.16</a>), and invocations of virtual methods <a href="expressions.html#20448">(&#167;15.12)</a>, are not directly affected by data races.<p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="66371"></a>
+ <p>
+<a name="66357"></a>
+ Therefore, a data race cannot cause incorrect behavior such as returning the wrong length for an array.<p>
+ <hr>
+<a name="66306"></a>
+ <p>
+<a name="67768"></a>
+A program is <i>correctly synchronized</i> if and only if all sequentially consistent executions are free of data races. <p>
+<a name="67966"></a>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="64737"></a>
+ <p>
+<a name="64734"></a>
+<a name="67964"></a>
+ A subtle example of incorrectly synchronized code can be seen below. The figures show two different executions of the same program, both of which contain conflicting accesses to shared variables  <code>X</code> and  <code>Y</code>.  The two threads in the program lock and unlock a monitor  <code>M1</code>.  In execution (a), there is a happens-before relationship between all pairs of conflicting accesses. However, in execution (b), there is no happens-before ordering between the conflicting accesses to  <code>X</code>. Because of this, the program is not correctly synchronized.<p>
+ <hr>
+<a name="67965"></a>
+ <p>
+<a name="64748"></a>
+<img align="center" src="memory7.gif"><p>
+<a name="67847"></a>
+(a) Thread 1 acquires lock first; Accesses to X are ordered by happens-before<p>
+<a name="67850"></a>
+<img align="center" src="memory8.gif"><p>
+<a name="67851"></a>
+(b) Thread 2 acquires lock first; Accesses to X not ordered by happens-before<p>
+<a name="67969"></a>
+<p>
+<a name="64934"></a>
+If a program is correctly synchronized, then all executions of the program will appear to be sequentially consistent <a href="memory.html#64669">(&#167;17.4.3)</a>.  <p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="66239"></a>
+ <p>
+<a name="66240"></a>
+ This is an extremely strong guarantee for programmers. Programmers do not need to reason about reorderings to determine that their code contains data races. Therefore they do not need to reason about reorderings when determining whether their code is correctly synchronized. Once the determination that the code is correctly synchronized is made, the programmer does not need to worry that reorderings will affect his or her code.<p>
+<a name="66389"></a>
+A program must be correctly synchronized to avoid the kinds of counterintuitive behaviors that can be observed when code is reordered.  The use of correct synchronization does not ensure that the overall behavior of a program is correct.  However, its use does allow a programmer to reason about the possible behaviors of a program in a simple way; the behavior of a correctly synchronized program is much less dependent on possible reorderings. Without correct synchronization, very strange, confusing and counterintuitive behaviors are possible.<p>
+<hr>
+<a name="66241"></a>
+ <p>
+<a name="64851"></a>
+We say that a read <i>r</i> of a variable <i>v</i> is <i>allowed to observe</i> a write <i>w</i> to <i>v</i> if, in the happens-before partial order of the execution trace:<p>
+<ul><a name="64852"></a>
+<li>r is not ordered before <i>w</i> (i.e., it is not the case that <i>hb</i>(<i>r</i>, <i>w</i>), and
+<a name="64853"></a>
+<li>there is no intervening write <i>w'</i> to <i>v</i> (i.e., no write <i>w'</i> to <i>v</i> such that <i>hb</i>(<i>w</i>, <i>w'</i>) and <i>hb</i>(<i>w'</i>, <i>r</i>).
+</ul><a name="64854"></a>
+Informally, a read <i>r</i> is allowed to see the result of a write <i>w</i>   if there is no happens-before ordering to prevent that read.<p>
+<a name="64878"></a>
+<p><b>Trace 17.5</b>: Behavior allowed by happens-before consistency, but not sequential consistency. May observe <code>r2 ==0</code>, <code>r1 == 0</code></p>
+<Table Border="3">
+<a name="65487"></a>
+<tr><th><a name="65491"></a>
+Thread 1<p>
+<th><a name="65493"></a>
+Thread 2<p>
+
+<tr><td><a name="65495"></a>
+B = 1;<p>
+<td><a name="65497"></a>
+A = 2;<p>
+
+<tr><td><a name="65499"></a>
+r2 = A;<p>
+<td><a name="65501"></a>
+r1 = B;<p>
+
+<tr><th><a name="65515"></a>
+<p>
+<th><a name="65517"></a>
+<p>
+
+
+</Table>
+<p>
+A set of actions <i>A</i> is  <i>happens-before consistent</i> if for all reads <i>r</i> in <i>A</i>, it is not the case that either <i>hb</i>(<i>r</i>, <i>W</i>(<i>r</i>)), where <i>W</i>(<i>r</i>) is the write action seen by <i>r</i> or that there exists a write <i>w</i>in <i>A</i> such that <i>w.v</i> = <i>r.v</i> and <i>hb</i>(<i>W</i>(<i>r</i>), <i>w</i>) and <i>hb</i>(<i>w</i>, <i>r</i>).<p>
+<a name="65395"></a>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+ <p>
+<a name="65412"></a>
+ In a happens-before consistent set of actions, each read sees a write that it is allowed to see by the happens-before ordering. <p>
+<a name="64879"></a>
+ For example, the behavior shown in <a href="memory.html#65487">Trace 17.5</a> is happens-before consistent, since there are execution orders that allow each read to see the appropriate write.<p>
+<a name="64881"></a>
+Initially, <code>A == B == 0</code>. In this case, since there is no synchronization, each read can see either the write of the initial value or the write by the other thread. One such execution order is <p>
+<blockquote><pre>1: B = 1;
+3: A = 2;
+2: r2 = A; // sees initial write of 0
+4: r1 = B; // sees initial write of 0
+</pre></blockquote><a name="64886"></a>
+Similarly, the behavior shown in <a href="memory.html#65487">Trace 17.5</a> is happens-before consistent, since there is an execution order that allows each read to see the appropriate write. An execution order that displays that behavior is:<p>
+<blockquote><pre>1: r2 = A; // sees write of A = 2
+3: r1 = B; // sees write of B = 1
+2: B = 1;
+4: A = 2;
+</pre></blockquote><a name="64892"></a>
+In this execution, the reads see writes that occur later in the execution order.  This may seem counterintuitive, but is allowed by happens-before consistency. Allowing reads to see later writes can sometimes produce unacceptable behaviors. <p>
+<hr>
+<a name="64845"></a>
+ <p>
+<a name="64092"></a>
+<a name="17.4.6"></a>
+<h3>17.4.6    Executions</h3>
+<a name="63987"></a>
+An execution <i>E</i> is described by a tuple &lt; <i>P</i>, <i>A</i>, <i>po</i>, <i>so</i>, <i>W</i>, <i>V</i>, <i>sw</i>, <i>hb</i> &gt;, comprising: <p>
+<ul><a name="61904"></a>
+<li><i>P</i> - a program
+<a name="62952"></a>
+<li><i>A</i> -  a set of actions
+<a name="62955"></a>
+<li><i>po</i> - program order, which for each thread <i>t</i>, is a total order over all actions performed by <i>t</i> in <i>A</i>
+<a name="62958"></a>
+<li><i>so</i> - synchronization order, which is a total order over all synchronization actions in <i>A</i>
+<a name="62961"></a>
+<li><i>W</i> - a write-seen function, which for each read <i>r</i> in <i>A</i>, gives <i>W</i>(<i>r</i>), the write action seen by <i>r</i> in <i>E</i>.
+<a name="62964"></a>
+<li><i>V</i> - a value-written function, which for each write <i>w</i> in <i>A</i>, gives <i>V</i>(<i>w</i>), the value written by <i>w</i> in <i>E</i>.
+<a name="62967"></a>
+<li><i>sw</i> - synchronizes-with, a partial order over synchronization actions.
+<a name="62970"></a>
+<li><i>hb</i> - happens-before, a partial order over actions
+</ul><a name="61921"></a>
+Note that the synchronizes-with and happens-before are uniquely determined by the other components of an execution and the rules for well-formed executions <a href="memory.html#62004">(&#167;17.4.7)</a>.<p>
+<a name="65401"></a>
+An execution is <i>happens-before consistent</i> if its set of actions is happens-before consistent<a href="memory.html#64086">(&#167;17.4.5)</a>. <p>
+<a name="62004"></a>
+<a name="17.4.7"></a>
+<h3>17.4.7    Well-Formed Executions</h3>
+<a name="62006"></a>
+We only consider well-formed executions. An execution <i>E</i> = &lt; <i>P</i>, <i>A</i>, <i>po</i>, <i>so</i>, <i>W</i>, <i>V</i>, <i>sw</i>, <i>hb</i> &gt; is <i>well formed</i> if the following conditions are true:<p>
+<ol>
+<a name="62011"></a>
+<li><i>Each read sees a write to the same variable in the execution</i>.  All reads and writes of volatile variables are volatile actions. For all reads <i>r</i> in <i>A</i>, we have <i>W</i>(<i>r</i>) in <i>A</i> and <i>W</i>(<i>r</i>).<i>v</i> = <i>r</i>.<i>v</i>. The variable <i>r</i>.<i>v</i>  is volatile if and only if <i>r</i> is a volatile read, and the variable <i>w</i>.<i>v</i>  is volatile if and only if <i>w</i> is a volatile write.
+<a name="63025"></a>
+<li><i>Happens-before order is a partial order</i>. Happens-before order is given by the transitive closure of synchronizes-with edges and program order. It must be a valid partial order: reflexive, transitive and  antisymmetric.
+<a name="63030"></a>
+<li><i>The execution obeys intra-thread consistency</i>. For each thread <i>t</i>, the actions performed by <i>t</i> in <i>A</i> are the same as would be generated by that thread in program-order in isolation, with each write <i>w</i>writing the value <i>V</i>(<i>w</i>), given that each read <i>r</i> sees the value <i>V</i>(<i>W</i>(<i>r</i>)). Values seen by each read are determined by the memory model. The program order given must reflect the program order in which the actions would be performed according to the intra-thread semantics of <i>P</i>.
+<a name="63037"></a>
+<li><i>The execution is happens-before consistent</i> <a href="memory.html#64092">(&#167;17.4.6)</a>.
+<a name="63049"></a>
+<li><i>The execution obeys synchronization-order consistency</i>.       For all volatile reads <i>r</i> in <i>A</i>, it is not the case that either <i>so</i>(<i>r</i>, <i>W</i>(<i>r</i>)) or that there exists a write <i>w</i>in <i>A</i> such that <i>w</i>.<i>v</i> = <i>r</i>.<i>v</i> and <i>so</i>(<i>W</i>(<i>r</i>), <i>w</i>) and <i>so</i>(<i>w</i>, <i>r</i>).
+</ol>
+<a name="62065"></a>
+<a name="17.4.8"></a>
+<h3>17.4.8    Executions and Causality Requirements</h3>
+<a name="62066"></a>
+A well-formed execution <i>E</i> = &lt; <i>P</i>, <i>A</i>, <i>po</i>, <i>so</i>, <i>W</i>, <i>V</i>, <i>sw</i>, <i>hb</i> &gt; is validated by  committing actions from <i>A</i>.  If all of the actions in <i>A</i> can be committed, then the execution satisfies the causality requirements of the Java programming language memory model.<p>
+<a name="62074"></a>
+Starting with the empty set as <i>C<sub>0</sub></i>, we perform a sequence of steps where we take actions from the set of actions <i>A</i> and add them to a set of committed actions <i>C<sub>i</sub></i> to get a new set of committed actions <i>C<sub>i+1</sub></i>.  To demonstrate that this is reasonable, for each <i>C<sub>i</sub></i> we need to demonstrate an execution <i>E<sub>i</sub></i> containing <i>C<sub>i</sub></i> that meets certain conditions.<p>
+<a name="62084"></a>
+Formally, an execution <i>E</i> satisfies the causality requirements of the Java programming language memory model if and only if there exist<p>
+<ul><a name="62087"></a>
+<li>  Sets of actions <i>C<sub>0</sub></i>, <i>C<sub>1</sub></i>, ... such that
+<ul>
+<a name="62089"></a>
+<li><i>C<sub>0</sub></i> is the empty set
+<a name="63059"></a>
+<li><i>C<sub>i</sub></i> is a proper subset of <i>C<sub>i+1</sub></i>
+<a name="63062"></a>
+<li> <i>A</i> = <img src="chars/union.gif">(<i>C</sub>0</sub></i>, <i>C<sub>1</sub></i>, <i>C<sub>2</sub></i>, ...)
+<a name="62093"></a>
+<p>If <i>A</i> is finite, then the sequence <i>C<sub>0</sub></i>, <i>C<sub>1</sub></i>, ... will be finite, ending in a set <i>C<sub>n</sub></i> = <i>A</i>. However, if <i>A</i> is infinite, then the sequence <i>C<sub>0</sub></i>, <i>C<sub>1</sub></i>, ... may be infinite, and it must be the case that the union of all elements of this infinite sequence is equal to <i>A</i>.</p>
+</ul>
+<a name="62102"></a>
+<li>  Well-formed executions <i>E<sub>1</sub></i>, ...,  where <i>E<sub>i</sub></i> = &lt; <i>P</i>, <i>A<sub>i</sub></i>, <i>po<sub>i</sub></i>, <i>so<sub>i</sub></i>, <i>W<sub>i</sub></i>, <i>V<sub>i</sub></i>, <i>sw</sub>i</sub></i>, <i>hb<sub>i</sub></i>, <i>O<sub>i</sub></i> &gt;.
+</ul><a name="62111"></a>
+Given these sets of actions <i>C<sub>0</sub></i>, ...  and executions <i>E,sub>1</sub></i>, ... , every action in <i>C<sub>i</sub></i> must be one of the actions in <i>E<sub>i</sub></i>. All actions in <i>C<sub>i</sub></i> must share the same relative happens-before order and synchronization order in both <i>E<sub>i</sub></i> and <i>E</i>. Formally,<p>
+<ol>
+<a name="62120"></a>
+<li><i>C<sub>i</sub></i> is a subset of <i>A<sub>i</sub></i>
+<a name="63085"></a>
+<li><i>hb<sub>i</sub></i> |<i><sub>Ci</sub></i> = <i>hb</i> |<i><sub>Ci</sub></i>
+<a name="63090"></a>
+<li><i>so<sub>i</sub></i> |<i><sub>Ci</sub></i> = <i>so</i> |<i><sub>Ci</sub></i>
+</ol>
+<a name="62126"></a>
+The values written by the writes in <i>C<sub>i</sub></i> must be the same in both <i>E<sub>i</sub></i> and <i>E</i>. Only the reads in <i>C<sub>i-1</sub></i> need to see the same writes in <i>E<sub>i</sub></i> as in <i>E</i>. Formally,<p>
+<ol start="4">
+<a name="62132"></a>
+<li>V<sub>i</sub> |C<sub>i</sub>  = V |C<sub>i</sub>
+<a name="63155"></a>
+<li><i>W<sub>i</sub></i> |<i><sub>Ci-1</sub></i>  = <i>W</i> |<i><sub>Ci-1</sub></i>
+</ol>
+<a name="62138"></a>
+All reads in <i>E<sub>i</sub></i> that are not in <i>C<sub>i-1</sub></i> must see writes that happen-before them. Each read <i>r</i> in <i>C<sub>i</sub></i> - <i>C<sub>i-1</sub></i> must see writes in <i>C<sub>i-1</sub></i> in both <i>E<sub>i</sub></i> and <i>E</i>, but may see a different write in <i>E<sub>i</sub></i> from the one it sees in <i>E</i>. Formally,<p>
+<ol start="6">
+<a name="62146"></a>
+<li>For any read <i>r</i> in <i>A<sub>i</sub></i> - <i>C<sub>i-1</sub></i> , we have  <i>hb<sub>i</sub></i>(<i>W<sub>i</sub></i>(<i>r</i>), <i>r</i>)
+<a name="63162"></a>
+<li>For any read <i>r</i> in (<i>C<sub>i</sub></i> - <i>C<sub>i-1</sub></i>), we have <i>W<sub>i</sub></i>(<i>r</i>) in <i>C</sub>i-1</sub></i> and <i>W</i>(<i>r</i>) in <i>C<sub>i-1</sub></i>
+</ol>
+<a name="62159"></a>
+Given a set of sufficient synchronizes-with edges for <i>E<sub>i</sub></i>, if there is a release-acquire pair that happens-before <a href="memory.html#64086">(&#167;17.4.5)</a> an action you are committing, then that pair must be present in all <i>E<sub>j</sub></i>, where <i>j</i><img src="chars/gtequal.gif"><i>i</i>.  Formally, <p>
+<ol start="8">
+<a name="62166"></a>
+<li>Let <i>ssw<sub>i</sub></i> be the <i>sw<sub>i</sub></i> edges that are also in the transitive reduction of <i>hb<sub>i</sub></i> but not in <i>po</i>. We call <i>ssw<sub>i</sub></i> the <i>sufficient synchronizes-with edges for E<sub>i</sub></i>. If <i>ssw<sub>i</sub></i>(<i>x</i>, <i>y</i>) and <i>hb<sub>i</sub></i>(<i>y</i>, <i>z</i>) and  <i>z</i> in <i>C<sub>i</sub></i>, then <i>sw<sub>j</sub></i>(<i>x</i>, <i>y</i>) for all <i>j</i><img src="chars/gtequal.gif"><i>i</i>.
+</ol>
+<a name="63165"></a>
+If an action <i>y</i> is committed, all external actions that happen-before <i>y</i> are also committed. <p>
+<ol start="9">
+<a name="62180"></a>
+<li>If <i>y</i> is in <i>C<sub>i</sub></i>, <i>x</i> is an external action and <i>hb<sub>i</sub></i>(<i>x</i>, <i>y</i>), then <i>x</i> in <i>C<sub>i</sub></i>.
+</ol>
+<a name="64790"></a>
+<p>
+<a name="64791"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="64796"></a>
+ Happens-Before consistency is a necessary, but not sufficient, set of constraints. Merely enforcing happens-before consistency would allow for unacceptable behaviors -- those that violate the requirements we have established for programs.  For example, happens-before consistency allows values to appear "out of thin air".  This can be seen by a detailed examination of <a href="memory.html#66037">Trace 17.6</a>.<p>
+<a name="64797"></a>
+<p><b>Trace 17.6</b>: Happens-Before consistency is not sufficient</p>
+<Table Border="3">
+<a name="66037"></a>
+<tr><th><a name="66041"></a>
+Thread 1<p>
+<th><a name="66043"></a>
+Thread 2<p>
+
+<tr><td><a name="66045"></a>
+r1 = x;<p>
+<td><a name="66047"></a>
+ r2 = y;<p>
+
+<tr><td><pre>if (r1 != 0) y = 1;
+</pre><td><a name="66051"></a>
+if (r2 != 0) x= 1;<p>
+
+<tr><th><a name="66053"></a>
+<p>
+<th><a name="66055"></a>
+<p>
+
+
+</Table>
+
+<p>
+<a name="64821"></a>
+The code shown in <a href="memory.html#66037">Trace 17.6</a> is correctly synchronized. This may seem surprising, since it doesn't perform any synchronization actions.  Remember, however, that a program is correctly synchronized if, when it is executed in a sequentially consistent manner, there are no data races.  If this code is executed in a sequentially consistent way, each action will occur in program order, and neither of the writes will occur.  Since no writes occur, there can be no data races: the program is correctly synchronized. <p>
+<a name="64822"></a>
+Since this program is correctly synchronized, the only behaviors we can allow are sequentially consistent behaviors. However, there is an execution of this program that is happens-before consistent, but not sequentially consistent:<p>
+<a name="64823"></a>
+<blockquote><pre>
+r1 = x; // sees write of x = 1
+y = 1;
+r2 = y; // sees write of y = 1
+x = 1;
+</pre></blockquote>
+<a name="64827"></a>
+This result is happens-before consistent: there is no happens-before relationship that prevents it from occurring.  However, it is clearly not acceptable: there is no sequentially consistent execution that would result in this behavior. The fact that we allow a read to see a write that comes later in the execution order can sometimes thus result in unacceptable behaviors.<p>
+<a name="64828"></a>
+Although allowing reads to see writes that come later in the execution order is sometimes undesirable, it is also sometimes necessary. As we saw above, <a href="memory.html#65487">Trace 17.5</a> requires some reads to see writes that occur later in the execution order.  Since the reads come first in each thread, the very first action in the execution order must be a read.  If that read can't see a write that occurs later, then it can't see any value other than the initial value for the variable it reads.  This is clearly not reflective of all behaviors.<p>
+<a name="64830"></a>
+We refer to the issue of when reads can see future writes as causality, because of issues that arise in cases like the one found in <a href="memory.html#66037">Trace 17.6</a>.  In that case, the reads cause the writes to occur, and the writes cause the reads to occur.  There is no "first cause" for the actions. Our memory model therefore needs a consistent way of determining which reads can see writes early. <p>
+<a name="64831"></a>
+Examples such as the one found in <a href="memory.html#66037">Trace 17.6</a> demonstrate that the specification must be careful when stating whether a read can see a write that occurs later in the execution (bearing in mind that if a read sees a write that occurs later in the execution, it represents the fact that the write is actually performed early).<p>
+<a name="64832"></a>
+The memory model takes as input a given execution, and a program, and determines whether that execution is a legal execution of the program.  It does this by gradually building a set of "committed" actions that reflect which actions were executed by the program. Usually, the next action to be committed will reflect the next action that can be performed by a sequentially consistent execution. However, to reflect reads that need to see later writes, we allow some actions to be committed earlier than other actions that happen-before them.<p>
+<a name="64833"></a>
+Obviously, some actions may be committed early and some may not.  If, for example, one of the writes in <a href="memory.html#66037">Trace 17.6</a> were committed before the read of that variable, the read could see the write, and the "out-of-thin-air" result could occur.  Informally, we allow an action to be committed early if we know that the action can occur without assuming some data race occurs.  In <a href="memory.html#66037">Trace 17.6</a>, we cannot perform either write early, because the writes cannot occur unless the reads see the result of a data race.<p>
+<hr>
+<a name="64794"></a>
+ <p>
+<a name="62184"></a>
+<a name="17.4.9"></a>
+<h3>17.4.9    Observable Behavior and Nonterminating Executions</h3>
+<a name="62186"></a>
+For programs that always terminate in some bounded finite period of time, their behavior can be understood (informally) simply in terms of their allowable executions. For programs that can fail to terminate in a bounded amount of time, more subtle issues arise.<p>
+<a name="62192"></a>
+The observable behavior of a program is defined by the finite sets of external actions that the program may perform. A program that, for example, simply prints "Hello" forever is described by a set of behaviors that for any non-negative integer <i>i</i>, includes the behavior of printing "Hello" <i>i</i> times.<p>
+<a name="62199"></a>
+Termination is not explicitly modeled as a behavior, but a program can easily be extended to generate an additional external action <i>executionTermination</i> that occurs when all threads have terminated.<p>
+<a name="62206"></a>
+We also define a special <i>hang</i> action. If behavior is described by a set of external actions including a  <i>hang</i> action, it indicates a behavior where after the external actions are observed, the program can run for an unbounded amount of time without performing any additional external actions or terminating. Programs can <i>hang</i> if all threads are blocked or if the program can perform an unbounded number of actions without performing any external actions.<p>
+<a name="62220"></a>
+A thread can be blocked in a variety  of circumstances, such as when it is attempting to acquire a lock or perform an external action (such as a read) that depends on external data. If a thread is in such a state, <code>Thread.getState</code> will return <code>BLOCKED </code>or <code>WAITING</code>.<p>
+<a name="62225"></a>
+An execution may result in a thread being blocked indefinitely and the execution's not terminating. In such cases, the actions generated by the blocked thread must consist of all actions generated by that thread up to and including the action that caused the thread to be blocked, and no actions that would be generated by the thread after that action. <p>
+<a name="62234"></a>
+To reason about observable behaviors, we need to talk about sets of observable actions. <p>
+<a name="62238"></a>
+If <i>O</i> is a set of observable actions foran execution <i>E</i>, then set <i>O</i> must be a subset of <i>E</i>'s actions, <i>A</i>, and must contain only a finite number of actions, even if <i>A</i> contains an infinite number of actions. Furthermore, if an action <i>y</i> is in <i>O</i>, and either <i>hb</i>(<i>x</i>, <i>y</i>) or <i>so</i>(<i>x</i>, <i>y</i>), then <i>x</i> is in <i>O</i>. <p>
+<a name="62246"></a>
+Note that a set of observable actions are not restricted to external actions. Rather, only external actions that are in a set of observable actions are deemed to be observable external actions.<p>
+<a name="62251"></a>
+A behavior <i>B</i> is an allowable behavior of a program <i>P</i> if and only if <i>B</i> is a finite set of external actions and either<p>
+<ul><a name="62255"></a>
+<li> There exists an execution <i>E</i> of <i>P</i>, and a set <i>O</i> of observable actions for <i>E</i>, and <i>B</i> is the set of external actions in <i>O</i> (if any threads in <i>E</i> end in a blocked state and <i>O</i> contains all actions in <i>E</i>, then <i>B</i> may also contain a hang action), or
+<a name="67953"></a>
+<li> There exists a set <i>O</i> of actions such that <i>B</i> consists of a  hang action plus all the external actions in <i>O</i> and for all <i>K</i><img src="chars/gtequal.gif">|<i>O</i>|, there exists an execution <i>E</i> of <i>P</i> with actions <i>A</i>, and there exists a set of actions <i>O'</i> such that:
+<ul>
+<a name="67957"></a>
+<li> Both <i>O</i> and <i>O'</i> are subsets of <i>A</i> that fulfill the requirements for sets of observable actions.
+<a name="62273"></a>
+<li> <i>O</i><img src="chars/refsbset.gif"><i>O'</i><img src="chars/refsbset.gif"><i>A</i>
+<a name="63076"></a>
+<li>|<i>O'</i>|<img src="chars/gtequal.gif"><i>K</i>
+<a name="62275"></a>
+<li><i>O'</i> - <i>O</i> contains no external actions
+</ul>
+</ul><a name="57368"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="66635"></a>
+Note that a behavior <i>B</i> does not describe the order in which the external actions in <i>B</i> are observed, but other (internal) constraints on how the external actions are generated and performed may impose such constraints.<p>
+<hr>
+<a name="66564"></a>
+ <p>
+<a name="67792"></a>
+<p>
+<a name="66562"></a>
+<a name="17.5"></a>
+<h2>17.5    Final Field Semantics</h2>
+<a name="64946"></a>
+Fields declared  <code>final</code> are initialized once, but never changed under normal circumstances. The detailed semantics of final fields are somewhat different from those of normal fields.  In particular, compilers have a great deal of freedom to move reads of final fields across synchronization barriers and calls to arbitrary or unknown methods.  Correspondingly, compilers are allowed to keep the value of a final field cached in a register and not reload it from memory in situations where a non-final field would have to be reloaded.<p>
+<a name="64947"></a>
+Final fields also allow programmers to implement thread-safe immutable objects without synchronization. A thread-safe immutable object is seen as immutable by all threads, even if a data race is used to pass references to the immutable object between threads. This can provide safety guarantees against misuse of an immutable class by incorrect or malicious code. Final fields must be used correctly to provide a guarantee of immutability.  <p>
+<a name="67928"></a>
+An object is considered to be <i>completely initialized</i> when its constructor finishes. A thread that can only see a reference to an object after that object has been completely initialized is guaranteed to see the correctly initialized values for that object's final fields.<p>
+<a name="64951"></a>
+The usage model for final fields is a simple one.  Set the final fields for an object in that object's constructor.  Do not write a reference to the object being constructed in a place where another thread can see it before the object's constructor is finished. If this is followed, then when the object is seen by another thread, that thread will always see the correctly constructed version of that object's final fields.  It will also see versions of any object or array referenced by those final fields that are at least as up-to-date as the final fields are.<p>
+<a name="64952"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="65124"></a>
+ The example below illustrates how final fields compare to normal fields.<p>
+<blockquote><pre>class FinalFieldExample {
+  final int x;
+  int y;
+  static FinalFieldExample f;
+  public FinalFieldExample() {
+    x = 3;
+    y = 4;
+  }
+  static void writer() {
+    f = new FinalFieldExample();
+  }
+  static void reader() {
+    if (f != null) {
+      int i = f.x; // guaranteed to see 3
+      int j = f.y; // could see 0
+    }
+  }
+}
+</pre></blockquote><a name="64987"></a>
+The class  <code>FinalFieldExample</code> has a final int field  <code>x</code> and a non-final int field  <code>y</code>.  One thread might execute the method  <code>writer(),</code> and another might execute the method  <code>reader().</code><p>
+<a name="64988"></a>
+Because <code>writer()</code> writes  <code>f</code> after the object's constructor finishes, the  <code>reader()</code> will be guaranteed to see the properly initialized value for  <code>f.x</code>: it will read the value 3.  However,  <code>f.y</code> is not final; the <code>reader()</code> method is therefore not guaranteed to see the value 4 for it.<p>
+<hr>
+<a name="65159"></a>
+ <p>
+<a name="64989"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="65161"></a>
+ Final fields are designed to allow for necessary security guarantees. Consider the following example. One thread (which we shall refer to as thread 1) executes<p>
+<blockquote><pre>Global.s = "/tmp/usr".substring(4);
+</pre></blockquote><a name="66000"></a>
+while another thread (thread 2) executes<p>
+<blockquote><pre>String myS = Global.s;
+if (myS.equals("/tmp"))System.out.println(myS);
+</pre></blockquote><a name="65998"></a>
+<code>String</code> objects are intended to be immutable and string operations do not perform synchronization.  While the  <code>String</code> implementation does not have any data races, other code could have data races involving the use of  <code>String</code>s, and the memory model makes weak guarantees for programs that have data races. In particular, if the fields of the  <code>String</code> class were not final, then it would be possible (although unlikely) that Thread 2 could initially see the default value of 0 for the offset of the string object, allowing it to compare as equal to  <code>"/tmp"</code>. A later operation on the <code>String</code> object might see the correct offset of 4, so that the  <code>String</code> object is perceived as being <code>"/usr"</code>. Many security features of the Java programming language depend upon  <code>String</code>s being perceived as truly immutable, even if malicious code is using data races to pass <code>String</code> references between threads.<p>
+<hr>
+<a name="65164"></a>
+ <p>
+<a name="60833"></a>
+<a name="17.5.1"></a>
+<h3>17.5.1    Semantics of Final Fields</h3>
+<a name="60835"></a>
+The semantics for final fields are as follows. Let <i>o</i> be an object, and <i>c</i> be a constructor for <i>o</i> in which <i>f</i> is written. A <i>freeze</i> action on a final field <i>f</i> of <i>o</i> takes place when <i>c</i> exits, either normally or abruptly.<p>
+<a name="65177"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="60839"></a>
+ Note that if one constructor invokes another constructor, and the invoked constructor sets a final field, the freeze for the final field takes place at the end of the invoked constructor.<p>
+ <hr>
+<a name="65178"></a>
+ <p>
+<a name="60843"></a>
+For each execution, the behavior of reads is influenced by two additional partial orders, the dereference chain <i>dereferences()</i> and the memory chain <i>mc()</i>, which are considered to be part of the execution (and thus, fixed for any particular execution). These partial orders must satisfy the following constraints (which need not have a unique solution):<p>
+<ul><a name="60852"></a>
+<li><b>Dereference Chain</b> If an action <i>a</i> is a read or write of a field or element of an object <i>o</i> by a thread <i>t</i> that did not initialize <i>o</i>, then there must exist some read <i>r</i> by thread <i>t</i> that sees the address of <i>o</i> such that <i>r</i> <i>dereferences(r , a)</i>.
+<a name="61048"></a>
+<li><b>Memory Chain</b> There are several constraints on the memory chain ordering:
+<ul>
+<a name="60861"></a>
+<li>If <i>r</i> is a read that sees a write <i>w</i>, then it must be the case that <i>mc(w, r)</i>.
+<a name="61063"></a>
+<li>If <i>r</i> and a are actions such that <i>dereferences(r , a)</i>, then it must be the case that <i>mc(r, a)</i>.
+<a name="61072"></a>
+<li>If <i>w</i>is a write of the address of an object <i>o</i> by a thread <i>t</i> that did not initialize <i>o</i>, then there must exist some read <i>r</i> by thread <i>t</i> that sees the address of <i>o</i> such        that    <i>mc(r, w)</i>.
+</ul>
+</ul><a name="60874"></a>
+Given a write <i>w</i>, a freeze <i>f</i>, action <i>a</i> (that is not a read of a final field), a read <i>r<sub>1</sub></i> of the final field frozen by <i>f</i> and a read <i>r<sub>2</sub></i> such that <i>hb(w, f)</i>, <i>hb(f, a)</i>, <i>mc(a, r<sub>1</sub>)</i> and <i>dereferences(r<sub>1</sub> , r<sub>2</sub>)</i>, then when determining which values can be seen by <i>r<sub>2</sub></i>, we consider <i>hb(w, r<sub>2</sub>)</i> (but these orderings do not transitively close with other happens-before orderings).  Note that the <i>dereferences</i> order is reflexive, and <i>r<sub>1</sub></i> can be the same as <i>r<sub>2</sub></i>. <p>
+<a name="60886"></a>
+For reads of final fields, the only writes that are deemed to come before the read of the final field are the ones derived through the final field semantics.<p>
+<a name="67793"></a>
+<p>
+<a name="60890"></a>
+<a name="17.5.2"></a>
+<h3>17.5.2    Reading Final Fields During Construction</h3>
+<a name="60892"></a>
+A read of a final field of an object within the thread that constructs that object is ordered with respect to the initialization of that field within the constructor by the usual happens-before rules. If the read occurs after the field is set in the constructor, it sees the value the final field is assigned, otherwise it sees the default value. <p>
+<a name="67794"></a>
+<p>
+<a name="60899"></a>
+<a name="17.5.3"></a>
+<h3>17.5.3    Subsequent Modification of Final Fields</h3>
+<a name="60903"></a>
+In some cases, such as deserialization, the system will need to change the final fields of an object after construction.  Final fields can be changed via reflection and other implementation dependent means.  The only pattern in which this has reasonable semantics is one in which an object is constructed and then the final fields of the object are updated. The object should not be made visible to other threads, nor should the final fields be read, until all updates to the final fields of the object are complete.  Freezes of a final field occur both at the end of the constructor in which the final field is set, and immediately after each modification of a final field via reflection or other special mechanism.<p>
+<a name="60916"></a>
+Even then, there are a number of complications.  If a final field is initialized to a compile-time constant in the field declaration, changes to the final field may not be observed, since uses of that final field are replaced at compile time with the compile-time constant. <p>
+<a name="60922"></a>
+Another problem is that the specification allows aggressive optimization of final fields.  Within a thread, it is permissible to reorder reads of a final field with those modifications of a final field that do not take place in the constructor.<p>
+<a name="60955"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="61575"></a>
+ For example, consider the following code fragment:<p>
+<blockquote><pre>class A {
+  final int x;
+  A() {
+    x = 1;
+  }
+  int f() {
+    return d(this,this);
+  }
+  int d(A a1, A a2) {
+    int i = a1.x;
+    g(a1);
+    int j = a2.x;
+    return j - i;
+  }
+  static void g(A a) {
+    // uses reflection to change a.x to 2
+  }
+}
+</pre></blockquote><a name="61604"></a>
+In the <code>d()</code> method, the compiler is allowed to reorder the reads of  <code>x</code> and the call to  <code>g()</code> freely. Thus,  <code>A().f()</code> could return -1, 0 or 1.<p>
+<hr>
+<a name="61577"></a>
+ <p>
+<a name="66595"></a>
+An implementation may provide a way to execute a block of code in a <i>final field safe context</i>.  If an object is constructed within a final field safe context, the reads of a final field of that object will not be reordered with modifications of that final field that occur within that final field safe context.<p>
+<a name="60969"></a>
+A final field safe context has additional protections.  If a thread has seen an incorrectly published reference to an object that allows the thread to see the default value of a final field, and then, within a final-field safe context, reads a properly published reference to the object, it will be guaranteed to see the correct value of the final field.  In the formalism, code executed within a final-field safe context is treated as a separate thread (for the purposes of final field semantics only). <p>
+<a name="60978"></a>
+In an implementation, a compiler should not move an access to a final field into or out of a final-field safe context (although it can be moved around the execution of such a context, so long as the object is not constructed within that context). <p>
+<a name="60983"></a>
+One place where use of a final-field safe context would be appropriate is in an executor or thread pool.  By executing each  <code>Runnable</code> in a separate final field safe context, the executor could guarantee that incorrect access by one  <code>Runnable</code> to a object <i>o</i>  won't remove final field guarantees for other  <code>Runnable</code>s handled by the same executor. <p>
+<a name="57417"></a>
+<a name="17.5.4"></a>
+<h3>17.5.4    Write Protected Fields</h3>
+<a name="57419"></a>
+Normally, final static fields may not be modified.  However <code>System.in</code>, <code>System.out</code>, and <code>System.err</code> are final static fields that, for legacy reasons, must be allowed to be changed by the methods <code>System.setIn</code>, <code>System.setOut</code> and <code>System.setErr</code>.  We refer to these fields as being <i>write-protected</i> to distinguish them from ordinary final fields. <p>
+<a name="57430"></a>
+The compiler needs to treat these fields differently from other final fields.  For example, a read of an ordinary final field is "immune" to synchronization: the barrier involved in a lock or volatile read does not have to affect what value is read from a final field. Since the value of write-protected fields may be seen to change, synchronization events should have an effect on them. Therefore, the semantics dictate that these fields be treated as normal fields that cannot be changed by user code, unless that user code is in the <code>System</code> class. <p>
+<a name="57443"></a>
+<a name="17.6"></a>
+<h2>17.6    Word Tearing</h2>
+<a name="57481"></a>
+One implementation consideration for Java virtual machines is that every field and array element is considered distinct; updates to one field or element must not interact with reads or updates of any other field or element. In particular, two threads that update adjacent elements of a byte array separately must not interfere or interact and do not need synchronization to ensure sequential consistency. <p>
+<a name="57489"></a>
+Some processors do not provide the ability to write to a single byte. It would be illegal to implement byte array updates on such a processor by simply reading an entire word, updating the appropriate byte, and then writing the entire word back to memory. This problem is sometimes known as <i>word tearing</i>, and on processors that cannot easily update a single byte in isolation some other approach will be required.<p>
+<a name="61503"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="61570"></a>
+ Here is a test case to detect word tearing:<p>
+<blockquote><pre>public class WordTearing extends Thread {
+    static final int LENGTH = 8;
+    static final int ITERS = 1000000;
+    static byte[] counts = new byte[LENGTH];
+    static Thread[] threads = new Thread[LENGTH];
+    final int id;
+    WordTearing(int i) {
+        id = i;
+    }
+    public void run() {
+        byte v = 0;
+        for (int i = 0; i &lt; ITERS; i++) {
+            byte v2 = counts[id];
+            if (v != v2) {
+                                System.err.println("Word-Tearing found: " +
+                                                        "counts[" + id
+                        + "] = " + v2 + ", should be " + v);
+                return;
+            }
+            v++;
+            counts[id] = v;
+        }
+    }
+    public static void main(String[] args) {
+        for (int i = 0; i &lt; LENGTH; ++i)
+            (threads[i] = new WordTearing(i)).start();
+    }
+}
+</pre></blockquote><a name="61550"></a>
+This makes the point that bytes must not be overwritten by writes to adjacent bytes<p>
+<hr>
+<a name="61506"></a>
+ <p>
+<a name="57507"></a>
+<a name="17.7"></a>
+<h2>17.7    Non-atomic Treatment of double and long</h2>
+<a name="57508"></a>
+Some implementations may find it convenient to divide a single write action on a 64-bit long or double value into two write actions on adjacent 32 bit values.  For efficiency's sake, this behavior is implementation specific; Java virtual machines are free to perform writes to long and double values atomically or in two parts. <p>
+<a name="57516"></a>
+For the purposes of the Java programming language memory model, a single write to a non-volatile long or double value is treated as two separate writes: one to each 32-bit half.  This can result in a situation where a thread sees the first 32 bits of a 64 bit value from one write, and the second 32 bits from another write.  Writes and reads of volatile long and double values are always atomic.  Writes to and reads of references are always atomic, regardless of whether they are implemented as 32 or 64 bit values.<p>
+<a name="57524"></a>
+VM implementors are encouraged to avoid splitting their 64-bit values where possible. Programmers are encouraged to declare shared 64-bit values as volatile or synchronize their programs correctly to avoid possible complications.<p>
+<a name="57537"></a>
+<a name="17.8"></a>
+<h2>17.8    Wait Sets and Notification</h2>
+<a name="57538"></a>
+<a name="17.8.1"></a>
+<h3>17.8.1    Wait </h3>
+<a name="57560"></a>
+Wait actions occur upon invocation of  <code>wait()</code>, or the timed forms  <code>wait(long millisecs)</code> and <code>wait(long millisecs, int nanosecs)</code>. A call of  <code>wait(long millisecs)</code> with a parameter of zero, or a call of  <code>wait(long millisecs, int nanosecs)</code> with two zero parameters, is equivalent to an invocation of <code> wait()</code>.<p>
+<a name="66449"></a>
+A thread <i>returns normally</i> from a <code>wait</code> if it returns without throwing an <code>InterruptedException. </code><p>
+<a name="57566"></a>
+Let thread <i>t</i> be the thread executing the wait method on object <i>m</i>, and let <i>n</i> be the number of lock actions by <i>t</i> on <i>m</i> that have not been matched by unlock actions. One of the following actions occurs.<p>
+<ul><a name="57572"></a>
+<li>If <i>n</i> is zero (i.e., thread <i>t</i> does not already possess the lock for target <i>m</i>) an  <code>IllegalMonitorStateException</code> is thrown.
+<a name="60396"></a>
+<li>If this is a timed wait and the nanosecs argument is not in the range of 0-999999 or the millisecs argument is negative, an  <code>IllegalArgumentException</code> is thrown.
+<a name="60399"></a>
+<li>If thread <i>t</i> is interrupted, an  <code>InterruptedException</code> is thrown and <i>t</i>'s interruption status is set to false.
+<a name="60402"></a>
+<li>Otherwise, the following sequence occurs:
+</ul><ol>
+<a name="57586"></a>
+<li>Thread <i>t</i> is added to the wait set of object <i>m</i>, and performs <i>n</i> unlock actions on <i>m</i>.
+<a name="60411"></a>
+<li>Thread <i>t</i> does not execute any further instructions until it has been removed from <i>m</i>'s wait set. The thread may be removed from the wait set due to any one of the following actions, and will resume sometime afterward.
+<ul>
+<a name="60422"></a>
+<li>A <i>notify</i> action being performed on <i>m</i> in which <i>t</i> is selected for removal from the wait set.
+<a name="60428"></a>
+<li>A <i>notifyAll</i> action being performed on <i>m</i>.
+<a name="60431"></a>
+<li>An <i>interrupt</i> action being performed on <i>t</i>.
+<a name="60434"></a>
+<li>If this is a timed wait, an internal action removing <i>t</i> from <i>m</i>'s wait set that occurs after at least  <code>millisecs</code> milliseconds plus  <code>nanosecs</code> nanoseconds elapse since the beginning of this wait action.
+<a name="60437"></a>
+<li>An internal action by the implementation. Implementations are permitted, although not encouraged, to perform "spurious wake-ups" -- to remove threads from wait sets and thus enable resumption without explicit instructions to do so. Notice that this provision necessitates the Java coding practice of using  <code>wait</code> only within loops that terminate only when some logical condition that the thread is waiting for holds.
+</ul>
+<a name="57618"></a>
+<p>Each thread must determine an order over the events that could cause it to be removed from a wait set. That order does not have to be consistent with other orderings, but the thread must behave as though those events occurred in that order. </p>
+<a name="57622"></a>
+<p>For example, if a thread <i>t</i> is in the wait set for m, and then both an interrupt of <i>t</i> and a notification of <i>m</i> occur, there must be an order over these events. </p>
+<a name="57626"></a>
+<p>If the interrupt is deemed to have occurred first, then <i>t</i> will eventually return from <code>wait</code> by throwing  <code>InterruptedException</code>, and some other thread in the wait set for <i>m</i> (if any exist at the time of the notification) must receive the notification. If the notification is deemed to have occurred first, then <i>t</i> will eventually return normally from   <code>wait</code> with an interrupt still pending. </p>
+</ul>
+<a name="57635"></a>
+<li>Thread <i>t</i> performs <i>n</i> lock actions on <i>m</i>.
+<a name="57637"></a>
+<li>If thread <i>t</i> was removed from <i>m</i>'s wait set in step 2 due to an interrupt, <i>t</i>'s interruption status is set to false and the wait method throws  <code>InterruptedException</code>.
+</ol>
+<a name="57648"></a>
+<a name="17.8.2"></a>
+<h3>17.8.2    Notification</h3>
+<a name="57650"></a>
+Notification actions occur upon invocation of methods  <code>notify</code> and  <code>notifyAll</code>. Let thread <i>t</i> be the thread executing either of these methods on object <i>m</i>, and let <i>n</i> be the number of lock actions by <i>t</i> on <i>m</i> that have not been matched by unlock actions. One of the following actions occurs.<p>
+<ul><a name="57658"></a>
+<li>If <i>n</i> is zero an <code>IllegalMonitorStateException</code> is thrown. This is the case where thread <i>t</i> does not already possess the lock for target <i>m</i>.
+<a name="60453"></a>
+<li>If <i>n</i> is greater than zero and this is a  <code>notify</code> action, then, if <i>m</i>'s wait set is not empty, a thread <i>u</i> that is a member of <i>m</i>'s current wait set is selected and removed from the wait set. (There is no guarantee about which thread in the wait set is selected.) This removal from the wait set enables <i>u</i>'s resumption in a wait action. Notice however, that <i>u</i>'s lock actions upon resumption cannot succeed until some time after <i>t</i> fully unlocks the monitor for <i>m</i>.
+<a name="60460"></a>
+<li>If <i>n</i> is greater than zero and this is a  <code>notifyAll</code> action, then all threads are removed from <i>m</i>'s wait set, and thus resume. Notice however, that only one of them at a time will lock the monitor required during the resumption of <code>wait.</code>
+</ul><a name="57677"></a>
+<a name="17.8.3"></a>
+<h3>17.8.3    Interruptions </h3>
+<a name="57679"></a>
+Interruption actions occur upon invocation of method  <code>Thread.interrupt</code>, as well as methods defined to invoke it in turn, such as  <code>ThreadGroup.interrupt</code>. Let <i>t</i> be the thread invoking <i>u</i>.<code>interrupt</code>, for some thread <i>u</i>, where <i>t</i> and <i>u</i> may be the same. This action causes <i>u</i>'s interruption status to be set to true.<p>
+<a name="57685"></a>
+Additionally, if there exists some object <i>m</i> whose wait set contains <i>u</i>, <i>u</i> is removed from <i>m</i>'s wait set. This enables <i>u</i> to resume in a wait action, in which case this wait will, after re-locking <i>m</i>'s monitor, throw  <code>InterruptedException</code>.<p>
+<a name="57690"></a>
+Invocations of <code>Thread.isInterrupted</code> can determine a thread's interruption status. The static method <code>Thread.interrupted</code> may be invoked by a thread to observe and clear its own interruption status.<p>
+<a name="57695"></a>
+<a name="17.8.4"></a>
+<h3>17.8.4    Interactions of Waits, Notification and Interruption</h3>
+<a name="57696"></a>
+The above specifications allow us to determine several properties having to do with the interaction of waits, notification and interruption. If a thread is both notified and interrupted while waiting, it may either:<p>
+<ul><a name="57705"></a>
+<li>return normally from  <code>wait</code>, while still having a pending interrupt (in other works, a call to <code>Thread.interrupted</code> would return true)
+<a name="60485"></a>
+<li>return from  <code>wait</code> by throwing an <code>InterruptedException</code>
+</ul><a name="57709"></a>
+The thread may not reset its interrupt status and return normally from the call to  <code>wait</code>. <p>
+<a name="57714"></a>
+Similarly, notifications cannot be lost due to interrupts.  Assume that a set <i>s</i> of threads is in the wait set of an object <i>m</i>, and another thread performs a  <code>notify</code> on <i>m</i>.  Then either <p>
+<ul><a name="57719"></a>
+<li>at least one thread in <i>s</i> must return normally from  <code>wait</code>, or
+<a name="60496"></a>
+<li>all of the threads in <i>s</i> must exit  <code>wait</code> by throwing <code>InterruptedException</code>
+</ul><a name="57725"></a>
+Note that if a thread is both interrupted and woken via  <code>notify</code>, and that thread returns from  <code>wait</code> by throwing an  <code>InterruptedException</code>, then some other thread in the wait set must be notified.<p>
+<a name="57767"></a>
+<a name="17.9"></a>
+<h2>17.9    Sleep and Yield</h2>
+<a name="57769"></a>
+ <code>Thread.sleep</code> causes the currently executing thread to sleep (temporarily cease execution) for the specified duration, subject to the precision and accuracy of system timers and schedulers. The thread does not lose ownership of any monitors, and resumption of execution will depend on scheduling and the availability of processors on which to execute the thread.<p>
+<a name="57777"></a>
+Neither a sleep for a period of zero time nor a yield operation need have observable effects.<p>
+<a name="57780"></a>
+It is important to note that neither  <code>Thread.sleep</code> nor  <code>Thread.yield</code> have any synchronization semantics. In particular, the compiler does not have to flush writes cached in registers out to shared memory before a call to <code>Thread.sleep</code> or <code>Thread.yield</code>, nor does the compiler have to reload values cached in registers after a call to <code>Thread.sleep</code> or <code>Thread.yield.</code><p>
+<a name="61631"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="61630"></a>
+ For example, in the following (broken) code fragment, assume that  <code>this.done</code> is a non-volatile boolean field:<p>
+<blockquote><pre>while (!this.done)
+   Thread.sleep(1000);
+</pre></blockquote><a name="57793"></a>
+The compiler is free to read the field  <code>this.done</code> just once, and reuse the cached value in each execution of the loop. This would mean that the loop would never terminate, even if another thread changed the value of  <code>this.done</code>.<p>
+<hr>
+<a name="61633"></a>
+ <p>
+<a name="56229"></a>
+<p>
+
+
+<hr>
+<!-- This inserts footnotes--><p>
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="defAssign.html">Prev</a> | <a href="syntax.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<p>
+<font size=-1>
+<i><a href="jcopyright.html">Copyright</a> &#169 1996-2005 Sun Microsystems, Inc.
+All rights reserved</i>
+<br>
+Please send any comments or corrections via our <a href="http://developers.sun.com/contact/feedback.jsp?&category=doc&mailsubject=Java%20Language%20Specification%20Feedback">feedback form</a>
+</font>
+</body></html>

@@ -1,0 +1,90 @@
+<html>
+<head>
+<title> </title>
+<meta name="collection" content="community">
+<script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+<body BGCOLOR=#eeeeff text=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+ 
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="j.preface2.html">Prev</a> | <a href="intro.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<hr><br>
+<h1>Preface to the Third Edition</h1>
+
+<a name="1004757"></a>
+This edition of the Java Programming Language Specification represents the largest set of changes in the language's history. Generics, annotations, asserts, autoboxing and unboxing, enum types, foreach loops, variable arity methods and static imports have all been added to the language recently. All but asserts are new to the 5.0 release of autumn 2004.<p>
+<a name="1004257"></a>
+This third edition of <em>The Java Language Specification</em> reflects these developments. It integrates all the changes made to the Java programming language since the publication of the second edition in 2000. <p>
+<a name="1005390"></a>
+The language has grown a great deal in these past four years. Unfortunately, it is unrealistic to shrink a commercially successful programming language - only to grow it more and more. The challenge of managing this growth under the constraints of compatibility and the conflicting demands of a wide variety of uses and users is non-trivial. I can only hope that we have met this challenge successfully with this specification; time will tell.<p>
+<a name="1004946"></a>
+Readers may send comments on this specification using this <a href="http://developers.sun.com/contact/feedback.jsp?&category=doc&mailsubject=Java%20Language%20Specification%20Feedback">feedback form</a>. To learn the latest about the Java platform, or to download the latest J2SE release, visit http://java.sun.com. Updated information about the Java Series, including errata for <i>The Java Language Specification, Third Edition</i>, and previews of forthcoming books, may be found at http://java.sun.com/Series.<p>
+<a name="1004171"></a>
+This specification builds on the efforts of many people, both at Sun Microsystems and outside it. <p>
+<a name="1005225"></a>
+The most crucial contribution is that of the people who actually turn the specification into real software. Chief among these are the maintainers of javac, the reference compiler for the Java programming language. <p>
+<a name="1005227"></a>
+Neal Gafter was "Mr. javac" during the crucial period in which the large changes described here were integrated and productized. Neal's dedication and productivity can honestly be described as heroic. We literally could not have completed the task without him. In addition, his insight and skill made a huge contribution to the design of the new language features across the board. No one deserves more credit for this version of the language than he - but any blame for its deficiencies should be directed at myself and the members of the many JSR expert groups!<p>
+<a name="1005314"></a>
+Neal has gone on in search of new challenges, and has been succeeded by Peter von der Ah&eacute;, who continues to improve and stengthen the implementation. Before Neal's involvement, Bill Maddox was in charge of javac when the previous edition was completed, and he nursed features such as generics and asserts through their early days. <p>
+<a name="1005257"></a>
+Another individual who deserves to be singled out is Joshua Bloch. Josh participated in endless language design discussions, chaired several expert groups and was a key contributor to the Java platform. It is fair to say that Josh and Neal care more about this book than I do myself!<p>
+<a name="1005235"></a>
+Many parts of the specification were developed by various expert groups in the framework of the Java community process. <p>
+<a name="1005169"></a>
+The most pervasive set of language changes is the result of JSR-014: Adding Generics to the Java Programming Language. The members of the JSR-014 expert group were: Norman Cohen, Christian Kemper, Martin Odersky, Kresten Krab Thorup, Philip Wadler and myself. In the early stages, Sven-Eric Panitz and Steve Marx were members as well. All deserve thanks for their participation.<p>
+<a name="1005185"></a>
+JSR-014 represents an unprecedented effort to fundamentally extend the type system of a widely used programming language under very stringent compatibility requirements. A prolonged and arduous process of design and implementation led us to the current language extension. Long before the JSR for generics was initiated, Martin Odersky and Philip Wadler had created an experimental language called Pizza to explore the ideas involved. In the spring of 1998, David Stoutamire and myself began a collaboration with Martin and Phil based on those ideas, that resulted in GJ. When the JSR-014 expert group was convened, GJ was chosen as the basis for extending the Java programming language. Martin Odersky implemented the GJ compiler, and his implementation became the basis for javac (starting with JDK 1.3, even though generics were disabled until 1.5). <p>
+<a name="1005193"></a>
+The theoretical basis for the core of the generic type system owes a great debt to the expertise of Martin Odersky and Phil Wadler. Later, the system was extended with wildcards. These were based on the work of Atsushi Igarashi and Mirko Viroli, which itself built on earlier work by Kresten Thorup and Mads Torgersen. Wildcards were initially designed and implemented as part of a collaboration between Sun and Aarhus University. Neal Gafter and myself participated on Sun's behalf, and Erik Ernst and Mads Torgersen, together with Peter von der Ah&eacute; and Christian Plesner-Hansen, represented Aarhus. Thanks to Ole Lehrmann-Madsen for enabling and supporting that work.<p>
+<a name="1005342"></a>
+Joe Darcy and Ken Russell implemented much of the specific support for reflection of generics. Neal Gafter, Josh Bloch and Mark Reinhold did a huge amount of work generifying the JDK libraries.<p>
+<a name="1005328"></a>
+Honorable mention must go to individuals whose comments on the generics design made a significant difference. Alan Jeffrey made crucial contributions to JSR-14 by pointing out subtle flaws in the original type system. Bob Deen suggested the "? super T" syntax for lower bounded wildcards<p>
+<a name="1005166"></a>
+JSR-201 included a series of changes: autoboxing, enums, foreach loops, variable arity methods and static import. The members of the JSR-201 expert group were: C&eacute;dric Beust, David Biesack, Joshua Bloch (co-chair), Corky Cartwright, Jim des Rivieres, David Flanagan, Christian Kemper, Doug Lea, Changshin Lee, Tim Peierls, Michel Trudeau and myself (co-chair). Enums and the foreach loop were primarily designed by Josh Bloch and Neal Gafter. Variable arity methods would never have made it into the language without Neal's special efforts designing them (not to mention the small matter of implementing them). <p>
+<a name="1005273"></a>
+Josh Bloch bravely took upon himself the responsibility for JSR-175, which added annotations to the language. The members of JSR-175 expert group were C&eacute;dric Beust, Joshua Bloch (chair), Ted Farrell, Mike French, Gregor Kiczales, Doug Lea, Deeptendu Majunder, Simon Nash, Ted Neward, Roly Perera, Manfred Schneider, Blake Stone and Josh Street. Neal Gafter, as usual, was a major contributer on this front as well.<p>
+<a name="1005255"></a>
+Another change in this edition is a complete revision of the Java memory model, undertaken by JSR-133. The members of the JSR-133 expert group were Hans Boehm, Doug Lea, Tim Lindholm (co-chair), Bill Pugh (co-chair), Martin Trotter and Jerry Schwarz. The primary technical authors of the memory model are Sarita Adve, Jeremy Manson and Bill Pugh. The Java memory model chapter in this book is in fact almost entirely their work, with only editorial revisions. Joseph Bowbeer, David Holmes, Victor Luchangco and Jan-Willem Maessen made significant contributions as well. Key sections dealing with finalization in chapter 12 owe much to this work as well, and especially to Doug Lea.<p>
+<a name="1004651"></a>
+Many people have provided valuable comments on this edition. <p>
+<a name="1005286"></a>
+I'd like to express my gratitude to Archibald Putt, who provided insight and encouragement. His writings are always an inspiration. Thanks once again to Joe Darcy for introducing us, as well as for many useful comments, and his specific contributions on numerical issues and the design of hexadecimal literals.<p>
+<a name="1005348"></a>
+Many colleagues at Sun (past or present) have provided useful feedback and discussion, and helped produce this work in myriad ways: Andrew Bennett, Martin Buchholz, Jerry Driscoll, Robert Field, Jonathan Gibbons, Graham Hamilton, Mimi Hills, Jim Holmlund, Janet Koenig, Jeff Norton, Scott Seligman, Wei Tao and David Ungar. <p>
+<a name="1004883"></a>
+Special thanks to Laurie Tolson, my manager, for her support throughout the long process of deriving these specifications.<p>
+<a name="1004520"></a>
+The following individuals all provided many valuable comments that have contributed to this specification: Scott Annanian, Martin Bravenboer, Bruce Chapman, Lawrence Gonsalves, Tim Hanson, David Holmes, Angelika Langer, Pat Lavarre, Phillipe Mulet and Cal Varnson.<p>
+<a name="1004584"></a>
+Ann Sellers, Greg Doench and John Fuller at Addison-Wesley were exceedingly patient and ensured that the book materialized, despite the many missed deadlines for this text.<p>
+<a name="1004834"></a>
+As always, I thank my wife Weihong and my son Teva for their support and cooperation.<p>
+<a name="1004177"></a>
+<p>
+<a name="1004155"></a>
+Gilad Bracha<br>
+<i>Los Altos, California</i><p>
+<a name="997120"></a>
+<i>January, 2005</i><p>
+<a name="1004791"></a>
+
+
+<hr>
+<!-- This inserts footnotes--><p>
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="j.preface2.html">Prev</a> | <a href="intro.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<p>
+<font size=-1>
+<i><a href="jcopyright.html">Copyright</a> &#169 1996-2005 Sun Microsystems, Inc.
+All rights reserved</i>
+<br>
+Please send any comments or corrections via our <a href="http://developers.sun.com/contact/feedback.jsp?&category=doc&mailsubject=Java%20Language%20Specification%20Feedback">feedback form</a>
+</font>
+</body></html>

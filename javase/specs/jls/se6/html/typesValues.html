@@ -1,0 +1,1618 @@
+<html>
+<head>
+<title> Types, Values, and Variables</title>
+<meta name="collection" content="community">
+<script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+<body BGCOLOR=#eeeeff text=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+ 
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="lexical.html">Prev</a> | <a href="conversions.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<hr><br>
+ 
+<a name="44329"></a>
+<p><strong>
+CHAPTER
+ 4 </strong></p>
+<a name="48440"></a>
+<h1>Types, Values, and Variables</h1>
+<hr><p>
+<a name="97679"></a>
+The Java programming language is a <em>strongly typed</em> language, which means that every variable and every expression has a type that is known at compile time. Types limit the values that a variable <a href="typesValues.html#18470">(&#167;4.12)</a> can hold or that an expression can produce, limit the operations supported on those values, and determine the meaning of the operations. Strong typing helps detect errors at compile time.<p>
+<a name="50743"></a>
+The types of the Java programming language are divided into two categories: primitive types and reference types. The primitive types <a href="typesValues.html#85587">(&#167;4.2)</a> are the <code>boolean</code> type and the numeric types. The numeric types are the integral types <code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code>, and <code>char</code>, and the floating-point types <code>float</code> and <code>double</code>. The reference types <a href="typesValues.html#9317">(&#167;4.3)</a> are class types, interface types, and array types. There is also a special null type. An object <a href="typesValues.html#12028">(&#167;4.3.1)</a> is a dynamically created instance of a class type or a dynamically created array. The values of a reference type are references to objects. All objects, including arrays, support the methods of class <code>Object</code> <a href="typesValues.html#11055">(&#167;4.3.2)</a>. String literals are represented by <code>String</code> objects <a href="typesValues.html#26992">(&#167;4.3.3)</a>.<p>
+<a name="50838"></a>
+ <p>
+<a name="50800"></a>
+Types exist at compile-time. Some types correspond to classes and interfaces, which exist at run-time. The correspondence between types and classes or interfaces is incomplete for two reasons:<p>
+<ol>
+<a name="111011"></a>
+<li>At run-time, classes and interfaces are loaded by the Java virtual machine using class loaders. Each class loader defines its own set of classes and interfaces. As a result, it is possible for two loaders to load an identical class or interface definition but produce distinct classes or interfaces at run-time.
+<a name="111030"></a>
+<li>Type arguments and type variables <a href="typesValues.html#108850">(&#167;4.4)</a> are not reified at run-time. As a result, different parameterized types <a href="typesValues.html#112898">(&#167;4.5)</a> are implemented by the same class or interface at run time. Indeed, all invocations of a given generic type declaration (<a href="classes.html#299360">&#167;8.1.2</a>, <a href="interfaces.html#78598">&#167;9.1.2</a> )share a single run-time implementation. 
+</ol>
+<a name="111013"></a>
+A consequence of (<a href="typesValues.html#111011">1</a>) is that code that compiled correctly may fail at link time if the class loaders that load it are inconsistent. See the paper <em>Dynamic Class Loading in the Java Virtual Machine</em>, by Sheng Liang and Gilad Bracha, in <em>Proceedings of OOPSLA '98</em>, published as <em>ACM SIGPLAN Notices</em>, Volume 33, Number 10, October 1998, pages 36-44, and <em>The Java Virtual Machine Specification, Second Edition</em> for more details.<p>
+<a name="111047"></a>
+A consequence of (<a href="typesValues.html#111030">2</a>) is the possibility of heap pollution <a href="typesValues.html#111088">(&#167;4.12.2.1)</a>. Under certain conditions, it is possible that a variable of a parameterized type refers to an object that is not of that parameterized type. The variable will always refer to an object that is an instance of a class that implements the parameterized type. See <a href="typesValues.html#28345">(&#167;4.12.2)</a> for further discussion.<p>
+<a name="111059"></a>
+<a name="4.1"></a>
+<h2>4.1    The Kinds of Types and Values</h2>
+<a name="107970"></a>
+There are two kinds of <em>types</em> in the Java programming language: primitive types <a href="typesValues.html#85587">(&#167;4.2)</a> and reference types <a href="typesValues.html#9317">(&#167;4.3)</a>. There are, correspondingly, two kinds of data values that can be stored in variables, passed as arguments, returned by methods, and operated on: primitive values <a href="typesValues.html#85587">(&#167;4.2)</a> and reference values <a href="typesValues.html#9317">(&#167;4.3)</a>.<p>
+<blockquote><pre>
+<i>
+Type:
+        PrimitiveType
+        ReferenceType
+        </i>
+</pre></blockquote><a name="23953"></a>
+There is also a special <em>null type</em>, the type of the expression <code>null</code>, which has no name. Because the null type has no name, it is impossible to declare a variable of the null type or to cast to the null type. The null reference is the only possible value of an expression of null type. The null reference can always be cast to any reference type. In practice, the programmer can ignore the null type and just pretend that <code>null</code> is merely a special literal that can be of any reference type.<p>
+<a name="85587"></a>
+<a name="4.2"></a>
+<h2>4.2    Primitive Types and Values</h2>
+<a name="9122"></a>
+A <em>primitive type</em> is predefined by the Java programming language and named by its reserved keyword <a href="lexical.html#229308">(&#167;3.9)</a>:<p>
+<blockquote><pre>
+<i>
+PrimitiveType:
+        NumericType</i>
+        boolean<i>
+
+NumericType:
+        IntegralType
+        FloatingPointType
+
+IntegralType: one of</i>
+        byte short int long char<i>
+
+FloatingPointType: one of</i>
+        float double
+</pre></blockquote><a name="50919"></a>
+Primitive values do not share state with other primitive values. A variable whose type is a primitive type always holds a primitive value of that same type. The value of a variable of primitive type can be changed only by assignment operations on that variable (including increment (<a href="expressions.html#292383">&#167;15.14.2</a>, <a href="expressions.html#39547">&#167;15.15.1</a>) and decrement (<a href="expressions.html#4987">&#167;15.14.3</a>, <a href="expressions.html#239136">&#167;15.15.2</a>) operators).<p>
+<a name="9137"></a>
+The <em>numeric types</em> are the integral types and the floating-point types. <p>
+<a name="88061"></a>
+The <em>integral types</em> are <code>byte</code>, <code>short</code>, <code>int</code>, and <code>long</code>, whose values are 8-bit, 16-bit, 32-bit and 64-bit signed two's-complement integers, respectively, and <code>char</code>, whose values are 16-bit unsigned integers representing UTF-16 code units <a href="lexical.html#95413">(&#167;3.1)</a>.<p>
+<a name="88062"></a>
+The <em>floating-point types</em> are <code>float</code>, whose values include the 32-bit IEEE 754 floating-point numbers, and <code>double</code>, whose values include the 64-bit IEEE 754 floating-point numbers.<p>
+<a name="50913"></a>
+The <code>boolean</code> type has exactly two values: <code>true</code> and <code>false.</code><p>
+<a name="9151"></a>
+<a name="4.2.1"></a>
+<h3>4.2.1    Integral Types and Values</h3>
+<a name="50950"></a>
+The values of the integral types are integers in the following ranges:<p>
+<ul><a name="9163"></a>
+<li>For <code>byte</code>, from -128 to 127, inclusive
+<a name="9164"></a>
+<li>For <code>short</code>, from -32768 to 32767, inclusive
+<a name="9165"></a>
+<li>For <code>int</code>, from -2147483648 to 2147483647, inclusive
+<a name="9166"></a>
+<li>For <code>long</code>, from -9223372036854775808 to 9223372036854775807, inclusive
+<a name="51034"></a>
+<li>For <code>char</code>, from <code>'\u0000'</code> to <code>'\uffff'</code> inclusive, that is, from 0 to 65535
+</ul><a name="51035"></a>
+<a name="4.2.2"></a>
+<h3>4.2.2    Integer Operations</h3>
+<a name="29775"></a>
+The Java programming language provides a number of operators that act on integral values:<p>
+<ul><a name="10358"></a>
+<li>The comparison operators, which result in a value of type <code>boolean</code>:
+<ul>
+<a name="9181"></a>
+<li>The numerical comparison operators <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, and <code>&gt;=</code> <a href="expressions.html#153654">(&#167;15.20.1)</a>
+<a name="17601"></a>
+<li>The numerical equality operators <code>==</code> and <code>!=</code> <a href="expressions.html#5198">(&#167;15.21.1)</a>
+</ul>
+<a name="10365"></a>
+<li>The numerical operators, which result in a value of type <code>int</code> or <code>long</code>:
+<ul>
+<a name="18334"></a>
+<li>The unary plus and minus operators <code>+</code> and <code>-</code> (<a href="expressions.html#24924">&#167;15.15.3</a>, <a href="expressions.html#236345">&#167;15.15.4</a>)
+<a name="17539"></a>
+<li>The multiplicative operators <code>*</code>, <code>/</code>, and <code>%</code> <a href="expressions.html#239829">(&#167;15.17)</a>
+<a name="19482"></a>
+<li>The additive operators <code>+</code> and <code>-</code> <a href="expressions.html#15746">(&#167;15.18)</a>
+<a name="24026"></a>
+<li>The increment operator <code>++</code>, both prefix <a href="expressions.html#39547">(&#167;15.15.1)</a> and postfix <a href="expressions.html#292383">(&#167;15.14.2)</a>
+<a name="24036"></a>
+<li>The decrement operator <code>--</code>, both prefix <a href="expressions.html#239136">(&#167;15.15.2)</a> and postfix <a href="expressions.html#4987">(&#167;15.14.3)</a>
+<a name="19496"></a>
+<li>The signed and unsigned shift operators <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, and <code>&gt;&gt;&gt;</code> <a href="expressions.html#5121">(&#167;15.19)</a>
+<a name="51061"></a>
+<li>The bitwise complement operator <code>~</code> <a href="expressions.html#5017">(&#167;15.15.5)</a>
+<a name="17770"></a>
+<li>The integer bitwise operators <code>&amp;</code>, <code>|</code>, and <code>^</code> <a href="expressions.html#5233">(&#167;15.22.1)</a>
+</ul>
+<a name="19469"></a>
+<li>The conditional operator <code>? :</code> <a href="expressions.html#290293">(&#167;15.25)</a>
+<a name="18373"></a>
+<li>The cast operator, which can convert from an integral value to a value of any specified numeric type (<a href="conversions.html#20232">&#167;5.5</a>, <a href="expressions.html#238146">&#167;15.16</a>)
+<a name="17774"></a>
+<li>The string concatenation operator <code>+</code> <a href="expressions.html#39990">(&#167;15.18.1)</a>, which, when given a <code>String</code> operand and an integral operand, will convert the integral operand to a <code>String</code> representing its value in decimal form, and then produce a newly created <code>String</code> that is the concatenation of the two strings
+</ul><a name="51025"></a>
+Other useful constructors, methods, and constants are predefined in the classes <code>Byte</code>, <code>Short</code>, <code>Integer</code>, <code>Long</code>, and <code>Character</code>.<p>
+<a name="28057"></a>
+If an integer operator other than a shift operator has at least one operand of type <code>long</code>, then the operation is carried out using 64-bit precision, and the result of the numerical operator is of type <code>long</code>. If the other operand is not <code>long</code>, it is first widened <a href="conversions.html#190646">(&#167;5.1.5)</a> to type <code>long</code> by numeric promotion <a href="conversions.html#26917">(&#167;5.6)</a>. Otherwise, the operation is carried out using 32-bit precision, and the result of the numerical operator is of type <code>int</code>. If either operand is not an <code>int</code>, it is first widened to type <code>int</code> by numeric promotion.<p>
+<a name="9194"></a>
+The built-in integer operators do not indicate overflow or underflow in any way. Integer operators can throw a <code>NullPointerException</code> if unboxing conversion <a href="conversions.html#190699">(&#167;5.1.8)</a> of a null reference is required. Other than that, the only integer operators that can throw an exception <a href="exceptions.html#44043">(&#167;11)</a> are the integer divide operator <code>/</code> <a href="expressions.html#5047">(&#167;15.17.2)</a> and the integer remainder operator <code>%</code> <a href="expressions.html#24956">(&#167;15.17.3)</a>, which throw an <code>ArithmeticException</code> if the right-hand operand is zero, and the increment and decrement operators <code>++</code>(<a href="expressions.html#39547">&#167;15.15.1</a>, <a href="expressions.html#239136">&#167;15.15.2</a>) and <code>--</code>(<a href="expressions.html#4987">&#167;15.14.3</a>, <a href="expressions.html#292383">&#167;15.14.2</a>), which can throw an <code>OutOfMemoryError</code> if boxing conversion <a href="conversions.html#190697">(&#167;5.1.7)</a> is required and there is not sufficient memory available to perform the conversion.<p>
+<a name="86654"></a>
+<p>The example:</p>
+<blockquote><pre>class Test {
+        public static void main(String[] args) {
+                int i = 1000000;
+                System.out.println(i * i);
+                long l = i;
+                System.out.println(l * l);
+                System.out.println(20296 / (l - i));
+        }
+}
+</pre></blockquote><a name="51131"></a>
+produces the output:<p>
+<blockquote><pre>-727379968
+1000000000000
+</pre></blockquote><a name="51199"></a>
+and then encounters an <code>ArithmeticException</code> in the division by <code>l</code> <code>-</code> <code>i</code>, because <code>l</code> <code>-</code> <code>i</code> is zero. The first multiplication is performed in 32-bit precision, whereas the second multiplication is a <code>long</code> multiplication. The value <code>-727379968</code> is the decimal value of the low 32 bits of the mathematical result, <code>1000000000000</code>, which is a value too large for type <code>int</code>.<p>
+<a name="51203"></a>
+Any value of any integral type may be cast to or from any numeric type. There are no casts between integral types and the type <code>boolean</code>.<p>
+<a name="9208"></a>
+<a name="4.2.3"></a>
+<h3>4.2.3    Floating-Point Types, Formats, and Values</h3>
+<a name="87606"></a>
+The floating-point types are <code>float</code> and <code>double</code>, which are conceptually associated with the single-precision 32-bit and double-precision 64-bit format IEEE 754 values and operations as specified in <em>IEEE Standard for Binary Floating-Point Arithmetic</em>, ANSI/IEEE Standard 754-1985 (IEEE, New York).<p>
+<a name="88071"></a>
+The IEEE 754 standard includes not only positive and negative numbers that consist of a sign and magnitude, but also positive and negative zeros, positive and negative <em>infinities</em>, and special <em>Not-a-Number </em>values (hereafter abbreviated NaN). A NaN value is used to represent the result of certain invalid operations such as dividing zero by zero. NaN constants of both <code>float</code> and <code>double</code> type are predefined as <code>Float.NaN</code> and <code>Double.NaN</code>.<p>
+<a name="96776"></a>
+Every implementation of the Java programming language is required to support two standard sets of floating-point values, called the <em>float value set</em> and the <em>double value set</em>. In addition, an implementation of the Java programming language may support either or both of two extended-exponent floating-point value sets, called the<em> float-extended-exponent value set</em> and the<em> double-extended-exponent value set</em>. These extended-exponent value sets may, under certain circumstances, be used instead of the standard value sets to represent the values of expressions of type <code>float</code> or <code>double</code> (<a href="conversions.html#184225">&#167;5.1.13</a>, <a href="expressions.html#249198">&#167;15.4</a>).<p>
+<a name="96777"></a>
+The finite nonzero values of any floating-point value set can all be expressed in the form <i>s &#183; m &#183; </i>2<i><font size="-1"><sup></i>(<i>e-N</i>+1)</sup></font></i>, where <em>s</em> is +1 or -1, <em>m</em> is a positive integer less than 2<font size="-1"><sup><i>N</i></sup></font>, and <em>e</em> is an integer between <i>E<font size="-1"><sub>min</sub></font></i> = -(2<font size="-1"><sup><i>K</i>-1</sup></font>-2) and <i>E<font size="-1"><sub>max</sub></font></i> = 2<font size="-1"><sup><i>K</i>-1</sup></font>-1, inclusive, and where <em>N</em> and <em>K</em> are parameters that depend on the value set. Some values can be represented in this form in more than one way; for example, supposing that a value <em>v</em> in a value set might be represented in this form using certain values for <em>s</em>, <em>m</em>, and <em>e</em>, then if it happened that <em>m</em> were even and <em>e</em> were less than 2<font size="-1"><sup><i>K</i>-1</sup></font>, one could halve <em>m</em> and increase <em>e</em> by 1 to produce a second representation for the same value <em>v</em>. A representation in this form is called <em>normalized</em> if <i>m</i> <img src="chars/gtequal.gif"> 2<font size="-1"><sup>(<i>N</i>-1)</sup></font>; otherwise the representation is said to be <em>denormalized</em>. If a value in a value set cannot be represented in such a way that <i>m</i> <img src="chars/gtequal.gif"> 2<font size="-1"><sup>(<i>N</i>-1)</sup></font>, then the value is said to be a <em>denormalized value</em>, because it has no normalized representation.<p>
+<a name="96680"></a>
+The constraints on the parameters <em>N</em> and <em>K</em> (and on the derived parameters <em>E</em><sub><i>min</i></sub> and <em>E</em><sub><i>max</i></sub>) for the two required and two optional floating-point value sets are summarized in <a href="typesValues.html#96802">Table 4.1</a>. 
+<p>
+<Table Border="1" cellpadding="2">
+<tr><th><a name="96683"></a>
+<a name=""</a>
+<b>Parameter</b>
+<th><a name="96685"></a>
+<a name=""</a>
+<b> <strong>float</strong></b>
+<th><a name="96687"></a>
+<a name=""</a>
+<b> <strong>float-extended-exponent</strong></b>
+<th><a name="96689"></a>
+<a name=""</a>
+<b> double</b>
+<th><a name="96691"></a>
+<a name=""</a>
+<b> double-extended-exponent</b>
+
+<tr><td><a name="96693"></a>
+ N<p>
+<td><a name="96695"></a>
+ 24<p>
+<td><a name="96697"></a>
+ 24<p>
+<td><a name="96699"></a>
+ 53<p>
+<td><a name="96701"></a>
+ 53<p>
+
+<tr><td><a name="96703"></a>
+ K<p>
+<td><a name="96705"></a>
+ 8<p>
+<td><a name="96707"></a>
+ <img src="chars/gtequal.gif"> 11<p>
+<td><a name="96709"></a>
+ 11<p>
+<td><a name="96711"></a>
+ <img src="chars/gtequal.gif"> 15<p>
+
+<tr><td><a name="96713"></a>
+ E<sub><i>max</i></sub><p>
+<td><a name="96715"></a>
+ +127<p>
+<td><a name="96717"></a>
+ <img src="chars/gtequal.gif"> +1023<p>
+<td><a name="96719"></a>
+ +1023<p>
+<td><a name="96721"></a>
+ <img src="chars/gtequal.gif"> +16383<p>
+
+<tr><td><a name="96723"></a>
+ E<sub><i>min</i></sub><p>
+<td><a name="96725"></a>
+ -126<p>
+<td><a name="96727"></a>
+<img src="chars/lt_equal.gif"> -1022<p>
+<td><a name="96729"></a>
+ -1022<p>
+<td><a name="96731"></a>
+<img src="chars/lt_equal.gif"> -16382<p>
+
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+<p>
+<a name="106189"></a>
+Where one or both extended-exponent value sets are supported by an implementation, then for each supported extended-exponent value set there is a specific implementation-dependent constant <em>K</em>, whose value is constrained by <a href="typesValues.html#96802">Table 4.1</a>; this value <em>K</em> in turn dictates the values for <em>E</em><sub><i>min</i></sub> and <em>E</em><sub><i>max</i></sub>.<p>
+<a name="96735"></a>
+Each of the four value sets includes not only the finite nonzero values that are ascribed to it above, but also NaN values and the four values positive zero, negative zero, positive infinity, and negative infinity.<p>
+<a name="96736"></a>
+Note that the constraints in <a href="typesValues.html#96802">Table 4.1</a> are designed so that every element of the float value set is necessarily also an element of the float-extended-exponent value set, the double value set, and the double-extended-exponent value set. Likewise, each element of the double value set is necessarily also an element of the double-extended-exponent value set. Each extended-exponent value set has a larger range of exponent values than the corresponding standard value set, but does not have more precision.<p>
+<a name="96737"></a>
+The elements of the float value set are exactly the values that can be represented using the single floating-point format defined in the IEEE 754 standard. The elements of the double value set are exactly the values that can be represented using the double floating-point format defined in the IEEE 754 standard. Note, however, that the elements of the float-extended-exponent and double-extended-exponent value sets defined here do <em>not</em> correspond to the values that can be represented using IEEE 754 single extended and double extended formats, respectively.<p>
+<a name="96744"></a>
+The float, float-extended-exponent, double, and double-extended-exponent value sets are not types. It is always correct for an implementation of the Java programming language to use an element of the float value set to represent a value of type <code>float</code>; however, it may be permissible in certain regions of code for an implementation to use an element of the float-extended-exponent value set instead. Similarly, it is always correct for an implementation to use an element of the double value set to represent a value of type <code>double</code>; however, it may be permissible in certain regions of code for an implementation to use an element of the double-extended-exponent value set instead.<p>
+<a name="106159"></a>
+Except for NaN, floating-point values are <em>ordered</em>; arranged from smallest to largest, they are negative infinity, negative finite nonzero values, positive and negative zero, positive finite nonzero values, and positive infinity.<p>
+<a name="106160"></a>
+IEEE 754 allows multiple distinct NaN values for each of its single and double floating-point formats. While each hardware architecture returns a particular bit pattern for NaN when a new NaN is generated, a programmer can also create NaNs with different bit patterns to encode, for example, retrospective diagnostic information. <p>
+<a name="106258"></a>
+For the most part, the Java platform treats NaN values of a given type as though collapsed into a single canonical value (and hence this specification normally refers to an arbitrary NaN as though to a canonical value). However, version 1.3 the Java platform introduced methods enabling the programmer to distinguish between NaN values: the <code>Float.floatToRawIntBits</code> and <code>Double.doubleToRawLongBits</code> methods. The interested reader is referred to the specifications for the <code>Float</code> and <code>Double</code> classes for more information.<p>
+<a name="86666"></a>
+Positive zero and negative zero compare equal; thus the result of the expression <code>0.0==-0.0</code> is <code>true</code> and the result of <code>0.0&gt;-0.0</code> is <code>false</code>. But other operations can distinguish positive and negative zero; for example, <code>1.0/0.0</code> has the value positive infinity, while the value of <code>1.0/-0.0</code> is negative infinity.<p>
+<a name="16083"></a>
+NaN is <em>unordered</em>, so the numerical comparison operators <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, and <code>&gt;=</code> return <code>false</code> if either or both operands are NaN <a href="expressions.html#153654">(&#167;15.20.1)</a>. The equality operator <code>==</code> returns <code>false</code> if either operand is NaN, and the inequality operator <code>!=</code> returns <code>true</code> if either operand is NaN <a href="expressions.html#5198">(&#167;15.21.1)</a>. In particular, <code>x!=x</code> is <code>true</code> if and only if <code>x</code> is NaN, and <code>(x&lt;y)</code> <code>==</code> <code>!(x&gt;=y)</code> will be <code>false</code> if <code>x</code> or <code>y</code> is NaN.<p>
+<a name="16093"></a>
+Any value of a floating-point type may be cast to or from any numeric type. There are no casts between floating-point types and the type <code>boolean</code>.<p>
+<a name="9249"></a>
+<a name="4.2.4"></a>
+<h3>4.2.4    Floating-Point Operations</h3>
+<a name="9981"></a>
+The Java programming language provides a number of operators that act on floating-point values:<p>
+<ul><a name="52058"></a>
+<li>The comparison operators, which result in a value of type <code>boolean</code>:
+<ul>
+<a name="52062"></a>
+<li>The numerical comparison operators <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, and <code>&gt;=</code> <a href="expressions.html#153654">(&#167;15.20.1)</a>
+<a name="52066"></a>
+<li>The numerical equality operators <code>==</code> and <code>!=</code> <a href="expressions.html#5198">(&#167;15.21.1)</a>
+</ul>
+<a name="52069"></a>
+<li>The numerical operators, which result in a value of type <code>float</code> or <code>double</code>:
+<ul>
+<a name="52076"></a>
+<li>The unary plus and minus operators <code>+</code> and <code>-</code> (<a href="expressions.html#24924">&#167;15.15.3</a>, <a href="expressions.html#236345">&#167;15.15.4</a>)
+<a name="24115"></a>
+<li>The multiplicative operators <code>*</code>, <code>/</code>, and <code>%</code> <a href="expressions.html#239829">(&#167;15.17)</a>
+<a name="24119"></a>
+<li>The additive operators <code>+</code> and <code>-</code> <a href="expressions.html#13510">(&#167;15.18.2)</a>
+<a name="24126"></a>
+<li>The increment operator <code>++</code>, both prefix <a href="expressions.html#39547">(&#167;15.15.1)</a> and postfix <a href="expressions.html#292383">(&#167;15.14.2)</a>
+<a name="24107"></a>
+<li>The decrement operator <code>--</code>, both prefix <a href="expressions.html#239136">(&#167;15.15.2)</a> and postfix <a href="expressions.html#4987">(&#167;15.14.3)</a>
+</ul>
+<a name="19446"></a>
+<li>The conditional operator <code>? :</code> <a href="expressions.html#290293">(&#167;15.25)</a>
+<a name="11998"></a>
+<li>The cast operator, which can convert from a floating-point value to a value of any specified numeric type (<a href="conversions.html#20232">&#167;5.5</a>, <a href="expressions.html#238146">&#167;15.16</a>)
+<a name="21842"></a>
+<li>The string concatenation operator <code>+</code> <a href="expressions.html#39990">(&#167;15.18.1)</a>, which, when given a <code>String</code> operand and a floating-point operand, will convert the floating-point operand to a <code>String</code> representing its value in decimal form (without information loss), and then produce a newly created <code>String</code> by concatenating the two strings
+</ul><a name="12009"></a>
+Other useful constructors, methods, and constants are predefined in the classes <code>Float</code>, <code>Double</code>, and <code>Math</code>.<p>
+<a name="12005"></a>
+If at least one of the operands to a binary operator is of floating-point type, then the operation is a floating-point operation, even if the other is integral.<p>
+<a name="51262"></a>
+If at least one of the operands to a numerical operator is of type <code>double</code>, then the operation is carried out using 64-bit floating-point arithmetic, and the result of the numerical operator is a value of type <code>double</code>. (If the other operand is not a <code>double</code>, it is first widened to type <code>double</code> by numeric promotion <a href="conversions.html#26917">(&#167;5.6)</a>.) Otherwise, the operation is carried out using 32-bit floating-point arithmetic, and the result of the numerical operator is a value of type <code>float. </code>If the other operand is not a <code>float</code>, it is first widened to type <code>float</code> by numeric promotion.<p>
+<a name="9265"></a>
+Operators on floating-point numbers behave as specified by IEEE 754 (with the exception of the remainder operator <a href="expressions.html#24956">(&#167;15.17.3)</a>). In particular, the Java programming language requires support of IEEE 754 <em>denormalized</em> floating-point numbers and <em>gradual underflow</em>, which make it easier to prove desirable properties of particular numerical algorithms. Floating-point operations do not "flush to zero" if the calculated result is a denormalized number.<p>
+<a name="9274"></a>
+The Java programming language requires that floating-point arithmetic behave as if every floating-point operator rounded its floating-point result to the result precision. <em>Inexact</em> results must be rounded to the representable value nearest to the infinitely precise result; if the two nearest representable values are equally near, the one with its least significant bit zero is chosen. This is the IEEE 754 standard's default rounding mode known as <em>round to nearest</em>.<p>
+<a name="10346"></a>
+The language uses <em>round toward zero</em> when converting a floating value to an integer <a href="conversions.html#25363">(&#167;5.1.3)</a>, which acts, in this case, as though the number were truncated, discarding the mantissa bits. Rounding toward zero chooses at its result the format's value closest to and no greater in magnitude than the infinitely precise result.<p>
+<a name="9290"></a>
+Floating-point operators can throw a <code>NullPointerException</code> if unboxing conversion <a href="conversions.html#190699">(&#167;5.1.8)</a> of a null reference is required. Other than that, the only floating-point operators that can throw an exception <a href="exceptions.html#44043">(&#167;11)</a> are the increment and decrement operators <code>++</code>(<a href="expressions.html#39547">&#167;15.15.1</a>, <a href="expressions.html#239136">&#167;15.15.2</a>) and <code>--</code>(<a href="expressions.html#4987">&#167;15.14.3</a>, <a href="expressions.html#292383">&#167;15.14.2</a>), which can throw an <code>OutOfMemoryError</code> if boxing conversion <a href="conversions.html#190697">(&#167;5.1.7)</a> is required and there is not sufficient memory available to perform the conversion. <p>
+<a name="118702"></a>
+An operation that overflows produces a signed infinity, an operation that underflows produces a denormalized value or a signed zero, and an operation that has no mathematically definite result produces NaN. All numeric operations with NaN as an operand produce NaN as a result. As has already been described, NaN is unordered, so a numeric comparison operation involving one or two NaNs returns <code>false</code> and any <code>!=</code> comparison involving NaN returns <code>true</code>, including <code>x!=x</code> when <code>x</code> is NaN.<p>
+<a name="9291"></a>
+<p>The example program:</p>
+<blockquote><pre>class Test {
+        public static void main(String[] args) {
+                // An example of overflow:
+                double d = 1e308;
+                System.out.print("overflow produces infinity: ");
+                System.out.println(d + "*10==" + d*10);
+                // An example of gradual underflow:
+                d = 1e-305 * Math.PI;
+                System.out.print("gradual underflow: " + d + "\n &#32; &#32; &#32;");
+                for (int i = 0; i &lt; 4; i++)
+                        System.out.print(" " + (d /= 100000));
+                System.out.println();
+                // An example of NaN:
+                System.out.print("0.0/0.0 is Not-a-Number: ");
+                d = 0.0/0.0;
+                System.out.println(d);
+                // An example of inexact results and rounding:
+                System.out.print("inexact results with float:");
+                for (int i = 0; i &lt; 100; i++) {
+                        float z = 1.0f / i;
+                        if (z * i != 1.0f)
+                                System.out.print(" " + i);
+                }
+                System.out.println();
+                // Another example of inexact results and rounding:
+                System.out.print("inexact results with double:");
+                for (int i = 0; i &lt; 100; i++) {
+                        double z = 1.0 / i;
+                        if (z * i != 1.0)
+                                System.out.print(" " + i);
+                }
+                System.out.println();
+                // An example of cast to integer rounding:
+                System.out.print("cast to int rounds toward 0: ");
+                d = 12345.6;
+                System.out.println((int)d + " " + (int)(-d));
+        }
+}
+</pre></blockquote><a name="23297"></a>
+produces the output:<p>
+<blockquote><pre>overflow produces infinity: 1.0e+308*10==Infinity
+gradual underflow: 3.141592653589793E-305
+        3.1415926535898E-310 3.141592653E-315 3.142E-320 0.0
+0.0/0.0 is Not-a-Number: NaN
+inexact results with float: 0 41 47 55 61 82 83 94 97
+inexact results with double: 0 49 98
+cast to int rounds toward 0: 12345 -12345
+</pre></blockquote>
+<a name="22309"></a>
+<p>This example demonstrates, among other things, that gradual underflow can result in a gradual loss of precision.</p>
+<a name="11717"></a>
+<p>The results when <code>i</code> is <code>0</code> involve division by zero, so that <code>z</code> becomes positive infinity, and <code>z</code> <code>*</code> <code>0</code> is NaN, which is not equal to <code>1.0</code>.</p>
+<a name="11527"></a>
+<a name="4.2.5"></a>
+<h3>4.2.5    The boolean Type and boolean Values</h3>
+<a name="9295"></a>
+The <code>boolean</code> type represents a logical quantity with two possible values, indicated by the literals <code>true</code> and <code>false</code> <a href="lexical.html#49652">(&#167;3.10.3)</a>. The boolean operators are:<p>
+<ul><a name="17733"></a>
+<li>The relational operators <code>==</code> and <code>!=</code> <a href="expressions.html#54508">(&#167;15.21.2)</a>
+<a name="17734"></a>
+<li>The logical-complement operator <code>!</code> <a href="expressions.html#13350">(&#167;15.15.6)</a>
+<a name="17736"></a>
+<li>The logical operators <code>&amp;</code>, <code>^</code>, and <code>|</code> <a href="expressions.html#5242">(&#167;15.22.2)</a>
+<a name="17737"></a>
+<li>The conditional-and and conditional-or operators <code>&amp;&amp;</code> <a href="expressions.html#5247">(&#167;15.23)</a> and <code>||</code> <a href="expressions.html#54532">(&#167;15.24)</a>
+<a name="19467"></a>
+<li>The conditional operator <code>? :</code> <a href="expressions.html#290293">(&#167;15.25)</a>
+<a name="21871"></a>
+<li>The string concatenation operator <code>+</code> <a href="expressions.html#39990">(&#167;15.18.1)</a>, which, when given a <code>String</code> operand and a boolean operand, will convert the boolean operand to a <code>String</code> (either <code>"true"</code> or <code>"false"</code>), and then produce a newly created <code>String</code> that is the concatenation of the two strings
+</ul><a name="17738"></a>
+Boolean expressions determine the control flow in several kinds of statements:<p>
+<ul><a name="17742"></a>
+<li>The <code>if</code> statement <a href="statements.html#5991">(&#167;14.9)</a>
+<a name="17743"></a>
+<li>The <code>while</code> statement <a href="statements.html#237277">(&#167;14.12)</a>
+<a name="17745"></a>
+<li>The <code>do</code> statement <a href="statements.html#6045">(&#167;14.13)</a>
+<a name="17747"></a>
+<li>The <code>for</code> statement <a href="statements.html#24588">(&#167;14.14)</a>
+</ul><a name="48454"></a>
+A <code>boolean</code> expression also determines which subexpression is evaluated in the conditional <code>?&#32;:</code> operator <a href="expressions.html#290293">(&#167;15.25)</a>.<p>
+<a name="48458"></a>
+Only <code>boolean</code> or <code>Boolean</code> expressions can be used in control flow statements and as the first operand of the conditional operator <code>?&#32;:</code>. An integer <code>x</code> can be converted to a <code>boolean</code>, following the C language convention that any nonzero value is <code>true</code>, by the expression <code>x!=0</code>. An object reference <code>obj</code> can be converted to a <code>boolean</code>, following &#32;the C language convention that any reference other than <code>null</code> is <code>true</code>, by the expression <code>obj!=null</code>.<p>
+<a name="9299"></a>
+A cast of a <code>boolean</code> value to type <code>boolean</code> or <code>Boolean</code> is allowed <a href="conversions.html#25209">(&#167;5.1.1)</a>; no other casts on type <code>boolean</code> are allowed. A <code>boolean</code> can be converted to a string by string conversion <a href="conversions.html#186035">(&#167;5.4)</a>.<p>
+<a name="9317"></a>
+<a name="4.3"></a>
+<h2>4.3    Reference Types and Values</h2>
+<a name="9664"></a>
+There are three kinds of <em>reference types</em>: class types <a href="classes.html#328796">(&#167;8)</a>, interface types <a href="interfaces.html#238678">(&#167;9)</a>, and array types <a href="arrays.html#27803">(&#167;10)</a>. Reference types may be parameterized <a href="typesValues.html#112898">(&#167;4.5)</a> with type arguments <a href="typesValues.html#108850">(&#167;4.4)</a>.<p>
+<blockquote><pre>
+<i>
+ReferenceType:
+        ClassOrInterfaceType
+        TypeVariable
+        ArrayType
+
+ClassOrInterfaceType:
+        ClassType
+        InterfaceType
+
+
+ClassType:
+        TypeDeclSpecifier TypeArgumentsopt
+
+InterfaceType:
+        TypeDeclSpecifier TypeArgumentsopt
+
+TypeDeclSpecifier:
+        TypeName
+        ClassOrInterfaceType . Identifier
+        </i>
+</pre></blockquote><a name="112466"></a>
+<p>
+<blockquote><pre>
+<i>
+TypeName:
+        Identifier
+        TypeName . Identifier
+
+TypeVariable:
+        Identifier
+
+ArrayType:
+        Type </i>[ ]
+</pre></blockquote><a name="9678"></a>
+A class or interface type consists of a type declaration specifier, optionally followed by type arguments (in which case it is a parameterized type). Type arguments are described in <a href="typesValues.html#107353">(&#167;4.5.1)</a>. <p>
+<a name="121741"></a>
+A type declaration specifier may be either a type name <a href="names.html#73064">(&#167;6.5.5)</a>, or a class or interface type followed by "." and an identifier. In the latter case, the specifier has the form <i>T.id,</i> where <i>id</i> must be the simple name of an accessible <a href="names.html#104285">(&#167;6.6)</a> member type ( <a href="classes.html#246026">&#167;8.5</a>, <a href="interfaces.html#252566">&#167;9.5</a>) of <i>T,</i> or a compile-time error occurs. The specifier denotes that member type.<p>
+<a name="87599"></a>
+<p>The sample code:</p>
+<blockquote><pre>class Point { int[] metrics; }
+interface Move { void move(int deltax, int deltay); }
+</pre></blockquote><a name="11032"></a>
+declares a class type <code>Point</code>, an interface type <code>Move</code>, and uses an array type <code>int[]</code> (an array of <code>int</code>) to declare the field <code>metrics</code> of the class <code>Point</code>.<p>
+<a name="12028"></a>
+<a name="4.3.1"></a>
+<h3>4.3.1    Objects</h3>
+<a name="86707"></a>
+An <em>object</em> is a <em>class</em> <em>instance</em> or an array.<p>
+<a name="106237"></a>
+The reference values (often just <em>references</em>) are <em>pointers </em>to these objects, and a special null reference, which refers to no object.<p>
+<a name="49853"></a>
+A class instance is explicitly created by a class instance creation expression <a href="expressions.html#41147">(&#167;15.9)</a>. An array is explicitly created by an array creation expression <a href="expressions.html#46168">(&#167;15.10)</a>.<p>
+<a name="49899"></a>
+A new class instance is implicitly created when the string concatenation operator + <a href="expressions.html#39990">(&#167;15.18.1)</a> is used in a non-constant <a href="expressions.html#5313">(&#167;15.28)</a> expression, resulting in a new object of type <code>String</code> (<a href="typesValues.html#26992">&#167;4.3.3</a>). A new array object is implicitly created when an array initializer expression <a href="arrays.html#11358">(&#167;10.6)</a> is evaluated; this can occur when a class or interface is initialized <a href="execution.html#44557">(&#167;12.4)</a>, when a new instance of a class is created <a href="expressions.html#41147">(&#167;15.9)</a>, or when a local variable declaration statement is executed <a href="statements.html#5920">(&#167;14.4)</a>. New objects of the types Boolean, Byte, Short, Character, Integer, Long, Float and Double may be implicitly created by boxing conversion <a href="conversions.html#190697">(&#167;5.1.7)</a>.<p>
+<a name="49960"></a>
+<p>Many of these cases are illustrated in the following example:</p>
+<blockquote><pre>class Point {
+        int x, y;
+        Point() { System.out.println("default"); }
+        Point(int x, int y) { this.x = x; this.y = y; }
+        // A Point instance is explicitly created at class initialization time:
+        static Point origin = new Point(0,0);
+        // A String can be implicitly created by a + operator:
+        public String toString() {
+                return "(" + x + "," + y + ")";
+        }
+}
+class Test {
+        public static void main(String[] args) {
+                // A Point is explicitly created using newInstance:
+                Point p = null;
+                try {
+                        p = (Point)Class.forName("Point").newInstance();
+                } catch (Exception e) {
+                        System.out.println(e);
+                }
+                // An array is implicitly created by an array constructor:
+                Point a[] = { new Point(0,0), new Point(1,1) };
+                // Strings are implicitly created by + operators:
+                System.out.println("p: " + p);
+                System.out.println("a: { " + a[0] + ", "
+                                                                                  &#32;+ a[1] + " }");
+                // An array is explicitly created by an array creation expression:
+                String sa[] = new String[2];
+                sa[0] = "he"; sa[1] = "llo";
+                System.out.println(sa[0] + sa[1]);
+        }
+}
+</pre></blockquote><a name="87328"></a>
+which produces the output:<p>
+<blockquote><pre>default
+p: (0,0)
+a: { (0,0), (1,1) }
+hello
+</pre></blockquote><a name="49965"></a>
+The operators on references to objects are:<p>
+<ul><a name="31321"></a>
+<li>Field access, using either a qualified name <a href="names.html#104285">(&#167;6.6)</a> or a field access expression <a href="expressions.html#41267">(&#167;15.11)</a>
+<a name="31328"></a>
+<li>Method invocation <a href="expressions.html#20448">(&#167;15.12)</a>
+<a name="31378"></a>
+<li>The cast operator (<a href="conversions.html#20232">&#167;5.5</a>, <a href="expressions.html#238146">&#167;15.16</a>)
+<a name="31345"></a>
+<li>The string concatenation operator <code>+</code> <a href="expressions.html#39990">(&#167;15.18.1)</a>, which, when given a <code>String</code> operand and a reference, will convert the reference to a <code>String</code> by invoking the <code>toString</code> method of the referenced object (using <code>"null"</code> if either the reference or the result of <code>toString</code> is a null reference), and then will produce a newly created <code>String</code> that is the concatenation of the two strings
+<a name="31399"></a>
+<li>The <code>instanceof</code> operator <a href="expressions.html#80289">(&#167;15.20.2)</a>
+<a name="31306"></a>
+<li>The reference equality operators <code>==</code> and <code>!=</code> <a href="expressions.html#236163">(&#167;15.21.3)</a>
+<a name="19595"></a>
+<li>The conditional operator <code>?&#32;:</code> <a href="expressions.html#290293">(&#167;15.25)</a>.
+</ul><a name="28239"></a>
+There may be many references to the same object. Most objects have state, stored in the fields of objects that are instances of classes or in the variables that are the components of an array object. If two variables contain references to the same object, the state of the object can be modified using one variable's reference to the object, and then the altered state can be observed through the reference in the other variable.<p>
+<a name="87600"></a>
+<p>The example program:</p>
+<blockquote><pre>class Value { int val; }
+class Test {
+        public static void main(String[] args) {
+                int i1 = 3;
+                int i2 = i1;
+                i2 = 4;
+                System.out.print("i1==" + i1);
+                System.out.println(" but i2==" + i2);
+                Value v1 = new Value();
+                v1.val = 5;
+                Value v2 = v1;
+                v2.val = 6;
+                System.out.print("v1.val==" + v1.val);
+                System.out.println(" and v2.val==" + v2.val);
+        }
+}
+</pre></blockquote><a name="11050"></a>
+produces the output:<p>
+<blockquote><pre>i1==3 but i2==4
+v1.val==6 and v2.val==6
+</pre></blockquote><a name="11053"></a>
+because <code>v1.val</code> and <code>v2.val</code> reference the same instance variable <a href="typesValues.html#119097">(&#167;4.12.3)</a> in the one <code>Value</code> object created by the only <code>new</code> expression, while <code>i1</code> and <code>i2</code> are different variables.<p>
+<a name="17783"></a>
+<p>See <a href="arrays.html#27803">&#167;10</a> and <a href="expressions.html#46168">&#167;15.10</a> for examples of the creation and use of arrays.</p>
+<a name="17053"></a>
+Each object has an associated lock <a href="memory.html#73817">(&#167;17.1)</a>, which is used by <code>synchronized</code> methods <a href="classes.html#78188">(&#167;8.4.3)</a> and the <code>synchronized</code> statement <a href="statements.html#255769">(&#167;14.19)</a> to provide control over concurrent access to state by multiple threads (<a href="memory.html#34445">&#167;17</a>).<p>
+<a name="11055"></a>
+<a name="4.3.2"></a>
+<h3>4.3.2    The Class Object</h3>
+<a name="26999"></a>
+The class <code>Object</code> is a superclass <a href="classes.html#15372">(&#167;8.1)</a> of all other classes. A variable of type <code>Object</code> can hold a reference to the null reference or to any object, whether it is an instance of a class or an array <a href="arrays.html#27803">(&#167;10)</a>. All class and array types inherit the methods of class <code>Object</code>, which are summarized here:<p>
+<blockquote><pre>
+package java.lang;
+
+public class Object {
+<a name="51634"></a>    public final Class&lt;?&gt; getClass() { . . . }
+<a name="51635"></a>    public String toString() { . . . }
+<a name="51636"></a>    public boolean equals(Object obj) { . . . }
+<a name="51637"></a>    public int hashCode() { . . . }
+<a name="51638"></a>    protected Object clone()
+<a name="86088"></a>            throws CloneNotSupportedException { . . . }
+<a name="87378"></a>    public final void wait()
+                throws IllegalMonitorStateException,
+                        InterruptedException { . . . }
+<a name="51641"></a>    public final void wait(long millis)
+<a name="87381"></a>            throws IllegalMonitorStateException,
+<a name="87383"></a>                    InterruptedException { . . . }
+<a name="51642"></a>    public final void wait(long millis, int nanos) { . . . }
+<a name="87385"></a>            throws IllegalMonitorStateException,
+<a name="87386"></a>                    InterruptedException { . . . }
+<a name="87373"></a>    public final void notify() { . . . }
+<a name="87374"></a>            throws IllegalMonitorStateException
+<a name="87387"></a>    public final void notifyAll() { . . . }
+<a name="87389"></a>            throws IllegalMonitorStateException
+<a name="51644"></a>    protected void finalize()
+<a name="86090"></a>            throws Throwable { . . . }
+<a name="51645"></a>}
+</pre></blockquote><a name="45610"></a>
+The members of <code>Object</code> are as follows:<p>
+<ul><a name="123066"></a>
+<li>The method <code>getClass</code> returns the <code>Class</code> object that represents the class of the object. A <code>Class</code> object exists for each reference type. It can be used, for example, to discover the fully qualified name of a class, its members, its immediate superclass, and any interfaces that it implements. A class method that is declared <code>synchronized</code> <a href="classes.html#260369">(&#167;8.4.3.6)</a> synchronizes on the lock associated with the <code>Class</code> object of the class. The method Object.getClass() must be treated specially by a Java compiler. The type of a method invocation e.getClass(), where the expression e has the static type T, is Class&lt;? extends |T|&gt;.
+<a name="118754"></a>
+<li>The method <code>toString</code> returns a <code>String</code> representation of the object.
+<a name="12104"></a>
+<li>The methods <code>equals</code> and <code>hashCode</code> are very useful in hashtables such as <code>java.util.Hashtable</code>. The method <code>equals</code> defines a notion of object equality, which is based on value, not reference, comparison.
+<a name="12115"></a>
+<li>The method <code>clone</code> is used to make a duplicate of an object.
+<a name="12116"></a>
+<li>The methods <code>wait</code>, <code>notify</code>, and <code>notifyAll</code> are used in concurrent programming using threads, as described in <a href="memory.html#29542">&#167;17</a>.
+<a name="12117"></a>
+<li>The method <code>finalize</code> is run just before an object is destroyed and is described in <a href="execution.html#44748">&#167;12.6</a>.
+</ul><a name="26992"></a>
+<a name="4.3.3"></a>
+<h3>4.3.3    The Class String</h3>
+<a name="27000"></a>
+Instances of class <code>String</code> represent sequences of Unicode characters. A &#32;<code>String</code> object has a constant (unchanging) value. String literals <a href="lexical.html#101083">(&#167;3.10.5)</a> are references to instances of class <code>String</code>.<p>
+<a name="52188"></a>
+The string concatenation operator <code>+</code> <a href="expressions.html#39990">(&#167;15.18.1)</a> implicitly creates a new <code>String</code> object when the result is not a compile-time constant <a href="expressions.html#5313">(&#167;15.28)</a>.<p>
+<a name="97058"></a>
+<a name="4.3.4"></a>
+<h3>4.3.4    When Reference Types Are the Same</h3>
+<a name="96897"></a>
+Two reference types are the <em>same compile-time type</em> if they have the same binary name <a href="binaryComp.html#44909">(&#167;13.1)</a> and their type parameters, if any, are the same, applying this definition recursively. When two reference types are the same, they are sometimes said to be the <em>same class</em> or the <em>same interface</em>.<p>
+<a name="97070"></a>
+At run time, several reference types with the same binary name may be loaded simultaneously by different class loaders. These types may or may not represent the same type declaration. Even if two such types do represent the same type declaration, they are considered distinct.<p>
+<a name="96917"></a>
+Two reference types are the <em>same run-time type</em> if:<p>
+<ul><a name="86567"></a>
+<li>They are both class or both interface types, are defined by the same class loader, and have the same binary name <a href="binaryComp.html#44909">(&#167;13.1)</a>, in which case they are sometimes said to be the <em>same run-time class</em> or the <em>same run-time interface</em>.
+<a name="108837"></a>
+<li>They are both array types, and their component types are the same run-time type<a href="arrays.html#27803">(&#167;10)</a>.
+</ul><a name="108850"></a>
+<a name="4.4"></a>
+<h2>4.4    Type Variables</h2>
+<a name="108854"></a>
+A type variable <a href="typesValues.html#108850">(&#167;4.4)</a> is an unqualified identifier. Type variables are introduced by generic class declarations <a href="classes.html#299360">(&#167;8.1.2)</a> generic interface declarations <a href="interfaces.html#78598">(&#167;9.1.2)</a> generic method declarations <a href="classes.html#323928">(&#167;8.4.4)</a> and by generic constructor declarations <a href="classes.html#244611">(&#167;8.8.4)</a>.<p>
+<blockquote><pre>
+<em>TypeParameter:
+        TypeVariable TypeBound<sub>opt</sub></em>
+
+<em>TypeBound:
+        </em>extends <em>ClassOrInterfaceType AdditionalBoundList<sub>opt</sub></em>
+
+<em>AdditionalBoundList:
+        AdditionalBound AdditionalBoundList
+        AdditionalBound
+</em>
+<em>AdditionalBound:
+        &amp; InterfaceType
+</em></pre></blockquote><a name="118791"></a>
+Type variables have an optional bound, <i>T &amp; I<sub>1</sub> ... I<sub>n</sub></i>. The bound consists of either a type variable, or a class or interface type <i>T</i> possibly followed by further interface types <i>I<sub>1</sub> , ..., I<sub>n</sub></i>. If no bound is given for a type variable, <code>Object</code> is assumed. It is a compile-time error if any of the types <i>I<sub>1</sub> ... I<sub>n</sub></i> is a class type or type variable. The erasures <a href="typesValues.html#108979">(&#167;4.6)</a> of all constituent types of a bound must be pairwise different, or a compile-time error occurs.  The order of types in a bound is only significant in that the erasure of a type variable is determined by the first type in its bound, and that a class type or type variable may only appear in the first position. <p>
+<a name="108879"></a>
+<p>A type variable may not at the same time be a subtype of two interface types which are different parameterizations of the same generic interface. </p>
+<a name="108880"></a>
+See section <a href="names.html#103228">&#167;6.3</a> for the rules defining the scope of type variables.<p>
+<a name="112829"></a>
+The members of a type variable <i>X</i> with bound <i>T &amp; I<sub>1</sub> ... I<sub>n</sub></i> are the members of the intersection type <a href="typesValues.html#108433">(&#167;4.9)</a> <i>T &amp; I<sub>1</sub> ... I<sub>n</sub></i> appearing at the point where the type variable is declared.<p>
+<a name="120145"></a>
+ <p>
+<a name="120149"></a>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+ The following example illustrates what members a type variable has.<p>
+<blockquote><pre>package TypeVarMembers;
+
+        class C { 
+                void mCDefault() {}     
+                public void mCPublic() {}       
+                private void mCPrivate() {} 
+                protected void mCProtected() {} 
+        } 
+        class CT extends C implements I {}
+        interface I {   
+                void mI(); } 
+                &lt;T extends C &amp; I&gt; void test(T t) {    
+                        t.mI(); // OK
+                        t.mCDefault(); // OK
+                        t.mCPublic(); // OK 
+                        t.mCPrivate(); // compile-time error
+                        t.mCProtected(); // OK 
+                } 
+        }
+</pre></blockquote><a name="120163"></a>
+The type variable T has the same members as the intersection type C &amp; I, which in turn has the same members as the empty class CT, defined in the same scope with equivalent supertypes. The members of an interface are always public, and therefore always inherited (unless overridden). Hence mI is a member of CT and of T. Among the members of C, all but mCPrivate are inherited by CT, and are therefore members of both CT and T.<p>
+<a name="120226"></a>
+If C had been declared in a different package than T, then the call to mCDefault would give rise to a compile-time error, as that member would not be accessible at the point where T is declared.<p>
+<hr>
+<a name="120181"></a>
+<p>
+<a name="120151"></a>
+ <p>
+<a name="112898"></a>
+<a name="4.5"></a>
+<h2>4.5    Parameterized Types</h2>
+<a name="107243"></a>
+A parameterized type consists of a class or interface name <i>C</i> and an actual type argument list <i>&lt;T<sub>1</sub> , ... , T<sub>n</sub>&gt;</i>. It is a compile time error if <i>C</i> is not the name of a generic class or interface, or if the number of type arguments in the actual type argument list differs from the number of declared type parameters of <i>C.</i> In the following, whenever we speak of a class or interface type, we include the generic version as well, unless explicitly excluded. Throughout this section, let <i>A<sub>1</sub> , ... , A<sub>n</sub></i> be the formal type parameters of <i>C,</i> and let be <i>B<sub>i</sub></i> be the declared bound of <i>A<sub>i</sub></i>. The notation [<i>A<sub>i</sub></i> := <i>T<sub>i</sub></i>] denotes substitution of the type variable <i>A<sub>i</sub></i> with the type <i>T<sub>i</sub></i>, for 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, and is used throughout this specification.<p>
+<a name="110806"></a>
+Let <i>P</i> = <i>G&lt;T<sub>1</sub>, ..., T<sub>n</sub>&gt;</i> be a parameterized type. It must be the case that, after <i>P</i> is subjected to capture conversion <a href="conversions.html#190795">(&#167;5.1.10)</a> resulting in the type <i>G&lt;X1, ..., Xn&gt;</i>, for each actual type argument <i>X<sub>i</sub></i>,  1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i> , <I>X<sub>i</sub> </i>&lt;: <i>B<sub>i</sub></i>[<i>A<sub>1</sub></i> := <i>X<sub>1</sub>, ..., A<sub>n</sub></i> := <i>X<sub>n</sub></i>] <a href="typesValues.html#120403">(&#167;4.10)</a>, or a compile time error occurs.<p>
+<a name="123124"></a>
+<p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="107226"></a>
+ Example: Parameterized types.<p>
+<blockquote><pre>Vector&lt;String&gt; 
+Seq&lt;Seq&lt;A&gt;&gt; 
+Seq&lt;String&gt;.Zipper&lt;Integer&gt;
+Collection&lt;Integer&gt; 
+Pair&lt;String,String&gt;
+
+// Vector&lt;int&gt; -- illegal, primitive types cannot be arguments
+// Pair&lt;String&gt; -- illegal, not enough arguments
+// Pair&lt;String,String,String&gt; -- illegal, too many arguments
+<a name="107356"></a>
+</pre></blockquote><a name="112348"></a>
+<hr>
+<p>
+<a name="123125"></a>
+Two parameterized types are provably distinct if either of the following conditions hold:<p>
+<ul><a name="112349"></a>
+<li>They are invocations of distinct generic type declarations.
+<a name="112350"></a>
+<li>Any of their type arguments are provably distinct.
+</ul><a name="107353"></a>
+<a name="4.5.1"></a>
+<h3>4.5.1    Type Arguments and Wildcards</h3>
+<a name="113154"></a>
+Type arguments may be either reference types or wildcards.<p>
+<blockquote><pre>
+<i>
+TypeArguments:
+        &lt; ActualTypeArgumentList &gt;</i>
+
+<em>ActualTypeArgumentList: 
+        ActualTypeArgument
+        ActualTypeArgumentList , ActualTypeArgument
+</em></pre></blockquote><a name="110926"></a>
+<p>
+<a name="109050"></a>
+<p>
+<blockquote><pre>
+<i>
+ActualTypeArgument:
+        ReferenceType
+        Wildcard</i>
+</pre></blockquote><a name="109051"></a>
+<blockquote><pre>
+<i>
+Wildcard:
+? WildcardBounds<sub>Opt</sub>
+
+
+
+WildcardBounds:
+        extends ReferenceType
+        super ReferenceType
+        </i>
+</pre></blockquote><a name="108719"></a>
+<p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="108720"></a>
+ Examples<p>
+<blockquote><pre>void printCollection(Collection&lt;?&gt; c) {  // a wildcard collection
+  for (Object o : c) {
+    System.out.println(o);
+  }
+}
+</pre></blockquote>
+<a name="118816"></a>
+<p>
+ Note that using Collection&lt;Object&gt; as the type of the incoming parameter, c, would not be nearly as useful; the method could only be used with an actual parameter that had type Collection&lt;Object&gt;, which would be quite rare. In contrast, the use of an unbounded wildcard allows any kind of collection to be used as a parameter.</p>
+<a name="108730"></a>
+ <p>
+ <hr>
+<a name="123127"></a>
+Wildcards are useful in situations where only partial knowledge about the
+type parameter is required. 
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="108739"></a>
+ Example - Wildcard parameterized types as component types of array types.<p>
+<a name="108740"></a>
+<blockquote><pre>public Method getMethod(Class&lt;?&gt;[] parameterTypes) { ... }
+</pre></blockquote><a name="108745"></a>
+<hr>
+Wildcards may be given explicit bounds,  just like regular type variable declarations. An upper bound is signified by the syntax:<p>
+<blockquote><pre>? extends B
+</pre></blockquote><a name="108752"></a>
+, where <i>B</i> is the bound. <p>
+<a name="123126"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="108756"></a>
+ Example: Bounded wildcards.<p>
+<a name="108757"></a>
+<blockquote><pre>boolean addAll(Collection&lt;? extends E&gt; c)
+</pre></blockquote>
+<a name="108761"></a>
+<p>
+Here, the method is declared within the interface Collection&lt;E&gt;, and is designed to add all the elements of its incoming argument to the collection upon which it is invoked. A natural tendency would be to use Collection&lt;E&gt; as the type of c, but this is unnecessarily restrictive. An alternative would be to declare the method itself to be generic:<p>
+<blockquote><pre>
+&lt;T&gt; boolean addAll(Collection&lt;T&gt; c)
+</pre></blockquote>
+<a name="118882"></a>
+ <p>
+ This version is sufficiently flexible, but note that the type parameter is used only once in the signature. This reflects the fact that the type parameter is not being used to express any kind of interdependency between the type(s) of the argument(s), the return type and/or throws type. In the absence of such interdependency, generic methods are considered bad style, and wildcards are preferred.
+<a name="118876"></a>
+<hr>
+<p>
+Unlike ordinary type variables declared in a method signature, no type inference is required when using a wildcard. Consequently, it is permissible to declare lower bounds on a wildcard, using the syntax:
+<blockquote><pre>? super B
+</pre></blockquote><a name="108770"></a>
+, where <i>B</i> is a lower bound.<p>
+<a name="108987"></a>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<p>
+Example: Lower bounds on wildcards.
+<blockquote><pre>Reference(T referent, ReferenceQueue&lt;? super T&gt; queue);
+</pre></blockquote>
+<a name="108990"></a>
+ Here, the referent can be inserted into any queue whose element type is a super type of the type T of the referent.
+<a name="108996"></a>
+<hr>
+<p>
+Two type arguments are provably distinct if neither of the arguments is a type variable or wildcard, and the two arguments are not the same type.
+<a name="113418"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="113423"></a>
+ The relationship of wildcards to established type theory is an interesting one, which we briefly allude to here. <p>
+<a name="113424"></a>
+Wildcards are a restricted form of existential types. Given a generic type declaration <i>G&lt;T extends B&gt;</i>, <i>G&lt;?&gt;</i> is roughly analogous to <i>Some X &lt;: B. G&lt;X&gt;</i>.<p>
+<a name="113435"></a>
+Readers interested in a more comprehensive discussion should refer to <em>On Variance-Based Subtyping for Parametric Types</em> by Atsushi Igarashi and Mirko Viroli, in the proceedings of the 16th European Conference on Object Oriented Programming (ECOOP 2002). <p>
+<a name="113574"></a>
+Wildcards differ in certain details from the constructs described in the aforementioned paper, in particular in the use of capture conversion <a href="conversions.html#190795">(&#167;5.1.10)</a> ratther than the close operation described by Igarashi and Viroli. For a formal account of wildcards, see <em>Wild FJ</em> by Mads Torgersen, Erik Ernst and Christian Plesner Hansen, in the 12th workshop on Foundations of Object Oriented Programming (FOOL 2005).<p>
+<a name="113458"></a>
+ Historically, wildcards are a direct descendant of the work by Atsushi Igarashi and Mirko Viroli. This work itself builds upon earlier work by Kresten Thorup and Mads Torgersen ("Unifying Genericity", ECOOP 99), as well as a long tradition of work on declaration based variance that goes back to Pierre America's work on POOL (OOPSLA 89)<p>
+<hr>
+<a name="113460"></a>
+ <p>
+<a name="113455"></a>
+<a name="4.5.1.1"></a>
+<h4>4.5.1.1    Type Argument Containment and Equivalence</h4>
+<a name="108951"></a>
+A type argument <i>TA<sub>1</sub></i> is said to contain another type argument <i>TA<sub>2</sub></i>, written <i>TA<sub>2</sub></i> &lt;= <i>TA<sub>1</sub></i>, if the set of types denoted by <i>TA<sub>2</sub></i> is provably a subset of the set of types denoted by <i>TA<sub>1</sub></i> under the following rules (where &lt;: denotes subtyping <a href="typesValues.html#120403">(&#167;4.10)</a>):<p>
+<a name="108955"></a>
+<ul><a name="108956"></a>
+<li>? extends T &lt;= ? extends S if <i>T &lt;: S</i>
+<a name="108959"></a>
+<li>? super T &lt;= ? super S if <i>S &lt;: T</i>
+<a name="112561"></a>
+<li>T &lt;= T 
+<a name="108960"></a>
+<li>T &lt;= ? extends T
+<a name="108961"></a>
+<li>T &lt;= ? super T
+</ul><a name="112367"></a>
+<a name="4.5.2"></a>
+<h3>4.5.2    Members and Constructors of Parameterized Types</h3>
+<a name="112370"></a>
+Let <i>C</i> be a class or interface declaration with formal type parameters <i>A<sub>1</sub>,...,A<sub>n</sub></i>, and let <i>C&lt;T<sub>1</sub>,...,T<sub>n</sub>&gt;</i> be an invocation of <i>C</i>, where, for 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, <i>T<sub>i</sub></i> are types (rather than wildcards). Then:<p>
+<a name="118916"></a>
+<ul><a name="112374"></a>
+<li>Let <i>m</i> be a member or constructor declaration in <i>C</i>, whose type as declared is <i>T</i>. Then the type of <i>m</i> (<a href="classes.html#21831">&#167;8.2</a>, <a href="classes.html#306589">&#167;8.8.6</a>) in the type <i>C&lt;T<sub>1</sub>,...,T<sub>n</sub>&gt;</i>, is <i>T</i>[<i>A<sub>1</sub></i> := <i>T<sub>1</sub>, ..., A<sub>n</sub></i> := <i>T<sub>n</sub></i>].
+<a name="112375"></a>
+<li>Let <i>m</i> be a member or constructor declaration in <i>D</i>, where <i>D</i> is a class extended by <i>C</i> or an interface implemented by <i>C</i>. Let <i>D&lt;U<sub>1</sub>,...,U<sub>k</sub>&gt;</i> be the supertype of <i>C&lt;T<sub>1</sub>,...,T<sub>n</sub>&gt;</i> that corresponds to <i>D</i>. Then the type of <i>m</i> in <i>C&lt;T<sub>1</sub>,...,T<sub>n</sub>&gt;</i> is the type of <i>m</i> in <i>D&lt;U<sub>1</sub>,...,U<sub>k</sub>&gt;</i>.
+</ul><a name="112377"></a>
+If any of the type arguments to a parameterized type are wildcards, the type of its members and constructors is undefined. <p>
+<a name="112378"></a>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="112379"></a>
+ <p>This is of no consequence, as it is impossible to access a member of a parameterized type without performing capture conversion <a href="conversions.html#190795">(&#167;5.1.10)</a>, and it is impossible to use a wildcard type after the keyword new in a class instance creation expression<p>
+<hr>
+<a name="112384"></a>
+<a name="108979"></a>
+<a name="4.6"></a>
+<h2>4.6    Type Erasure</h2>
+<a name="108601"></a>
+<em>Type erasure</em> is a mapping from types (possibly including parameterized types and type variables) to types (that are never parameterized types or type variables). We write |<i>T</i>| for the erasure of type <i>T</i>. The erasure mapping is defined as follows.<p>
+<a name="108604"></a>
+<ul><a name="108640"></a>
+<li>The erasure of a parameterized type <a href="typesValues.html#112898">(&#167;4.5)</a> <i>G&lt;T<sub>1</sub>, ... ,T<sub>n</sub>&gt;</i> is |<i>G</i>|. 
+<a name="108658"></a>
+<li>The erasure of a nested type <i>T.C</i> is |<i>T</i>|<i>.C.</i> 
+<a name="108628"></a>
+<li>The erasure of an array type<i> T[]</i> is |<i>T</i>|<i>[].</i> 
+<a name="108631"></a>
+<li>The erasure of a type variable <a href="typesValues.html#108850">(&#167;4.4)</a> is the erasure of its leftmost bound.
+<a name="112593"></a>
+<li>The erasure of every other type is the type itself.
+</ul><a name="112594"></a>
+The erasure of a method signature <i>s</i> is a signature consisting of the same name as <i>s,</i> and the erasures of all the formal parameter types given in<i> s.</i> <p>
+<a name="112581"></a>
+<a name="4.7"></a>
+<h2>4.7    Reifiable Types</h2>
+<a name="112582"></a>
+Because some type information is erased during compilation, not all types are available at run time. Types that are completely available at run time are known as <i>reifiable types</i>. A type is reifiable if and only if one of the following holds:<p>
+<ul><a name="110259"></a>
+<li>It refers to a non-generic type declaration.
+<a name="110260"></a>
+<li>It is a parameterized type in which all type arguments are unbounded wildcards <a href="typesValues.html#107353">(&#167;4.5.1)</a>.
+<a name="110261"></a>
+<li>It is a raw type <a href="typesValues.html#110257">(&#167;4.8)</a>.
+<a name="116457"></a>
+<li>It is a primitive type <a href="typesValues.html#85587">(&#167;4.2)</a>.
+<a name="110262"></a>
+<li>It is an array type <a href="arrays.html#25518">(&#167;10.1)</a> whose component type is reifiable.
+</ul>
+<a name="113528"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="113529"></a>
+<p>
+ The decision not to make all generic types reifiable is one of the most crucial, and controversial design decisions involving the language's type system.<p>
+<a name="113530"></a>
+Ultimately, the most important motivation for this decision is compatibility with existing code. <p>
+<a name="113535"></a>
+Naively, the addition of new constructs such as genericity has no implications for pre-existing code. The programming language per se, is compatible with earlier versions as long as every program written in the previous versions retains its meaning in the new version. However, this notion, which may be termed language compatibility, is of purely theoretical interest. Real programs (even trivial ones, such as "Hello World") are composed of several compilation units, some of which are provided by the Java platform (such as elements of <code>java.lang</code> or <code>java.util</code>).<p>
+<a name="113536"></a>
+In practice then, the minimum requirement is platform compatibillity - that any program written for the prior version of the platform continues to function unchanged in the new platform.<p>
+<a name="113544"></a>
+One way to provide platform compatibillity is to leave existing platform functionality unchanged, only adding new functionality. For example, rather than modify the existing Collections hierarchy in <code>java.util</code>, one might introduce a new library utilizing genericity. <p>
+<a name="113552"></a>
+The disadvantages of such a scheme is that it is extremely difficult for pre-existing clients of the Collection library to migrate to the new library. Collections are used to exchange data between independently developed modules; if a vendor decides to switch to the new, generic, library, that vendor must also distribute two versions of their code, to be compatible with their clients. Libraries that are dependent on other vendors code cannot be modified to use genericity until the supplier's library is updated. If two modules are mutually dependent, the changes must be made simultaneously. <p>
+<a name="113553"></a>
+Clearly, platform compatibility, as outlined above, does not provide a realistic path for adoption of a pervasive new feature such as genericity. Therefore, the design of the generic type system seeks to support migration compatibility. Migration compatibiliy allows the evolution of existing code to take advantage of generics without imposing dependencies between independently developed software modules.<p>
+<a name="113562"></a>
+The price of migration compatibility is that a full and sound reification of the generic type system is not possible, at least while the migration is taking place.<p>
+<hr>
+<a name="113531"></a>
+<a name="110257"></a>
+<a name="4.8"></a>
+<h2>4.8    Raw Types</h2>
+<a name="108436"></a>
+To facilitate interfacing with non-generic legacy code, it is also possible to use as a type the erasure <a href="typesValues.html#108979">(&#167;4.6)</a> of a parameterized type <a href="typesValues.html#112898">(&#167;4.5)</a>.  Such a type is called a <i>raw type</i>. <p>
+<a name="121922"></a>
+<p>
+<a name="121923"></a>
+<p>
+<a name="121924"></a>
+<p>
+<a name="121925"></a>
+More precisely, a raw type is define to be either:<p>
+<ul><a name="112798"></a>
+<li>The name of a generic type declaration used without any accompanying actual type parameters.
+<a name="112802"></a>
+<li>Any non-static type member of a raw type <i>R</i> that is not inherited from a superclass or superinterface of <i>R.</i>
+</ul>
+<a name="112796"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="120231"></a>
+ The latter point may not be immediately self evident. Presenting for your consideration, then, the following example:<p>
+<blockquote><pre>class Outer&lt;T&gt;{
+        T t;
+        class Inner {
+                T setOuterT(T t1) {t = t1;return t;}
+        }
+}
+</pre></blockquote>
+<a name="120239"></a>
+ The type of the member(s) of <code>Inner</code> depends on the type parameter of <code>Outer</code>. If <code>Outer</code> is raw, <code>Inner</code> must be treated as raw as well, as their is no valid binding for <code>T</code>.
+ <p>
+This rule applies only to type members that are not inherited. Inherited type members that depend on type variables will be inherited as raw types as a consequence of the rule that the supertypes of a raw type are erased, described later in this section.<p>
+<hr>
+<a name="120233"></a>
+ <p>
+<a name="121788"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="121789"></a>
+ Another implication of the rules above is that a generic inner class of a raw type can itself only be used as a raw type:<p>
+<blockquote><pre>class Outer&lt;T&gt;{
+        class Inner&lt;S&gt; {
+                S s;
+        }
+}
+</pre></blockquote><a name="121812"></a>
+it is not possible to access <code>Inner</code> as partially raw type (a "rare" type)
+<blockquote><pre>Outer.Inner&lt;Double&gt; x = null; // illegal
+Double d = x.s;
+</pre></blockquote><a name="121815"></a>
+because <code>Outer</code> itself is raw, so are all its inner classes, including <code>Inner</code>, and so it is not possible to pass any type parameters to it.<p>
+<hr>
+<a name="121798"></a>
+ <p>
+<a name="120230"></a>
+The use of raw types is allowed only as a concession to compatibility of legacy code. The use of raw types in code written after the introduction of genericity into the Java programming language is strongly discouraged. <b>It is possible that future versions of the Java programming language will disallow the use of raw types.</b> <p>
+<a name="121888"></a>
+It is a compile-time error to attempt to use a type member of a parameterized type as a raw type.<p>
+<a name="121893"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="121894"></a>
+ This means that the ban on "rare" types extends to the case where the qualifying type is parameterized, but we attempt to use the inner class as a raw type:<p>
+<blockquote><pre>Outer&lt;Integer&gt;.Inner x = null; // illegal
+</pre></blockquote><a name="121896"></a>
+This is the opposite of the case we discussed above. There is no practical justification for this half baked type. In legacy code, no type parameters are used. In non-legacy code, we should use the generic types correctly and pass all the required actual type parameters.<p>
+<hr>
+<a name="121897"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="108595"></a>
+ Variables of a raw type can be assigned from values of any of the type's parametric instances. <p>
+<a name="109174"></a>
+For instance, it is possible to assign a <code>Vector&lt;String&gt;</code> to a <code>Vector</code>, based on the subtyping rules <a href="typesValues.html#108101">(&#167;4.10.2)</a>.  <p>
+<a name="109134"></a>
+ The reverse assignment from <code>Vector</code> to <code>Vector&lt;String&gt;</code> is unsafe (since the raw vector might have had a different element type), but is still permitted using unchecked conversion <a href="conversions.html#190772">(&#167;5.1.9)</a> in order to enable interfacing with legacy code. In this case, a compiler will issue an unchecked warning.<p>
+<hr>
+<a name="108448"></a>
+The superclasses (respectively, superinterfaces) of a raw type are the erasures of the superclasses (superinterfaces) of any of its parameterized invocations.<p>
+<a name="112736"></a>
+The type of a constructor <a href="classes.html#41652">(&#167;8.8)</a>, instance method (<a href="classes.html#41652">&#167;8.8</a>, <a href="interfaces.html#78651">&#167;9.4</a>), or non-static field <a href="classes.html#40898">(&#167;8.3)</a> <i>M</i> of a raw type <i>C</i> that is not inherited from its superclasses or superinterfaces is the erasure of its type in the generic declaration corresponding to <i>C.</i> The type of a static member of a raw type <i>C</i> is the same as its type in the generic declaration corresponding to <i>C.</i><p>
+<a name="112792"></a>
+It is a compile-time error to pass actual type parameters to a non-static type member of a raw type that is not inherited from its superclasses or superinterfaces.<p>
+<a name="112737"></a>
+To make sure that potential violations of the typing rules are always flagged, some accesses to members of a raw type will result in warning messages.  The rules for generating warnings when accessing members or constructors of raw types are as follows:<p>
+<ul><a name="112738"></a>
+<li>An invocation of a method or constructor of a raw type generates an unchecked warning if erasure changes any of the types of any of the arguments to the method or constructor.
+<a name="112739"></a>
+<li>An assignment to a field of a raw type generates an unchecked warning <a href="conversions.html#190772">(&#167;5.1.9)</a> if erasure changes the field's type.
+</ul><a name="112740"></a>
+No unchecked warning is required for a method call when the argument types do not change (even if the result type and/or throws clause  changes), for reading from a field, or for a class instance creation of a raw type.<p>
+<a name="112741"></a>
+The supertype of a class may be a raw type. Member accesses for the class are treated as normal, and member accesses for the supertype are treated as for raw types.  In the constructor of the class, calls to super are treated as method calls on a raw type.<p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="112743"></a>
+ Example: Raw types.<p>
+<blockquote><pre>class Cell&lt;E&gt;
+  E value;
+  Cell (E v) { value=v; }
+  A get() { return value; }
+  void set(E v) { value=v; }
+}
+Cell x = new Cell&lt;String&gt;("abc");
+x.value;          // OK, has type Object
+x.get();          // OK, has type Object
+x.set("def");     // unchecked warning
+</pre></blockquote><a name="121926"></a>
+<hr>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="112633"></a>
+ For example, <p>
+<blockquote><pre>import java.util.*;
+
+class NonGeneric {
+
+    Collection&lt;Number&gt; myNumbers(){return null;}
+}
+abstract class RawMembers&lt;T&gt; extends NonGeneric implements Collection&lt;String&gt; {
+    static Collection&lt;NonGeneric&gt; cng = 
+                                                                                new ArrayList&lt;NonGeneric&gt;();
+
+    public static void main(String[] args) {
+                RawMembers rw = null;
+                Collection&lt;Number&gt; cn = rw.myNumbers(); // ok
+                Iterator&lt;String&gt; is = rw.iterator(); // unchecked warning
+                Collection&lt;NonGeneric&gt; cnn = rw.cng; // ok - static member
+    }
+}
+</pre></blockquote><a name="112657"></a>
+<p>
+<code>RawMembers&lt;T&gt;</code> inherits the method<p>
+<blockquote><pre>Iterator&lt;String&gt; iterator()
+</pre></blockquote><a name="112652"></a>
+from the <code>Collection&lt;String&gt;</code> superinterface. However, the type <code>RawMembers</code> inherits <code>iterator()</code> from the erasure of its superinterface, which means that the return type of the member <code>iterator()</code> is the erasure of <code>Iterator&lt;&lt;String&gt;, Iterator</code>. As a result, the attempt to assign to <code>rw.iterator()</code> requires an unchecked conversion <a href="conversions.html#190772">(&#167;5.1.9)</a> from <code>Iterator</code> to <code>Iterator&lt;String&gt;</code>, causing an unchecked warning to be issued.<p>
+<a name="112638"></a>
+In contrast, the static member <code>cng</code> retains its full parameterized type even when accessed through a object of raw type (note that access to a static member through an instance is considered bad style and is to be discouraged). The member <code>myNumbers</code> is inherited from the <code>NonGeneric</code> (whose erasure is also <code>NonGeneric</code>) and so retains its full parameterized type.<p>
+<hr>
+<a name="112634"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="113511"></a>
+<p>
+ Raw types are closly related to wildcards. Both are based on existential types. Raw types can be thought of as wildcards whose type rules are deliberately unsound, to accommodate interaction with legacy code. <p>
+<a name="113514"></a>
+Historically, raw types preceded wildcards; they were first introduced in GJ, and described in the paper <em>Making the future safe for the past: Adding Genericity to the Java Programming Language</em> by Gilad Bracha, Martin Odersky, David Stoutamire, and Philip Wadler, in Proc. of the ACM Conf. on Object-Oriented Programming, Systems, Languages and Applications, (OOPSLA 98) October 1998. <p>
+<hr>
+<a name="113512"></a>
+<p>
+<a name="113513"></a>
+ <p>
+<a name="108433"></a>
+<a name="4.9"></a>
+<h2>4.9    Intersection Types</h2>
+<a name="123179"></a>
+An intersection type takes the form <i>T<sub>1</sub> &amp; ... &amp; T<sub>n</sub></i>, <i>n</i>&gt;0, where <i>T<sub>i</sub></i>, 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, are type expressions. Intersection types arise in the processes of capture conversion <a href="conversions.html#190795">(&#167;5.1.10)</a> and type inference <a href="expressions.html#341287">(&#167;15.12.2.7)</a>. It is not possible to write an intersection type directly as part of a program; no syntax supports this. The values of an intersection type are those objects that are values of all of the types <i>T<sub>i</sub></i>, for 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>. <p>
+<a name="121564"></a>
+The members of an intersection type <i>T<sub>1</sub> &amp; ... &amp; T<sub>n</sub></i> are determined as follows:<p>
+<ul><a name="120630"></a>
+<li>For each <i>T<sub>i</sub></i>,  1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, let <i>C<sub>i</sub></i> be the most specific class or array type such that <i>T<sub>i</sub></i> &lt;: <i>C<sub>i</sub></i> Then there must be some <i>T<sub>k</sub></i> &lt;: <i>C<sub>k</sub></i> such that <i>C<sub>k</sub></i> &lt;: <i>C<sub>i</sub></i> for any <i>i</i>, 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, or a compile-time error occurs. 
+<a name="121572"></a>
+<li>For  1<img src="chars/lt_equal.gif"><i>j</i><img src="chars/lt_equal.gif"><i>n</i>, if <i>T<sub>j</sub></i> is a type variable, then let <i>IT<sub>j</sub></i> be an interface whose members are the same as the public members of <i>T<sub>j</sub></i>; otherwise, if <i>T<sub>j</sub></i> is an interface, then let <i>IT<sub>j</sub></i> be <i>T<sub>j</sub></i>.
+<a name="120638"></a>
+<li>Then the intersection type has the same members as a class type <a href="classes.html#328796">(&#167;8)</a> with an empty body, direct superclass <i>C<sub>k</sub></i> and direct superinterfaces <i>IT<sub>1</sub> , ..., IT<sub>n</sub></i>, declared in the same package in which the intersection type appears.
+</ul>
+<a name="121664"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="121665"></a>
+ It is worth dwelling upon the distinction between intersection types and the bounds of type variables. Every type variable bound induces an intersection type. This intersection type is often trivial (i.e., consists of a single type).<p>
+</ul><a name="121678"></a>
+The form of a bound is restricted (only the first element may be a class or type variable, and only one type variable may appear in the bound) to preclude certain awkward situations coming into existence. However, capture conversion can lead to the creation of type variables whose bounds are more general (e.g., array types).<p>
+<hr>
+<a name="121666"></a>
+<a name="120403"></a>
+<a name="4.10"></a>
+<h2>4.10    Subtyping</h2>
+<a name="108096"></a>
+The subtype and supertype relations are binary relations on types. The <em>supertypes</em> of a type are obtained by reflexive and transitive closure over the direct supertype relation, written <i>S &gt;<sub>1</sub> T</i>, which is defined by rules given later in this section. We write <i>S :&gt; T</i> to indicate that the supertype relation holds between <i>S</i> and <i>T</i>. <i>S</i> is a proper supertype of <i>T</i>, written <i>T &lt; S</i>, if <i>S :&gt; T</i> and <i>S <img src="chars/notequal.gif"> T</i>. <p>
+<a name="108136"></a>
+The <i>subtypes</i> of a type <i>T</i> are all types <i>U</i> such that <i>T</i> is a supertype of <i>U</i>, and the null type. We write <i>T &lt;: S</i> to indicate that that the subtype relation holds between types <i>T</i> and <i>S</i>. <i>T</i> is a <i>proper subtype</i> of <i>S</i>, written <i>T &lt; S</i>, if <i>T &lt;:S</i> and <i>S <img src="chars/notequal.gif"> T</i>. <i>T</i> is a <i>direct subtype</i> of <i>S,</i> written <i>T &lt;<sub>1</sub> S</i>, if <i>S &gt;<sub>1</sub> T</i>.<p>
+<a name="108138"></a>
+Subtyping does not extend through generic types: <i>T</i> &lt;: <i>U</i> does not imply that <i>C&lt;T&gt;</i> &lt;: <i>C&lt;U&gt;</i>.<p>
+<a name="108094"></a>
+<p>
+<a name="108083"></a>
+<a name="4.10.1"></a>
+<h3>4.10.1    Subtyping among Primitive Types</h3>
+<a name="108084"></a>
+The following rules define the direct supertype relation among the primitive types:<p>
+<a name="108085"></a>
+<blockquote>
+double &gt;<sub>1</sub> float <br>
+float &gt;<sub>1</sub> long<br>
+long &gt;<sub>1</sub> int<br>
+int &gt;<sub>1</sub> char <br>
+int &gt;<sub>1</sub> short <br>
+short &gt;<sub>1</sub> byte
+</blockquote>
+<p>
+<a name="108101"></a>
+<a name="4.10.2"></a>
+<h3>4.10.2    Subtyping among Class and Interface Types</h3>
+<a name="123026"></a>
+Let <i>C</i> be a type declaration (<a href="typesValues.html#24887">&#167;4.12.6</a>, <a href="classes.html#15372">&#167;8.1</a>, <a href="interfaces.html#35470">&#167;9.1</a>) with zero or more type parameters <a href="typesValues.html#108850">(&#167;4.4)</a> <i>F<sub>1</sub>, ..., F<sub>n</sub></i> which have corresponding bounds <i>B<sub>1</sub>, ..., B<sub>n</sub></i>. That type declaration defines a set of parameterized types <a href="typesValues.html#112898">(&#167;4.5)</a> <i>C<sub>2</sub> &lt;T<sub>1</sub>,...,T<sub>n</sub>&gt;</i>, where each argument type <i>T<sub>i</sub></i> ranges over all types that are subtypes of all types listed in the corresponding bound. That is, for each bound type <i>S<sub>i</sub></i> in <i>B<sub>i</sub></i>, <i>T<sub>i</sub></i> is a subtype of <i>S<sub>i</sub></i>[ <i>F<sub>1</sub></i> := <i>T<sub>1</sub>, ..., F<sub>n</sub></i> := <i>T<sub>n</sub>]</i>.<p>
+<a name="123035"></a>
+Given a type declaration for <i>C&lt;F<sub>1</sub>,...,F<sub>n</sub>&gt;</i>, the <i>direct supertypes</i> of the parameterized type <a href="typesValues.html#112898">(&#167;4.5)</a> <i>C&lt;F<sub>1</sub>,...,F<sub>n</sub>&gt;</i> are all of the following:<p>
+<ul><a name="108015"></a>
+<li>the direct superclasses of <i>C</i>.
+<a name="107409"></a>
+<li>the direct superinterfaces of <i>C</i>.
+<a name="112543"></a>
+<li>The type <code>Object</code>, if <i>C</i> is an interface type with no direct superinterfaces.
+<a name="110252"></a>
+<li>The raw type <i>C</i>.
+</ul><a name="107909"></a>
+The direct supertypes of the type <i>C&lt;T<sub>1</sub>,...,T<sub>n</sub>&gt;</i> , where <i>T<sub>i</sub></i>,1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, is a type, are <i>D&lt;U<sub>1</sub> theta, ..., U<sub>k</sub> theta&gt;</i>, where<p>
+<ul><a name="107418"></a>
+<li><i>D&lt;U<sub>1</sub>,...,U<sub>k</sub>&gt;</i> is a direct supertype of <i>C&lt;F<sub>1</sub>,...,F<sub>n</sub>&gt;</i>, and <i>theta</i> is the substitution [<i>F<sub>1</sub></i> := <i>T<sub>1</sub>, ..., F<sub>n</sub></i> := <i>T<sub>n</sub></i>].
+<a name="109010"></a>
+<li><i>C&lt;S<sub>1</sub>,...,S<sub>n</sub>&gt;</i> where <i>S<sub>i</sub></i> contains <a href="typesValues.html#113455">(&#167;4.5.1.1)</a> <i>T<sub>i</sub></i> for 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>.
+</ul><a name="110278"></a>
+The direct supertypes of the type <i>C&lt;R<sub>1</sub>,...,R<sub>n</sub>&gt;</i> , where at least one of the <i>R<sub>i</sub></i>, 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, is a wildcard type argument, are the direct supertypes of <i>C&lt;X<sub>1</sub>,...,X<sub>n</sub>&gt;</i>, where<p>
+<a name="112408"></a>
+<i>C&lt;X<sub>1</sub>,...,X<sub>n</sub>&gt;</i> is the result of applying capture conversion <a href="conversions.html#190795">(&#167;5.1.10)</a> to <i>C&lt;R<sub>1</sub>,...,R<sub>n</sub>&gt;</i>.<p>
+<a name="112398"></a>
+<p>
+<a name="112399"></a>
+The direct supertypes of an intersection type <a href="typesValues.html#108433">(&#167;4.9)</a> <i>T<sub>1</sub> &amp; ... &amp; T<sub>n</sub></i>, are <i>T<sub>i</sub></i>, 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>.<p>
+<a name="113711"></a>
+The direct supertypes of a type variable <a href="typesValues.html#108850">(&#167;4.4)</a> are the types listed in its bound. <p>
+<a name="118984"></a>
+The direct supertypes of the null type are all reference types other than the null type itself.<p>
+<a name="113415"></a>
+In addition to the above rules, a type variable is a direct supertype of its lower bound.<p>
+<a name="108354"></a>
+<a name="4.10.3"></a>
+<h3>4.10.3    Subtyping among Array Types</h3>
+<a name="108355"></a>
+The following rules define the direct subtype relation among array types:<p>
+<ul><a name="108356"></a>
+<li>If <i>S</i> and <i>T</i> are both reference types, then <i>S[] &gt;<sub>1</sub> T[] </i>iff<i> S &gt;<sub>1</sub> T</i>.
+<a name="119005"></a>
+<li><code>Object &gt;</code><sub>1</sub><code> Object[]</code>
+<a name="110207"></a>
+<li><code>Cloneable &gt;</code><sub>1</sub><code> Object[]</code>
+<a name="110210"></a>
+<li><code>java.io.Serializable &gt;</code><sub>1</sub><code> Object[]</code>
+<a name="110211"></a>
+<li>If <i>p</i> is a primitive type, then:
+<ul>
+<a name="114833"></a>
+<li><code>Object &gt;</code><sub>1</sub><code> </code>p[]
+<a name="114835"></a>
+<li><code>Cloneable &gt;</code><sub>1</sub><code> </code>p[] 
+<a name="114842"></a>
+<li><code>java.io.Serializable &gt;</code><sub>1</sub><code> </code>p[]
+</ul>
+</ul><a name="107178"></a>
+<a name="4.11"></a>
+<h2>4.11    Where Types Are Used</h2>
+<a name="52309"></a>
+Types are used when they appear in declarations or in certain expressions.<p>
+<a name="85893"></a>
+<p>The following code fragment contains one or more instances of most kinds of usage of a type:</p>
+<blockquote><pre>import java.util.Random;
+class MiscMath&lt;T extends Number&gt;{
+        int divisor;
+        MiscMath(int divisor) {
+                this.divisor = divisor;
+        }
+        float ratio(long l) {
+                try {
+                        l /= divisor;
+                } catch (Exception e) {
+                        if (e instanceof ArithmeticException)
+                                l = Long.MAX_VALUE;
+                        else
+                                l = 0;
+                }
+                return (float)l;
+        }
+        double gausser() {
+                Random r = new Random();
+                double[] val = new double[2];
+                val[0] = r.nextGaussian();
+                val[1] = r.nextGaussian();
+                return (val[0] + val[1]) / 2;
+</pre></blockquote><pre><a name="19670"></a>    }
+<a name="119019"></a>   Collection&lt;Number&gt; fromArray(Number[] na) {
+<a name="119027"></a>           Collection&lt;Number&gt; cn = new ArrayList&lt;Number&gt;();
+<a name="119022"></a>           for (Number n : na) {
+<a name="119023"></a>                   cn.add(n)
+<a name="119024"></a>           }
+<a name="119028"></a>           return cn;
+<a name="119021"></a>   }
+<a name="119054"></a>   void &lt;S&gt; loop(S s){ this.&lt;S&gt;loop(s);}
+<a name="119020"></a>           
+</pre><a name="119018"></a>
+<p>
+<blockquote><pre>}
+</pre></blockquote><a name="53860"></a>
+In this example, types are used in declarations of the following:<p>
+<ul><a name="53864"></a>
+<li>Imported types <a href="packages.html#70209">(&#167;7.5)</a>; here the type <code>Random</code>, imported from the type<code> java.util.Random</code> of the package <code>java.util</code>, is declared
+<a name="49983"></a>
+<li>Fields, which are the class variables and instance variables of classes <a href="classes.html#40898">(&#167;8.3)</a>, and constants of interfaces <a href="interfaces.html#78642">(&#167;9.3)</a>; here the field <code>divisor</code> in the class <code>MiscMath</code> &#32;is declared to be of type <code>int</code>
+<a name="49990"></a>
+<li>Method parameters <a href="classes.html#38698">(&#167;8.4.1)</a>; here the parameter <code>l</code> of the method <code>ratio</code> is declared to be of type <code>long</code>
+<a name="52378"></a>
+<li>Method results <a href="classes.html#40420">(&#167;8.4)</a>; here the result of the method <code>ratio</code> is declared to be of type <code>float</code>, and the result of the method <code>gausser</code> is declared to be of type <code>double</code>
+<a name="38145"></a>
+<li>Constructor parameters <a href="classes.html#29488">(&#167;8.8.1)</a>; here the parameter of the constructor for<code> MiscMath</code> is declared to be of type <code>int</code>
+<a name="12250"></a>
+<li>Local variables (<a href="statements.html#5920">&#167;14.4</a>, <a href="statements.html#24588">&#167;14.14</a>); the local variables <code>r</code> and <code>val</code> of the method <code>gausser</code> are declared to be of types <code>Random</code> and <code>double[]</code> (array of <code>double</code>)
+<a name="52411"></a>
+<li>Exception handler parameters <a href="statements.html#79311">(&#167;14.20)</a>; here the exception handler parameter <code>e</code> of the <code>catch</code> clause is declared to be of type <code>Exception</code>
+<a name="119048"></a>
+<li>Type variables <a href="typesValues.html#108850">(&#167;4.4)</a>; here the type variable <code>T</code> has <code>Number</code> as its declared bound.
+</ul><a name="25979"></a>
+and in expressions of the following kinds:<p>
+<ul><a name="52468"></a>
+<li>Class instance creations <a href="expressions.html#41147">(&#167;15.9)</a>; here a local variable <code>r</code> of method <code>gausser</code> is initialized by a class instance creation expression that uses the type <code>Random </code>
+<a name="119067"></a>
+<li>Generic class <a href="classes.html#299360">(&#167;8.1.2)</a> instance creations <a href="expressions.html#41147">(&#167;15.9)</a>; here <code>Number</code> is used as a type argument in the expression <code>new ArrayList&lt;Number&gt;()</code>
+<a name="96936"></a>
+<li>Array creations <a href="expressions.html#46168">(&#167;15.10)</a>; here the local variable <code>val</code> of method <code>gausser</code> is initialized by an array creation expression that creates an array of <code>double</code> with size 2
+<a name="119008"></a>
+<li>Generic method <a href="classes.html#323928">(&#167;8.4.4)</a> or constructor <a href="classes.html#244611">(&#167;8.8.4)</a> invocations <a href="expressions.html#20448">(&#167;15.12)</a>; here the method <code>loop</code> calls itself with an explicit type argument <code>S</code>
+<a name="52427"></a>
+<li>Casts <a href="expressions.html#238146">(&#167;15.16)</a>; here the <code>return</code> statement of the method <code>ratio</code> uses the <code>float</code> type in a cast
+<a name="25987"></a>
+<li>The <code>instanceof</code> operator <a href="expressions.html#80289">(&#167;15.20.2)</a>; here the <code>instanceof</code> operator tests whether <code>e</code> is assignment compatible with the type <code>ArithmeticException</code>
+</ul><a name="119039"></a>
+<code>. </code>Types are also used as arguments to parameterized types; here the type <code>Number</code> is used as an argument in the parameterized type <code>Collection&lt;Number&gt;</code>.<p>
+<a name="18470"></a>
+<a name="4.12"></a>
+<h2>4.12    Variables</h2>
+<a name="10872"></a>
+A variable is a storage location and has an associated type, sometimes called its <em>compile-time type</em>, that is either a primitive type <a href="typesValues.html#85587">(&#167;4.2)</a> or a reference type <a href="typesValues.html#9317">(&#167;4.3)</a>.  A variable's value is changed by an assignment <a href="expressions.html#5281">(&#167;15.26)</a> or by a prefix or postfix <code>++</code> (increment) or <code>--</code> (decrement) operator (<a href="expressions.html#292383">&#167;15.14.2</a>, <a href="expressions.html#4987">&#167;15.14.3</a>, <a href="expressions.html#39547">&#167;15.15.1</a>, <a href="expressions.html#239136">&#167;15.15.2</a>).<p>
+<a name="24555"></a>
+Compatibility of the value of a variable with its type is guaranteed by the design of the Java programming language, as long as a program does not give rise to unchecked warnings <a href="typesValues.html#111088">(&#167;4.12.2.1)</a>. Default values are compatible <a href="typesValues.html#96595">(&#167;4.12.5)</a> and all assignments to a variable are checked for assignment compatibility <a href="conversions.html#184206">(&#167;5.2)</a>, usually at compile time, but, in a single case involving arrays, a run-time check is made <a href="arrays.html#11430">(&#167;10.10)</a>.<p>
+<a name="28344"></a>
+<a name="4.12.1"></a>
+<h3>4.12.1    Variables of Primitive Type</h3>
+<a name="17088"></a>
+A variable of a primitive type always holds a value of that exact primitive type.<p>
+<a name="28345"></a>
+<a name="4.12.2"></a>
+<h3>4.12.2    Variables of Reference Type</h3>
+<a name="10877"></a>
+A variable of a class type <i>T</i> can hold a null reference or a reference to an instance of class <i>T</i> or of any class that is a subclass of <i>T</i>. A variable of an interface type can hold a null reference or a reference to any instance of any class that implements the interface. <p>
+<a name="111209"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="111210"></a>
+ Note that a variable is not guaranteed to always refer to a subtype of its declared type, but only to subclasses or subinterfaces of the declared type. This is due to the possibility of heap pollution discussed below.<p>
+<a name="111211"></a>
+<hr>
+ <p>
+<a name="111208"></a>
+If <i>T</i> is a primitive type, then a variable of type "array of <i>T</i>" can hold a null reference or a reference to any array of type "array of <i>T</i>"; if <i>T</i> is a reference type, then a variable of type "array of <i>T</i>" can hold a null reference or a reference to any array of type "array of <i>S</i>" such that type <i>S</i> is a subclass or subinterface of type <i>T</i>. In addition, a variable of type <code>Object[]</code> can hold an array of any reference type. A variable of type <code>Object</code> can hold a null reference or a reference to any object, whether class instance or array. <p>
+<a name="111088"></a>
+<a name="4.12.2.1"></a>
+<h4>4.12.2.1    Heap Pollution </h4>
+<a name="111097"></a>
+It is possible that a variable of a parameterized type refers to an object that is not of that parameterized type. This situation is known as heap pollution. This situation can only occur if the program performed some operation that would give rise to an unchecked warning at compile-time.<p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="111101"></a>
+ For example, the code:<p>
+<blockquote><pre>List l = new ArrayList&lt;Number&gt;();
+List&lt;String&gt; ls = l; // unchecked warning
+</pre></blockquote>
+<a name="111113"></a>
+ gives rise to an unchecked warning, because it is not possible to ascertain, either at compile-time (within the limits of the compile-time type checking rules) or at run-time, whether the variable l does indeed refer to a <code>List&lt;String&gt;</code>. <p>
+<a name="111179"></a>
+If the code above is executed, heap pollution arises, as the variable ls, declared to be a <code>List&lt;String&gt;</code>, refers to a value that is not in fact a <code>List&lt;String&gt;</code>. <p>
+<a name="111182"></a>
+The problem cannot be identified at run-time because type variables are not reified, and thus instances do not carry any information at run-time regarding the actual type parameters used to create them.<p>
+<a name="111167"></a>
+In a simple example as given above, it may appear that it should be straightforward to identify the situation at compile-time and give a compilation error. However, in the general (and typical) case, the value of the variable l may be the result of an invocation of a separately compiled method, or its value may depend upon arbitrary control flow. <p>
+<a name="111141"></a>
+The code above is therefore very atypical, and indeed very bad style.<p>
+<a name="111150"></a>
+Assignment from a value of a raw type to a variable of a parameterized type should only be used when combining legacy code which does not make use of parameterized types with more modern code that does.<p>
+<a name="111206"></a>
+If no operation that requires an unchecked warning to be issued takes place, heap pollution cannot occur. Note that this does not imply that heap pollution only occurs if an unchecked warning actually occurred. It is possible to run a program where some of the binaries were compiled by a compiler for an older version of the Java programming language, or by a compiler that allows the unchecked warnings to suppressed. This practice is unhealthy at best.<p>
+<a name="111207"></a>
+Conversely, it is possible that despite executing code that could (and perhaps did) give rise to an unchecked warning, no heap pollution takes place. Indeed, good programming practice requires that the programmer satisfy herself that despite any unchecked warning, the code is correct and heap pollution will not occur.<p>
+<hr>
+<a name="111151"></a>
+ <p>
+<a name="111193"></a>
+The variable will always refer to an object that is an instance of a class that implements the parameterized type. <p>
+<a name="111196"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="111197"></a>
+ For instance, the value of <code>l</code> in the example above is always a <code>List</code>.<p>
+ <hr>
+<a name="119093"></a>
+ <p>
+<a name="119097"></a>
+<a name="4.12.3"></a>
+<h3>4.12.3    Kinds of Variables</h3>
+<a name="10883"></a>
+There are seven kinds of variables:<p>
+<ol>
+<a name="10884"></a>
+<li>A <em>class variable</em> is a field declared using the keyword <code>static</code> within a class declaration <a href="classes.html#37544">(&#167;8.3.1.1)</a>, or with or without the keyword <code>static</code> within an interface declaration <a href="interfaces.html#78642">(&#167;9.3)</a>. A class variable is created when its class or interface is prepared <a href="execution.html#47979">(&#167;12.3.2)</a> and is initialized to a default value <a href="typesValues.html#96595">(&#167;4.12.5)</a>. The class variable effectively ceases to exist when its class or interface is unloaded <a href="execution.html#74294">(&#167;12.7)</a>.
+<a name="51516"></a>
+<li>An <em>instance variable</em> is a field declared within a class declaration without using the keyword <code>static</code> <a href="classes.html#37544">(&#167;8.3.1.1)</a>. If a class <i>T</i> has a field <i>a</i> that is an instance variable, then a new instance variable <i>a</i> is created and initialized to a default value <a href="typesValues.html#96595">(&#167;4.12.5)</a> as part of each newly created object of class <i>T</i> or of any class that is a subclass of <i>T</i> <a href="classes.html#262560">(&#167;8.1.4)</a>. The instance variable effectively ceases to exist when the object of which it is a field is no longer referenced, after any necessary finalization of the object <a href="execution.html#44748">(&#167;12.6)</a> has been completed.
+<a name="10895"></a>
+<li><em>Array components</em> are unnamed variables that are created and initialized to default values <a href="typesValues.html#96595">(&#167;4.12.5)</a> whenever a new object that is an array is created <a href="expressions.html#46168">(&#167;15.10)</a>. The array components effectively cease to exist when the array is no longer referenced. See <a href="arrays.html#27803">&#167;10</a> for a description of arrays.
+<a name="24632"></a>
+<li><em>Method parameters</em> <a href="classes.html#38698">(&#167;8.4.1)</a> name argument values passed to a method. For every parameter declared in a method declaration, a new parameter variable is created each time that method is invoked <a href="expressions.html#20448">(&#167;15.12)</a>. The new variable is initialized with the corresponding argument value from the method invocation. The method parameter effectively ceases to exist when the execution of the body of the method is complete.
+<a name="24657"></a>
+<li><em>Constructor parameters</em> <a href="classes.html#29488">(&#167;8.8.1)</a> name argument values passed to a constructor. For every parameter declared in a constructor declaration, a new parameter variable is created each time a class instance creation expression <a href="expressions.html#41147">(&#167;15.9)</a> or explicit constructor invocation <a href="classes.html#78435">(&#167;8.8.7)</a> invokes that constructor. The new variable is initialized with the corresponding argument value from the creation expression or constructor invocation. The constructor parameter effectively ceases to exist when the execution of the body of the constructor is complete.
+<a name="10903"></a>
+<li>An <em>exception-handler parameter</em> is created each time an exception is caught by a <code>catch</code> clause of a <code>try</code> statement <a href="statements.html#79311">(&#167;14.20)</a>. The new variable is initialized with the actual object associated with the exception (<a href="exceptions.html#44153">&#167;11.3</a>, <a href="statements.html#237350">&#167;14.18</a>). The exception-handler parameter effectively ceases to exist when execution of the block associated with the <code>catch</code> clause is complete.
+<a name="24801"></a>
+<li><em>Local variables</em> are declared by local variable declaration statements <a href="statements.html#5920">(&#167;14.4)</a>. Whenever the flow of control enters a block <a href="statements.html#246838">(&#167;14.2)</a> or <code>for</code> statement <a href="statements.html#24588">(&#167;14.14)</a>, a new variable is created for each local variable declared in a local variable declaration statement immediately contained within that block or <code>for</code> statement. A local variable declaration statement may contain an expression which initializes the variable. The local variable with an initializing expression is not initialized, however, until the local variable declaration statement that declares it is executed. (The rules of definite assignment <a href="defAssign.html#25979">(&#167;16)</a> prevent the value of a local variable from being used before it has been initialized or otherwise assigned a value.) The local variable effectively ceases to exist when the execution of the block or <code>for</code> statement is complete.
+</ol>
+<p><a name="24816"></a>
+Were it not for one exceptional situation, a local variable could always be regarded as being created when its local variable declaration statement is executed. The exceptional situation involves the <code>switch</code> statement <a href="statements.html#258896">(&#167;14.11)</a>, where it is possible for control to enter a block but bypass execution of a local variable declaration statement. Because of the restrictions imposed by the rules of definite assignment <a href="defAssign.html#29542">(&#167;16)</a>, however, the local variable declared by such a bypassed local variable declaration statement cannot be used before it has been definitely assigned a value by an assignment expression <a href="expressions.html#5281">(&#167;15.26)</a>. 
+<a name="24836"></a>
+<p>The following example contains several different kinds of variables:
+<blockquote><pre>
+class Point {
+        static int numPoints;                   // numPoints is a class variable
+        int x, y;                               // x and y are instance variables
+        int[] w = new int[10];                  // w[0] is an array component
+        int setX(int x) {                       // x is a method parameter
+                int oldx = this.x;              // oldx is a local variable
+                this.x = x;
+                return oldx;
+        }
+}
+</pre></blockquote><a name="10931"></a>
+<a name="4.12.4"></a>
+<h3>4.12.4    final Variables</h3>
+<a name="96639"></a>
+A variable can be declared <code>final</code>. A final variable may only be assigned to once. It is a compile time error if a final variable is assigned to unless it is definitely unassigned <a href="defAssign.html#25979">(&#167;16)</a> immediately prior to the assignment.<p>
+<a name="96971"></a>
+A blank final is a final variable whose declaration lacks an initializer. <p>
+<a name="96975"></a>
+Once a <code>final</code> variable has been assigned, it always contains the same value. If a <code>final</code> variable holds a reference to an object, then the state of the object may be changed by operations on the object, but the variable will always refer to the same object. This applies also to arrays, because arrays are objects; if a <code>final</code> variable holds a reference to an array, then the components of the array may be changed by operations on the array, but the variable will always refer to the same array.<p>
+<a name="103462"></a>
+<p>Declaring a variable <code>final</code> can serve as useful documentation that its value will not change and can help avoid programming errors.</p>
+<a name="96976"></a>
+<p>In the example:</p>
+<blockquote><pre>class Point {
+        int x, y;
+        int useCount;
+        Point(int x, int y) { this.x = x; this.y = y; }
+        final static Point origin = new Point(0, 0);
+}
+</pre></blockquote><a name="96596"></a>
+the class <code>Point</code> declares a final class variable <code>origin</code>. The <code>origin</code> variable holds a reference to an object that is an instance of class <code>Point</code> whose coordinates are (0, 0). The value of the variable <code>Point.origin</code> can never change, so it always refers to the same <code>Point</code> object, the one created by its initializer. However, an operation on this <code>Point</code> object might change its state-for example, modifying its <code>useCount</code> or even, misleadingly, its <code>x</code> or <code>y</code> coordinate.<p>
+<a name="107782"></a>
+We call a variable, of primitive type or type <code>String</code>, that is final and initialized with a compile-time constant expression <a href="expressions.html#5313">(&#167;15.28)</a> a <i>constant variable</i>. Whether a variable is a constant variable or not may have implications with respect to class initialization <a href="execution.html#57946">(&#167;12.4.1)</a>, binary compatibility (<a href="binaryComp.html#44909">&#167;13.1</a>, <a href="binaryComp.html#45139">&#167;13.4.9</a>) and definite assignment (<a href="defAssign.html#25979">&#167;16</a>).<p>
+<a name="107779"></a>
+<p>
+<a name="96595"></a>
+<a name="4.12.5"></a>
+<h3>4.12.5    Initial Values of Variables</h3>
+<a name="10935"></a>
+Every variable in a program must have a value before its value is used:<p>
+<ul><a name="10946"></a>
+<li>Each class variable, instance variable, or array component is initialized with a <em>default value</em> when it is created (<a href="expressions.html#41147">&#167;15.9</a>, <a href="expressions.html#46168">&#167;15.10</a>):
+<ul>
+<a name="10947"></a>
+<li>For type <code>byte</code>, the default value is zero, that is, the value of <code>(byte)0</code>.
+<a name="10948"></a>
+<li>For type <code>short</code>, the default value is zero, that is, the value of <code>(short)0</code>.
+<a name="10949"></a>
+<li>For type <code>int</code>, the default value is zero, that is, <code>0</code>.
+<a name="10950"></a>
+<li>For type <code>long</code>, the default value is zero, that is, <code>0L</code>.
+<a name="10951"></a>
+<li>For type <code>float</code>, the default value is positive zero, that is, <code>0.0f</code>.
+<a name="46977"></a>
+<li>For type <code>double</code>, the default value is positive zero, that is, <code>0.0d</code>.
+<a name="46978"></a>
+<li>For type <code>char</code>, the default value is the null character, that is, <code>'\u0000'</code>.
+<a name="46979"></a>
+<li>For type <code>boolean</code>, the default value is <code>false</code>.
+<a name="10955"></a>
+<li>For all reference types <a href="typesValues.html#9317">(&#167;4.3)</a>, the default value is <code>null</code>.
+</ul>
+<a name="11353"></a>
+<li>Each method parameter <a href="classes.html#38698">(&#167;8.4.1)</a> is initialized to the corresponding argument value provided by the invoker of the method <a href="expressions.html#20448">(&#167;15.12)</a>.
+<a name="38160"></a>
+<li>Each constructor parameter <a href="classes.html#29488">(&#167;8.8.1)</a> is initialized to the corresponding argument value provided by a class instance creation expression <a href="expressions.html#41147">(&#167;15.9)</a> or explicit constructor invocation <a href="classes.html#78435">(&#167;8.8.7)</a>.
+<a name="11354"></a>
+<li>An exception-handler parameter <a href="statements.html#79311">(&#167;14.20)</a> is initialized to the thrown object representing the exception (<a href="exceptions.html#44153">&#167;11.3</a>, <a href="statements.html#237350">&#167;14.18</a>). 
+<a name="11569"></a>
+<li>A local variable (<a href="statements.html#5920">&#167;14.4</a>, <a href="statements.html#24588">&#167;14.14</a>) must be explicitly given a value before it is used, by either initialization <a href="statements.html#5920">(&#167;14.4)</a> or assignment <a href="expressions.html#5281">(&#167;15.26)</a>, in a way that can be verified by the compiler using the rules for definite assignment <a href="defAssign.html#25979">(&#167;16)</a>.
+</ul><a name="30962"></a>
+The example program:<p>
+<blockquote><pre>class Point {
+        static int npoints;
+        int x, y;
+        Point root;
+}
+class Test {
+        public static void main(String[] args) {
+                System.out.println("npoints=" + Point.npoints);
+                Point p = new Point();
+                System.out.println("p.x=" + p.x + ", p.y=" + p.y);
+                System.out.println("p.root=" + p.root);
+        }
+}
+</pre></blockquote><a name="12324"></a>
+prints:<p>
+<blockquote><pre>npoints=0
+p.x=0, p.y=0
+p.root=null
+</pre></blockquote><a name="24882"></a>
+illustrating the default initialization of <code>npoints</code>, which occurs when the class <code>Point</code> is prepared <a href="execution.html#47979">(&#167;12.3.2)</a>, and the default initialization of <code>x</code>, <code>y</code>, and <code>root</code>, which occurs when a new <code>Point</code> is instantiated. See <a href="execution.html#44410">&#167;12</a> for a full description of all aspects of loading, linking, and initialization of classes and interfaces, plus a description of the instantiation of classes to make new class instances.<p>
+<a name="24887"></a>
+<a name="4.12.6"></a>
+<h3>4.12.6    Types, Classes, and Interfaces</h3>
+<a name="24888"></a>
+In the Java programming language, every variable and every expression has a type that can be determined at compile time. The type may be a primitive type or a reference type. Reference types include class types and interface types. Reference types are introduced by type declarations, which include class declarations <a href="classes.html#15372">(&#167;8.1)</a> and interface declarations <a href="interfaces.html#35470">(&#167;9.1)</a>. We often use the term <em>type</em> to refer to either a class or an interface.<p>
+<a name="97724"></a>
+Every object belongs to some particular class: the class that was mentioned in the creation expression that produced the object, the class whose <code>Class</code> object was used to invoke a reflective method to produce the object, or the <code>String</code> class for objects implicitly created by the string concatenation operator <code>+</code> <a href="expressions.html#39990">(&#167;15.18.1)</a>. This class is called the <em>class of the object</em>. (Arrays also have a class, as described at the end of this section.) An object is said to be an instance of its class and of all superclasses of its class.<p>
+<a name="96875"></a>
+Sometimes a variable or expression is said to have a "run-time type". This refers to the class of the object referred to by the value of the variable or expression at run time, assuming that the value is not <code>null</code>. <p>
+<a name="96880"></a>
+The compile time type of a variable is always declared, and the compile time type of an expression can be deduced at compile time. The compile time type limits the possible values that the variable can hold or the expression can produce at run time. If a run-time value is a reference that is not <code>null</code>, it refers to an object or array that has a class, and that class will necessarily be compatible with the compile-time type.<p>
+<a name="24895"></a>
+Even though a variable or expression may have a compile-time type that is an interface type, there are no instances of interfaces. A variable or expression whose type is an interface type can reference any object whose class implements <a href="classes.html#34031">(&#167;8.1.5)</a> that interface.<p>
+<a name="24918"></a>
+<p>Here is an example of creating new objects and of the distinction between the type of a variable and the class of an object:</p>
+<blockquote><pre>public interface Colorable {
+        void setColor(byte r, byte g, byte b);
+}
+class Point { int x, y; }
+class ColoredPoint extends Point implements Colorable {
+        byte r, g, b;
+        public void setColor(byte rv, byte gv, byte bv) {
+                r = rv; g = gv; b = bv;
+        }
+}
+class Test {
+        public static void main(String[] args) {
+                Point p = new Point();
+                ColoredPoint cp = new ColoredPoint();
+                p = cp;
+                Colorable c = cp;
+        }
+}
+</pre></blockquote><a name="52612"></a>
+In this example:<p>
+<ul><a name="52613"></a>
+<li>The local variable <code>p</code> of the method <code>main</code> of class <code>Test</code> has type <code>Point</code> and is initially assigned a reference to a new instance of class <code>Point</code>.
+<a name="52614"></a>
+<li>The local variable <code>cp</code> similarly has as its type <code>ColoredPoint</code>, and is initially assigned a reference to a new instance of class <code>ColoredPoint</code>.
+<a name="52615"></a>
+<li>The assignment of the value of <code>cp</code> to the variable <code>p</code> causes <code>p</code> to hold a reference to a <code>ColoredPoint</code> object. This is permitted because <code>ColoredPoint</code> is a subclass of <code>Point</code>, so the class <code>ColoredPoint</code> is assignment compatible <a href="conversions.html#184206">(&#167;5.2)</a> with the type <code>Point</code>. A <code>ColoredPoint</code> object includes support for all the methods of a <code>Point</code>. In addition to its particular fields <code>r</code>, <code>g</code>, and <code>b</code>, it has the fields of class <code>Point</code>, namely <code>x</code> and <code>y</code>.
+<a name="52586"></a>
+<li>The local variable <code>c</code> has as its type the interface type <code>Colorable</code>, so it can hold a reference to any object whose class implements <code>Colorable</code>; specifically, it can hold a reference to a <code>ColoredPoint</code>.
+</ul>
+<a name="24972"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+<a name="120141"></a>
+ Note that an expression such as <code>new Colorable()</code> is not valid because it is not possible to create an instance of an interface, only of a class.<p>
+<a name="120142"></a>
+ <p>
+<hr>
+<a name="24976"></a>
+Every array also has a class; the method <code>getClass</code>, when invoked for an array object, will return a class object (of class <code>Class</code>) that represents the class of the array. <p>
+<a name="103397"></a>
+<p>The classes for arrays have strange names that are not valid identifiers; for example, the class for an array of <code>int</code> components has the name "<code>[I</code>" and so the value of the expression:</p>
+<blockquote><pre>new int[10].getClass().getName()
+</pre></blockquote><a name="103415"></a>
+is the string <code>"[I"</code>; see the specification of <code>Class.getName</code> for details.<p>
+<a name="103407"></a>
+<a name="90242"></a>
+<p>
+<a name="90243"></a>
+<p>
+<a name="90244"></a>
+<p>
+<a name="90245"></a>
+<p>
+<a name="90246"></a>
+<p>
+<a name="90247"></a>
+<p>
+<a name="90248"></a>
+<p>
+<a name="90249"></a>
+<p>
+<a name="90250"></a>
+<p>
+<a name="90251"></a>
+<p>
+<a name="90252"></a>
+<p>
+<a name="90253"></a>
+<p>
+<a name="90254"></a>
+<p>
+<a name="90255"></a>
+<p>
+<a name="90256"></a>
+<p>
+<a name="90257"></a>
+<p>
+<a name="90258"></a>
+<p>
+<a name="90259"></a>
+<p>
+<a name="90260"></a>
+<p>
+<a name="90261"></a>
+<p>
+<a name="90262"></a>
+<p>
+<a name="90263"></a>
+<p>
+<a name="90268"></a>
+<p>
+<a name="90269"></a>
+<p>
+<a name="90270"></a>
+<p>
+
+
+<hr>
+<!-- This inserts footnotes--><p>
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="lexical.html">Prev</a> | <a href="conversions.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<p>
+<font size=-1>
+<i><a href="jcopyright.html">Copyright</a> &#169 1996-2005 Sun Microsystems, Inc.
+All rights reserved</i>
+<br>
+Please send any comments or corrections via our <a href="http://developers.sun.com/contact/feedback.jsp?&category=doc&mailsubject=Java%20Language%20Specification%20Feedback">feedback form</a>
+</font>
+</body></html>
+

@@ -1,0 +1,1143 @@
+<html>
+<head>
+<title> Interfaces</title>
+<meta name="collection" content="community">
+<script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+<body BGCOLOR=#eeeeff text=#000000 LINK=#0000ff VLINK=#000077 ALINK=#ff0000>
+ 
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="classes.html">Prev</a> | <a href="arrays.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<hr><br>
+ 
+<a name="238678"></a>
+<p><strong>
+CHAPTER
+ 9 </strong></p>
+<a name="238680"></a>
+<h1>Interfaces</h1>
+<hr><p>
+<a name="253487"></a>
+An interface declaration introduces a new reference type whose members are classes, interfaces, constants and abstract methods. This type has no implementation, but otherwise unrelated classes can implement it by providing implementations for its abstract methods.<p>
+<a name="245713"></a>
+A <i>nested interface</i> is any interface whose declaration occurs within the body of another class or interface. A <i>top-level interface</i> is an interface that is not a nested interface.<p>
+<a name="257087"></a>
+We distinguish between two kinds of interfaces - normal interfaces and annotation types.<p>
+<a name="245720"></a>
+This chapter discusses the common semantics of all interfaces-normal interfaces and annotation types <a href="interfaces.html#239527">(&#167;9.6)</a>, top-level <a href="packages.html#26783">(&#167;7.6)</a> and nested (<a href="classes.html#246026">&#167;8.5</a>, <a href="interfaces.html#252566">&#167;9.5</a>). Details that are specific to particular kinds of interfaces are discussed in the sections dedicated to these constructs.<p>
+<a name="247545"></a>
+<p>Programs can use interfaces to make it unnecessary for related classes to share a common abstract superclass or to add methods to <code>Object</code>.</p>
+<a name="247549"></a>
+An interface may be declared to be a <em>direct extension </em>of one or more other interfaces, meaning that it implicitly specifies all the member types, abstract methods and constants of the interfaces it extends, except for any member types and constants that it may hide.<p>
+<a name="30809"></a>
+A class may be declared to <em>directly implement</em> one or more interfaces, meaning that any instance of the class implements all the abstract methods specified by the interface or interfaces. A class necessarily implements all the interfaces that its direct superclasses and direct superinterfaces do. This (multiple) interface inheritance allows objects to support (multiple) common behaviors without sharing any implementation.<p>
+<a name="35467"></a>
+A variable whose declared type is an interface type may have as its value a reference to any instance of a class which implements the specified interface. It is not sufficient that the class happen to implement all the abstract methods of the interface; the class or one of its superclasses must actually be declared to implement the interface, or else the class is not considered to implement the interface.<p>
+<a name="35470"></a>
+<a name="9.1"></a>
+<h2>9.1    Interface Declarations</h2>
+<a name="27727"></a>
+An <i>interface declaration</i> specifies a new named reference type. There are two kinds of interface declarations - <i>normal interface declarations</i> and <i>annotation type declarations</i>:<p>
+<a name="257053"></a>
+<em>InterfaceDeclaration:       
+        NormalInterfaceDeclaration
+        AnnotationTypeDeclaration</em>
+        </pre></blockquote>
+<a name="261856"></a>
+<p>
+<a name="261864"></a>
+Annotation types are described further in <a href="interfaces.html#239527">&#167;9.6</a>.<p>
+<blockquote><pre>
+<em>
+NormalInterfaceDeclaration:
+        InterfaceModifiers<sub><i>opt</i></sub></em> interface <em>Identifier TypeParametersopt
+                ExtendsInterfaces<sub><i>opt</i></sub> InterfaceBody
+                </em>
+</pre></blockquote><a name="252341"></a>
+The <em>Identifier</em> in an interface declaration specifies the name of the interface. A compile-time error occurs if an interface has the same simple name as any of its enclosing classes or interfaces. <p>
+<a name="235947"></a>
+<a name="9.1.1"></a>
+<h3>9.1.1    Interface Modifiers</h3>
+<a name="17033"></a>
+An interface declaration may include <em>interface modifiers</em>:<p>
+<blockquote><pre>
+<em>
+InterfaceModifiers:
+        InterfaceModifier
+        InterfaceModifiers InterfaceModifier
+
+InterfaceModifier: one of
+         Annotation </em>public&#32;protected&#32;private
+        abstract&#32;static&#32;strictfp
+</pre></blockquote><a name="254704"></a>
+The access modifier <code>public</code> is discussed in <a href="names.html#104285">&#167;6.6</a>. Not all modifiers are applicable to all kinds of interface declarations. The access modifiers <code>protected</code> and <code>private</code> pertain only to member interfaces within a directly enclosing class declaration <a href="classes.html#246026">(&#167;8.5)</a> and are discussed in <a href="classes.html#247581">&#167;8.5.1</a>. The access modifier <code>static</code> pertains only to member interfaces (<a href="classes.html#246026">&#167;8.5</a>, <a href="interfaces.html#252566">&#167;9.5</a>). A compile-time error occurs if the same modifier appears more than once in an interface declaration. If an annotation <i>a</i> on an interface declaration corresponds to an annotation type <i>T,</i> and <i>T</i> has a (meta-)annotation <i>m</i> that corresponds to <code>annotation.Target</code>, then <i>m</i> must have an element whose value is <code>annotation.ElementType.TYPE</code>, or a compile-time error occurs. Annotation modifiers are described further in <a href="interfaces.html#253695">&#167;9.7</a>.<p>
+<a name="30820"></a>
+<a name="9.1.1.1"></a>
+<h4>9.1.1.1    abstract Interfaces</h4>
+<a name="30821"></a>
+Every interface is implicitly <code>abstract</code>. This modifier is obsolete and should not be used in new programs.<p>
+<a name="246350"></a>
+<a name="9.1.1.2"></a>
+<h4>9.1.1.2    strictfp Interfaces</h4>
+<a name="251658"></a>
+The effect of the <code>strictfp</code> modifier is to make all <code>float</code> or <code>double</code> expressions within the interface declaration be explicitly FP-strict <a href="expressions.html#249198">(&#167;15.4)</a>. <p>
+<a name="252569"></a>
+This implies that all nested types declared in the interface are implicitly <code>strictfp</code>.<p>
+<a name="78598"></a>
+<a name="9.1.2"></a>
+<h3>9.1.2    Generic Interfaces and Type Parameters</h3>
+<a name="253413"></a>
+An interface is <i>generic</i> if it declares one or more type variables <a href="typesValues.html#108850">(&#167;4.4)</a>. These type variables are known as the <i>type parameters</i> of the interface. The type parameter section follows the interface name and is delimited by angle brackets. It defines one or more type variables that act as parameters. A generic interface declaration defines a set of types, one for each possible invocation of the type parameter section. All parameterized types share the same interface at runtime.  <p>
+<a name="262586"></a>
+The scope of an interface's type parameter is the entire declaration of the interface including the type parameter section itself. Therefore, type parameters can appear as parts of their own bounds, or as bounds of other type parameters declared in the same section.<p>
+<a name="257817"></a>
+It is a compile-time error to refer to a type parameter of an interface <i>I</i> anywhere in the declaration of a field or type member of <i>I</i>.<p>
+<a name="253307"></a>
+<a name="9.1.3"></a>
+<h3>9.1.3    Superinterfaces and Subinterfaces</h3>
+<a name="78599"></a>
+If an <code>extends</code> clause is provided, then the interface being declared extends each of the other named interfaces and therefore inherits the member types, methods, and constants of each of the other named interfaces. These other named interfaces are the <em>direct superinterfaces</em> of the interface being declared. Any class that <code>implements</code> the declared interface is also considered to implement all the interfaces that this interface <code>extends</code>.<p>
+<blockquote><pre>
+<em>
+ExtendsInterfaces:</em>
+        extends <em>InterfaceType
+        ExtendsInterfaces , InterfaceType
+</em>
+</pre></blockquote><a name="21599"></a>
+The following is repeated from <a href="typesValues.html#9317">&#167;4.3</a> to make the presentation here clearer:<p>
+<blockquote><pre>
+<em>
+InterfaceType:
+        TypeDeclSpecifier TypeArguments<sub>opt</sub>
+        </em>
+</pre></blockquote><a name="257108"></a>
+Given a (possibly generic) interface declaration for <i>I&lt;F<sub>1</sub>,...,F<sub>n</sub>&gt;</i>, <i>n</i><img src="chars/gtequal.gif">0, the <i>direct superinterfaces</i> of the interface type <a href="typesValues.html#112898">(&#167;4.5)</a> <i>I&lt;F<sub>1</sub>,...,F<sub>n</sub>&gt;</i> are the types given in the extends clause of the declaration of <i>I</i> if an extends clause is present.<p>
+<a name="257118"></a>
+Let <i>I&lt;F<sub>1</sub>,...,F<sub>n</sub>&gt;</i>, <i>n</i>&gt;0, be a generic interface declaration. The direct superinterfaces of the parameterized interface type <i>I&lt;T<sub>1</sub>,...,T<sub>n</sub>&gt;</i> , where <i>T<sub>i</sub></i>, 1<img src="chars/lt_equal.gif"><i>i</i><img src="chars/lt_equal.gif"><i>n</i>, is a type, are all types <i>J&lt;U<sub>1</sub> theta , ..., U<sub>k</sub> theta&gt;</i>, where <i>J&lt;U<sub>1</sub>,...,U<sub>k</sub>&gt;</i> is a direct superinterface of <i>I&lt;F<sub>1</sub>,...,F<sub>n</sub>&gt;</i>, and <i>theta</i> is the substitution [<i>F<sub>1</sub></i> := <i>T<sub>1</sub></i>, ..., <i>F<sub>n</sub></i> := <i>T<sub>n</sub></i>].<p>
+<a name="152015"></a>
+Each <em>InterfaceType </em>in the <code>extends</code> clause of an interface declaration must name an accessible interface type; otherwise a compile-time error occurs.<p>
+<a name="246991"></a>
+An interface <i>I directly depends</i> on a type <i>T</i> if <i>T</i> is mentioned in the <code>extends</code> clause of <i>I</i> either as a superinterface or as a qualifier within a superinterface name. An interface <i>I depends</i> on a reference type <i>T</i> if any of the following conditions hold:<p>
+<ul><a name="246992"></a>
+<li><i>I</i> directly depends on <i>T</i>.
+<a name="246996"></a>
+<li><i>I</i> directly depends on a class <i>C</i> that depends <a href="classes.html#34031">(&#167;8.1.5)</a> on <i>T</i>.
+<a name="252497"></a>
+<li><i>I</i> directly depends on an interface <i>J</i> that depends on <i>T</i> (using this definition recursively).
+</ul><a name="252500"></a>
+A compile-time error occurs if an interface depends on itself.<p>
+<a name="78603"></a>
+While every class is an extension of class <code>Object</code>, there is no single interface of which all interfaces are extensions. <p>
+<a name="245858"></a>
+The <em>superinterface </em>relationship is the transitive closure of the direct superinterface relationship. An interface <i>K</i> is a superinterface of interface <i>I</i> if either of the following is true:<p>
+<ul><a name="236096"></a>
+<li><i>K</i> is a direct superinterface of <i>I</i>.
+<a name="236097"></a>
+<li>There exists an interface <i>J</i> such that <i>K</i> is a superinterface of <i>J</i>, and <i>J</i> is a superinterface of <i>I</i>, applying this definition recursively.
+</ul><a name="236428"></a>
+Interface <i>I</i> is said to be a <em>subinterface </em>of interface <i>K</i> whenever <i>K</i> is a superinterface of <i>I</i>.<p>
+<a name="236431"></a>
+<a name="9.1.4"></a>
+<h3>9.1.4    Interface Body and Member Declarations</h3>
+<a name="78608"></a>
+The body of an interface may declare members of the interface:<p>
+<blockquote><pre>
+<em>
+InterfaceBody:
+        </em>{<em> InterfaceMemberDeclarations<sub><i>opt</i></sub> </em>}<em>
+
+InterfaceMemberDeclarations:
+        InterfaceMemberDeclaration
+        InterfaceMemberDeclarations InterfaceMemberDeclaration
+
+InterfaceMemberDeclaration:
+        ConstantDeclaration
+        AbstractMethodDeclaration
+        ClassDeclaration 
+        InterfaceDeclaration</em>
+        <code>;</code>                          
+</pre></blockquote><a name="262569"></a>
+The scope of the declaration of a member <i>m</i> declared in or inherited by an interface type <i>I</i> is the entire body of <i>I</i>, including any nested type declarations.<p>
+<a name="17144"></a>
+<a name="9.1.5"></a>
+<h3>9.1.5    Access to Interface Member Names</h3>
+<a name="17145"></a>
+All interface members are implicitly <code>public</code>. They are accessible outside the package where the interface is declared if the interface is also declared <code>public</code> or <code>protected</code>, in accordance with the rules of <a href="names.html#104285">&#167;6.6</a>.<p>
+<a name="32392"></a>
+<a name="9.2"></a>
+<h2>9.2    Interface Members</h2>
+<a name="262575"></a>
+The members of an interface are:<p>
+<ul><a name="262576"></a>
+<li>Those members declared in the interface.
+<a name="262579"></a>
+<li>Those members inherited from direct superinterfaces.
+<a name="262580"></a>
+<li>If an interface has no direct superinterfaces, then the interface implicitly declares a public abstract member method <i>m</i> with signature <i>s,</i> return type <i>r,</i> and <code>throws</code> clause <i>t</i> corresponding to each public instance method <i>m</i> with signature <i>s,</i> return type <i>r,</i> and <code>throws</code> clause <i>t</i> declared in <code>Object</code>, unless a method with the same signature, same return type, and a compatible <code>throws</code> clause is explicitly declared by the interface. It is a compile-time error if the interface explicitly declares such a method <i>m</i> in the case where <i>m</i> is declared to be <code>final</code> in <code>Object</code>.
+</ul><a name="252465"></a>
+It follows that is a compile-time error if the interface declares a method with a signature that is override-equivalent <a href="classes.html#38649">(&#167;8.4.2)</a> to a public method of <code>Object</code>, but has a different return type or incompatible <code>throws</code> clause.<p>
+<a name="256599"></a>
+The interface inherits, from the interfaces it extends, all members of those interfaces, except for fields, classes, and interfaces that it hides and methods that it overrides.<p>
+<a name="78642"></a>
+<a name="9.3"></a>
+<h2>9.3    Field (Constant) Declarations</h2>
+<blockquote><pre>
+<em>
+ConstantDeclaration:
+        ConstantModifiers<sub><i>opt</i></sub> Type VariableDeclarators ;
+
+ConstantModifiers: 
+        ConstantModifier
+        ConstantModifier ConstantModifers&#32;
+
+ConstantModifier: one of
+        Annotation</em> public&#32;static&#32;final 
+</pre></blockquote><a name="40575"></a>
+Every field declaration in the body of an interface is implicitly <code>public</code>, <code>static</code>, and <code>final</code>. It is permitted to redundantly specify any or all of these modifiers for such fields.<p>
+<a name="254713"></a>
+If an annotation <i>a</i> on a field declaration corresponds to an annotation type <i>T,</i> and <i>T</i> has a (meta-)annotation <i>m</i> that corresponds to <code>annotation.Target</code>, then <i>m</i> must have an element whose value is <code>annotation.ElementType.FIELD</code>, or a compile-time error occurs. Annotation modifiers are described further in <a href="interfaces.html#253695">&#167;9.7</a>.<p>
+<a name="252384"></a>
+If the interface declares a field with a certain name, then the declaration of that field is said to <em>hide</em> any and all accessible declarations of fields with the same name in superinterfaces of the interface.<p>
+<a name="252453"></a>
+It is a compile-time error for the body of an interface declaration to declare two fields with the same name.<p>
+<a name="40725"></a>
+It is possible for an interface to inherit more than one field with the same name <a href="classes.html#40491">(&#167;8.3.3.3)</a>. Such a situation does not in itself cause a compile-time error. However, any attempt within the body of the interface to refer to either field by its simple name will result in a compile-time error, because such a reference is ambiguous.<p>
+<a name="40729"></a>
+There might be several paths by which the same field declaration might be inherited from an interface. In such a situation, the field is considered to be inherited only once, and it may be referred to by its simple name without ambiguity. <p>
+<a name="40720"></a>
+<a name="9.3.1"></a>
+<h3>9.3.1    Initialization of Fields in Interfaces</h3>
+<a name="236695"></a>
+Every field in the body of an interface must have an initialization expression, which need not be a constant expression. The variable initializer is evaluated and the assignment performed exactly once, when the interface is initialized <a href="execution.html#44557">(&#167;12.4)</a>.<p>
+<a name="247455"></a>
+A compile-time error occurs if an initialization expression for an interface field contains a reference by simple name to the same field or to another field whose declaration occurs textually later in the same interface.<p>
+<a name="247101"></a>
+<p>Thus:</p>
+<blockquote><pre>interface Test {
+        float f = j;
+        int j = 1;
+        int k = k+1;
+}
+</pre></blockquote><a name="41013"></a>
+causes two compile-time errors, because <code>j</code> is referred to in the initialization of <code>f</code> before <code>j</code> is declared and because the initialization of <code>k</code> refers to <code>k</code> itself.<p>
+<a name="247483"></a>
+<p>One subtlety here is that, at run time, fields that are initialized with compile-time constant values are initialized first. This applies also to <code>static</code> <code>final</code> fields in classes <a href="classes.html#38010">(&#167;8.3.2.1)</a>. This means, in particular, that these fields will never be observed to have their default initial values <a href="typesValues.html#96595">(&#167;4.12.5)</a>, even by devious programs. See <a href="execution.html#44630">&#167;12.4.2</a> and <a href="binaryComp.html#45139">&#167;13.4.9</a> for more discussion.</p>
+<a name="41024"></a>
+If the keyword <code>this</code> <a href="expressions.html#251519">(&#167;15.8.3)</a> or the keyword <code>super</code> (<a href="expressions.html#20860">15.11.2</a>, <a href="expressions.html#20448">15.12</a>) occurs in an initialization expression for a field of an interface, then unless the occurrence is within the body of an anonymous class <a href="expressions.html#252986">(&#167;15.9.5)</a>, a compile-time error occurs.<p>
+<a name="40595"></a>
+<a name="9.3.2"></a>
+<h3>9.3.2    Examples of Field Declarations</h3>
+<a name="40743"></a>
+The following example illustrates some (possibly subtle) points about field declarations.<p>
+<a name="40596"></a>
+<a name="9.3.2.1"></a>
+<h4>9.3.2.1    Ambiguous Inherited Fields</h4>
+<a name="40648"></a>
+If two fields with the same name are inherited by an interface because, for example, two of its direct superinterfaces declare fields with that name, then a single <em>ambiguous member</em> results. Any use of this ambiguous member will result in a compile-time error. <p>
+<a name="261996"></a>
+<p>
+<a name="261997"></a>
+Thus in the example:<p>
+<blockquote><pre>interface BaseColors {
+        int RED = 1, GREEN = 2, BLUE = 4;
+}
+interface RainbowColors extends BaseColors {
+        int YELLOW = 3, ORANGE = 5, INDIGO = 6, VIOLET = 7;
+}
+interface PrintColors extends BaseColors {
+        int YELLOW = 8, CYAN = 16, MAGENTA = 32;
+}
+interface LotsOfColors extends RainbowColors, PrintColors {
+        int FUCHSIA = 17, VERMILION = 43, CHARTREUSE = RED+90;
+}
+</pre></blockquote><a name="40661"></a>
+the interface <code>LotsOfColors</code> inherits two fields named <code>YELLOW</code>. This is all right as long as the interface does not contain any reference by simple name to the field <code>YELLOW</code>. (Such a reference could occur within a variable initializer for a field.)<p>
+<a name="40696"></a>
+<p>Even if interface <code>PrintColors</code> were to give the value <code>3</code> to <code>YELLOW</code> rather than the value <code>8</code>, a reference to field <code>YELLOW</code> within interface <code>LotsOfColors</code> would still be considered ambiguous.</p>
+<a name="40599"></a>
+<a name="9.3.2.2"></a>
+<h4>9.3.2.2    Multiply Inherited Fields</h4>
+<a name="236005"></a>
+If a single field is inherited multiple times from the same interface because, for example, both this interface and one of this interface's direct superinterfaces extend the interface that declares the field, then only a single member results. This situation does not in itself cause a compile-time error. <p>
+<a name="247488"></a>
+<p>In the example in the previous section, the fields <code>RED</code>, <code>GREEN</code>, and <code>BLUE</code> are inherited by interface <code>LotsOfColors</code> in more than one way, through interface <code>RainbowColors</code> and also through interface <code>PrintColors</code>, but the reference to field <code>RED</code> in interface <code>LotsOfColors</code> is not considered ambiguous because only one actual declaration of the field <code>RED</code> is involved.</p>
+<a name="78651"></a>
+<a name="9.4"></a>
+<h2>9.4    Abstract Method Declarations</h2>
+<blockquote><pre>
+<em>
+AbstractMethodDeclaration:
+        AbstractMethodModifiers<sub><i>opt</i></sub> TypeParameters<sub>opt</sub> ResultType 
+MethodDeclarator Throws<sub><i>opt</i></sub> ;
+
+AbstractMethodModifiers:
+        AbstractMethodModifier
+        AbstractMethodModifiers AbstractMethodModifier
+
+AbstractMethodModifier: one of
+        Annotation </em>public&#32;abstract 
+</pre></blockquote><a name="36046"></a>
+The access modifier <code>public</code> is discussed in <a href="names.html#104285">&#167;6.6</a>. A compile-time error occurs if the same modifier appears more than once in an abstract method declaration.<p>
+<a name="247503"></a>
+Every method declaration in the body of an interface is implicitly <code>abstract</code>, so its body is always represented by a semicolon, not a block.<p>
+<a name="250791"></a>
+Every method declaration in the body of an interface is implicitly <code>public</code>.<p>
+<a name="247508"></a>
+<p>For compatibility with older versions of the Java platform, it is permitted but discouraged, as a matter of style, to redundantly specify the <code>abstract</code> modifier for methods declared in interfaces.</p>
+<a name="247493"></a>
+<p>It is permitted, but strongly discouraged as a matter of style, to redundantly specify the <code>public</code> modifier for interface methods.</p>
+<a name="38687"></a>
+Note that a method declared in an interface must not be declared <code>static</code>, or a compile-time error occurs, because <code>static</code> methods cannot be <code>abstract</code>.<p>
+<a name="245194"></a>
+Note that a method declared in an interface must not be declared <code>strictfp</code> or <code>native</code> or <code>synchronized</code>, or a compile-time error occurs, because those keywords describe implementation properties rather than interface properties. However, a method declared in an interface may be implemented by a method that is declared <code>strictfp</code> or <code>native</code> or <code>synchronized</code> in a class that implements the interface.<p>
+<a name="254723"></a>
+If an annotation <i>a</i> on a method declaration corresponds to an annotation type <i>T,</i> and <i>T</i> has a (meta-)annotation <i>m</i> that corresponds to <code>annotation.Target</code>, then <i>m</i> must have an element whose value is <code>annotation.ElementType.METHOD</code>, or a compile-time error occurs. Annotation modifiers are described further in <a href="interfaces.html#253695">&#167;9.7</a>.<p>
+<a name="252440"></a>
+It is a compile-time error for the body of an interface to declare, explicitly or implicitly, two methods with override-equivalent signatures <a href="classes.html#38649">(&#167;8.4.2)</a>. However, an interface may inherit several methods with such signatures <a href="interfaces.html#40247">(&#167;9.4.1)</a>.<p>
+<a name="38671"></a>
+Note that a method declared in an interface must not be declared <code>final</code> or a compile-time error occurs. However, a method declared in an interface may be implemented by a method that is declared <code>final</code> in a class that implements the interface.<p>
+<a name="257750"></a>
+A method in an interface may be generic. The rules for formal type parameters of a generic method in an interface are the same as for a generic method in a class <a href="classes.html#323928">(&#167;8.4.4)</a>.<p>
+<a name="40247"></a>
+<a name="9.4.1"></a>
+<h3>9.4.1    Inheritance and Overriding</h3>
+<a name="258295"></a>
+An instance method <i>m<sub>1</sub></i> declared in an interface <i>I</i> <em>overrides</em> another instance method, <i>m<sub>2</sub></i>, declared in interface <i>J</i> iff both of the following are true:<p>
+<ol>
+<a name="257954"></a>
+<li><i>I</i> is a subinterface of <i>J.</i>
+<a name="257955"></a>
+<li>The signature of <i>m<sub>1</sub></i> is a subsignature <a href="classes.html#38649">(&#167;8.4.2)</a> of the signature of <i>m<sub>2</sub></i>. 
+</ol>
+<a name="258312"></a>
+If a method declaration <i>d<sub>1</sub></i> with return type <i>R<sub>1</sub></i> overrides or hides the declaration of another method <i>d<sub>2</sub></i> with return type <i>R<sub>2</sub></i>, then <i>d<sub>1</sub></i> must be return-type-substitutable <a href="classes.html#296201">(&#167;8.4.5)</a> for <i>d<sub>2</sub></i><i>,</i> or a compile-time error occurs. Furthermore, if <i>R<sub>1</sub></i> is not a subtype of <i>R<sub>2</sub></i>, an unchecked warning must be issued.<p>
+<a name="245222"></a>
+Moreover, a method declaration must not have a <code>throws</code> clause that conflicts <a href="classes.html#308526">(&#167;8.4.6)</a> with that of any method that it overrides; otherwise, a compile-time error occurs.<p>
+<a name="262510"></a>
+It is a compile time error if a type declaration <i>T</i> has a member method <i>m<sub>1</sub></i> and there exists a method <i>m<sub>2</sub></i> declared in <i>T</i> or a supertype of <i>T</i> such that all of the following conditions hold:<p>
+<ul><a name="262511"></a>
+<li><i>m<sub>1</sub></i> and <i>m<sub>2</sub></i> have the same name.
+<a name="262512"></a>
+<li><i>m<sub>2</sub></i> is accessible from <i>T.</i>
+<a name="262516"></a>
+<li>The signature of <i>m<sub>1</sub></i> is not a subsignature <a href="classes.html#38649">(&#167;8.4.2)</a> of the signature of <i>m<sub>2</sub></i>.
+<a name="262535"></a>
+<li><i>m<sub>1</sub></i> or some method <i>m<sub>1</sub></i> overrides (directly or indirectly) has the same erasure as <i>m<sub>2</sub></i> or some method <i>m<sub>2</sub></i> overrides (directly or indirectly).
+</ul><a name="262412"></a>
+<p>
+<a name="236025"></a>
+Methods are overridden on a signature-by-signature basis. If, for example, an interface declares two <code>public</code> methods with the same name, and a subinterface overrides one of them, the subinterface still inherits the other method.<p>
+<a name="40237"></a>
+An interface inherits from its direct superinterfaces all methods of the superinterfaces that are not overridden by a declaration in the interface.<p>
+<a name="258891"></a>
+It is possible for an interface to inherit several methods with override-equivalent signatures <a href="classes.html#38649">(&#167;8.4.2)</a>. Such a situation does not in itself cause a compile-time error. The interface is considered to inherit all the methods. However, one of the inherited methods must must be return type substitutable for any other inherited method; otherwise, a compile-time error occurs (The <code>throws</code> clauses do not cause errors in this case.)<p>
+<a name="40242"></a>
+There might be several paths by which the same method declaration is inherited from an interface. This fact causes no difficulty and never of itself results in a compile-time error.<p>
+<a name="236017"></a>
+<a name="9.4.2"></a>
+<h3>9.4.2    Overloading</h3>
+<a name="40243"></a>
+If two methods of an interface (whether both declared in the same interface, or both inherited by an interface, or one declared and one inherited) have the same name but different signatures that are not override-equivalent <a href="classes.html#38649">(&#167;8.4.2)</a>, then the method name is said to be <em>overloaded</em>. This fact causes no difficulty and never of itself results in a compile-time error. There is no required relationship between the return types or between the <code>throws</code> clauses of two methods with the same name but different signatures that are not override-equivalent.<p>
+<a name="40248"></a>
+<a name="9.4.3"></a>
+<h3>9.4.3    Examples of Abstract Method Declarations</h3>
+<a name="40738"></a>
+The following examples illustrate some (possibly subtle) points about abstract method declarations.<p>
+<a name="40734"></a>
+<a name="9.4.3.1"></a>
+<h4>9.4.3.1    Example: Overriding</h4>
+<a name="40251"></a>
+Methods declared in interfaces are <code>abstract</code> and thus contain no implementation. About all that can be accomplished by an overriding method declaration, other than to affirm a method signature, is to refine the return type or to restrict the exceptions that might be thrown by an implementation of the method. Here is a variation of the example shown in <a href="classes.html#34484">(&#167;8.4.3.1)</a>:<p>
+<blockquote><pre>class BufferEmpty extends Exception {
+        BufferEmpty() { super(); }
+        BufferEmpty(String s) { super(s); }
+}
+class BufferException extends Exception {
+        BufferException() { super(); }
+        BufferException(String s) { super(s); }
+} 
+public interface Buffer {
+        char get() throws BufferEmpty, BufferException;
+}
+public interface InfiniteBuffer extends Buffer {
+         char get() throws BufferException;                                                                                             // override
+}
+</pre></blockquote><a name="40735"></a>
+<a name="9.4.3.2"></a>
+<h4>9.4.3.2    Example: Overloading</h4>
+<a name="40788"></a>
+In the example code:<p>
+<blockquote><pre>interface PointInterface {
+        void move(int dx, int dy);
+}
+interface RealPointInterface extends PointInterface {
+        void move(float dx, float dy);
+        void move(double dx, double dy);
+}
+</pre></blockquote><a name="252555"></a>
+the method name <code>move</code> is overloaded in interface <code>RealPointInterface</code> with three different signatures, two of them declared and one inherited. Any non-<code>abstract</code> class that implements interface <code>RealPointInterface</code> must provide implementations of all three method signatures.<p>
+<a name="252566"></a>
+<a name="9.5"></a>
+<h2>9.5    Member Type Declarations</h2>
+<a name="245919"></a>
+Interfaces may contain member type declarations <a href="classes.html#246026">(&#167;8.5)</a>. A member type declaration in an interface is implicitly <code>static</code> and public.<p>
+<a name="245949"></a>
+If a member type declared with simple name <i>C</i> is directly enclosed within the declaration of an interface with fully qualified name <i>N</i>, then the member type has the fully qualified name <i>N.C</i>. <p>
+<a name="253328"></a>
+If the interface declares a member type with a certain name, then the declaration of that field is said to <em>hide</em> any and all accessible declarations of member types with the same name in superinterfaces of the interface.<p>
+<a name="253331"></a>
+An interface inherits from its direct superinterfaces all the non-private member types of the superinterfaces that are both accessible to code in the interface and not hidden by a declaration in the interface.<p>
+<a name="239523"></a>
+An interface may inherit two or more type declarations with the same name. A compile-time error occurs on any attempt to refer to any ambiguously inherited class or interface by its simple name. If the same type declaration is inherited from an interface by multiple paths, the class or interface is considered to be inherited only once; it may be referred to by its simple name without ambiguity.<p>
+<a name="239527"></a>
+<a name="9.6"></a>
+<h2>9.6    Annotation Types</h2>
+<a name="253501"></a>
+An annotation type declaration is a special kind of interface declaration. To distinguish an annotation type declaration from an ordinary interface declaration, the keyword <code>interface</code> is preceded by an at sign (<code>@</code>). <p>
+<hr>
+<a name="258950"></a>
+<p>
+<b>Discussion</b>
+</p>
+<a name="258951"></a>
+<a name="258952"></a>
+<a name="254858"></a>
+ <p>
+<a name="254859"></a>
+ Note that the at sign (<code>@</code>) and the keyword <code>interface</code> are two distinct tokens; technically it is possible to separate them with whitespace, but this is strongly discouraged as a matter of style. <p>
+<hr>
+<a name="254860"></a>
+ <p>
+<blockquote><pre>
+<em>
+    AnnotationTypeDeclaration:
+        InterfaceModifiers<sub>opt</sub> @ interface Identifier AnnotationTypeBody
+
+    AnnotationTypeBody:
+        </em>{<em> AnnotationTypeElementDeclarations<sub>opt</sub> </em>}<em>
+
+    AnnotationTypeElementDeclarations:
+        AnnotationTypeElementDeclaration
+        AnnotationTypeElementDeclarations AnnotationTypeElementDeclaration
+
+    AnnotationTypeElementDeclaration:
+        AbstractMethodModifiers<sub>opt</sub> Type Identifier ( ) DefaultValue<sub>opt</sub> ;
+        ConstantDeclaration
+        ClassDeclaration
+        InterfaceDeclaration
+        EnumDeclaration
+        AnnotationTypeDeclaration
+        ;
+
+    DefaultValue:
+        default ElementValue
+        </em>
+        </pre></blockquote>
+<a name="254970"></a>
+<p>
+<a name="254971"></a>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<p>
+ The following restrictions are imposed on annotation type declarations by virtue of their context free syntax: <p>
+<ul><a name="254972"></a>
+<li>Annotation type declarations cannot be generic. 
+<a name="254973"></a>
+<li>No extends clause is permitted. (Annotation types implicitly extend <code>annotation.Annotation</code>.)
+<a name="254974"></a>
+<li>Methods cannot have any parameters
+<a name="254975"></a>
+<li>Methods cannot have any type parameters 
+<a name="254976"></a>
+<li>Method declarations cannot have a <code>throws</code> clause
+<a name="254977"></a>
+ <p>
+</ul><a name="254978"></a>
+<hr>
+<p>
+<a name="262001"></a>
+Unless explicitly modified herein, all of the rules that apply to ordinary interface declarations apply to annotation type declarations.<p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="262000"></a>
+<p>
+<a name="255049"></a>
+<a name="255055"></a>
+ For example, annotation types share the same namespace as ordinary class and interface types. <p>
+<a name="255053"></a>
+Annotation type declarations are legal wherever interface declarations are legal, and have the same scope and accessibility. <p>
+<hr>
+<a name="255051"></a>
+ <p>
+<a name="260924"></a>
+<a name="261998"></a>
+The <em>Identifier</em> in an annotation type declaration specifies the name of the annotation type. A compile-time error occurs if an annotation type has the same simple name as any of its enclosing classes or interfaces. <p>
+<a name="255087"></a>
+If an annotation <i>a</i> on an annotation type declaration corresponds to an annotation type <i>T,</i> and <i>T</i> has a (meta-)annotation <i>m</i> that corresponds to <code>annotation.Target</code>, then <i>m</i> must have either an element whose value is <code>annotation.ElementType.ANNOTATION_TYPE</code>, or an element whose value is <code>annotation.ElementType.TYPE</code>, or a compile-time error occurs. <p>
+<hr>
+<p>
+<b>Discussion</b>
+</p>
+<a name="261999"></a>
+<p>
+<a name="255818"></a>
+<a name="255819"></a>
+ By convention, no <em>AbstractMethodModifiers</em> should be present except for annotations.<p>
+<hr>
+<a name="255820"></a>
+ <p>
+<a name="255814"></a>
+The direct superinterface of an annotation type is always <code>annotation.Annotation</code>. <p>
+<a name="255092"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255093"></a>
+ A consequence of the fact that an annotation type cannot explicitly declare a superclass or superinterface is that a subclass or subinterface of an annotation type is never itself an annotation type. Similarly, <code>annotation.Annotation </code>is not itself an annotation type.<p>
+<hr>
+<a name="255052"></a>
+ <p>
+<a name="254942"></a>
+It is a compile-time error if the return type of a method declared in an annotation type is any type other than one of the following: one of the primitive types, <code>String</code>, <code>Class</code> and any invocation of <code>Class</code>, an enum type <a href="classes.html#301020">(&#167;8.9)</a>, an annotation type, or an array <a href="arrays.html#27803">(&#167;10)</a> of one of the preceding types. It is also a compile-time error if any method declared in an annotation type has a signature that is override-equivalent to that of any <code>public</code> or <code>protected</code> method declared in class <code>Object</code> or in the interface <code>annotation.Annotation</code>. <p>
+<a name="255012"></a>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255013"></a>
+ Note that this does not conflict with the prohibition on generic methods, as wildcards eliminate the need for an explicit type parameter. <p>
+<hr>
+<a name="255014"></a>
+ <p>
+<a name="254879"></a>
+Each method declaration in an annotation type declaration defines an element of the annotation type. Annotation types can have zero or more elements. An annotation type has no elements other than those defined by the methods it explicitly declares. <p>
+<a name="255073"></a>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255077"></a>
+ Thus, an annotation type declaration inherits several members from <code>annotation.Annotation</code>, including the implicitly declared methods corresponding to the instance methods in <code>Object</code>, yet these methods do not define elements of the annotation type and it is illegal to use them in annotations. <p>
+<a name="255083"></a>
+Without this rule, we could not ensure that the elements were of the types representable in annotations, or that access methods for them would be available.<p>
+<hr>
+<a name="255074"></a>
+ <p>
+<a name="255075"></a>
+It is a compile-time error if an annotation type <i>T</i> contains an element of type <i>T,</i> either directly or indirectly.<p>
+<hr>
+<a name="254148"></a>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="253967"></a>
+ For example, this is illegal: <p>
+<blockquote><pre>// Illegal self-reference!!
+@interface SelfRef {
+    SelfRef value();
+}
+</pre></blockquote><a name="253523"></a>
+and so is this: <p>
+<blockquote><pre>// Illegal circularity!!
+@interface Ping {
+    Pong value();
+}
+@interface Pong {
+    Ping value();
+}
+</pre></blockquote>
+<a name="253534"></a>
+ Note also that this specification precludes elements whose types are nested arrays. For example, this annotation type declaration is illegal: <p>
+ <blockquote><pre>
+// Illegal nested array!!
+@interface Verboten {
+    String[][] value();
+}
+</pre></blockquote>
+<a name="253540"></a>
+ <p>
+<hr>
+<p>
+<a name="253974"></a>
+An annotation type element may have a default value specified for it. This is done by following its (empty) parameter list with the keyword <code>default</code> and the default value of the element. <p>
+<a name="255040"></a>
+Defaults are applied dynamically at the time annotations are read; default values are not compiled into annotations. Thus, changing a default value affects annotations even in classes that were compiled before the change was made (presuming these annotations lack an explicit value for the defaulted element).<p>
+<a name="253577"></a>
+An <em>ElementValue</em> is used to specify a default value. It is a compile-time error if the type of the element is not commensurate <a href="interfaces.html#253695">(&#167;9.7)</a> with the default value specified. An <em>ElementValue</em> is always FP-strict <a href="expressions.html#249198">(&#167;15.4)</a>.<p>
+<a name="253579"></a>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="253582"></a>
+The following annotation type declaration defines an annotation type with several elements: <p>
+<blockquote><pre>// Normal annotation type declaration with several elements
+
+/**
+        * Describes the "request-for-enhancement" (RFE) 
+        * that led to the presence of 
+        * the annotated API element.
+ */
+public @interface RequestForEnhancement {
+    int    id();        // Unique ID number associated with RFE
+    String synopsis();  // Synopsis of RFE
+    String engineer();  // Name of engineer who implemented RFE
+    String date();      // Date RFE was implemented
+}
+</pre></blockquote><a name="253597"></a>
+The following annotation type declaration defines an annotation type with no elements, termed a marker annotation type: <p>
+<blockquote><pre>// Marker annotation type declaration
+
+/**
+ * Annotation with this type indicates that the specification of the
+ * annotated API element is preliminary and subject to change.
+ */
+public @interface Preliminary { }
+<a name="253606"></a>
+</pre></blockquote><a name="253607"></a>
+<hr>
+<p>
+By convention, the name of the sole element in a single-element annotation type is <code>value</code>. <p>
+<a name="255480"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255479"></a>
+ Linguistic support for this convention is provided by the single element annotation construct <a href="interfaces.html#253695">(&#167;9.7)</a>; one must obey the convention in order to take advantage of the construct.<p>
+ <hr>
+<a name="255481"></a>
+ <p>
+<a name="254358"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="254353"></a>
+ The convention is illustrated in the following annotation type declaration: <p>
+<blockquote><pre>// Single-element annotation type declaration
+
+/**
+ * Associates a copyright notice with the annotated API element.
+ */
+public @interface Copyright {
+    String value();
+}
+</pre></blockquote>
+<a name="253619"></a>
+ The following annotation type declaration defines a single-element annotation type whose sole element has an array type: <p>
+<blockquote><pre>
+// Single-element annotation type declaration with array-typed 
+// element
+
+/**
+ * Associates a list of endorsers with the annotated class.
+ */
+public @interface Endorsers {
+    String[] value();
+}
+</pre></blockquote>
+<a name="253630"></a>
+ Here is an example of complex annotation types, annotation types that contain one or more elements whose types are also annotation types. <p>
+<blockquote><pre>
+// Complex Annotation Type
+
+/**
+ * A person's name.  This annotation type is not designed to be used
+ * directly to annotate program elements, but to define elements
+ * of other annotation types.
+ */
+public @interface Name {
+    String first();
+    String last();
+}
+
+/**
+ * Indicates the author of the annotated program element.
+ */
+public @interface Author {
+    Name value();
+}
+
+/**
+ * Indicates the reviewer of the annotated program element.
+ */
+public @interface Reviewer {
+    Name value();
+}
+</pre></blockquote>
+<a name="253658"></a>
+ The following annotation type declaration provides default values for two of its four elements: <p>
+ <blockquote><pre>
+// Annotation type declaration with defaults on some elements
+public @interface RequestForEnhancement {
+    int    id();       // No default - must be specified in 
+                                                        // each annotation
+    String synopsis(); // No default - must be specified in 
+                                                        // each annotation
+    String engineer()  default "[unassigned]";
+    String date()      default "[unimplemented]";
+}
+</pre></blockquote>
+<a name="253669"></a>
+ The following annotation type declaration shows a <code>Class</code> annotation whose value is restricted by a bounded wildcard. <p>
+ <blockquote><pre>
+// Annotation type declaration with bounded wildcard to 
+//      restrict <code>Class</code> annotation
+// The annotation type declaration below presumes the existence 
+// of this interface, which describes a formatter for Java 
+// programming language source code
+public interface Formatter { ... }
+
+// Designates a formatter to pretty-print the annotated class.
+public @interface PrettyPrinter {
+    Class&lt;? extends Formatter&gt; value();
+}
+</pre></blockquote>
+<a name="253685"></a>
+ Note that the grammar for annotation type declarations permits other element declarations besides method declarations. For example, one might choose to declare a nested enum for use in conjunction with an annotation type: <p>
+ <blockquote><pre>
+// Annotation type declaration with nested enum type declaration
+public @interface Quality {
+    enum Level { BAD, INDIFFERENT, GOOD }
+
+    Level value();
+}
+<a name="255562"></a>
+</pre></blockquote><a name="255549"></a>
+<hr>
+<p>
+<a name="9.6.1"></a>
+<h3>9.6.1    Predefined Annotation Types</h3>
+<a name="255550"></a>
+Several annotation types are predefined in the libraries of the Java platform. Some of these predefined annotation types have special semantics. These semantics are specified in this section. This section does not provide a complete specification for the predefined annotations contained here in; that is the role of the appropriate API specifications. Only those semantics that require special behavior on the part of the Java compiler or virtual machine are specified here.<p>
+<a name="255693"></a>
+<a name="9.6.1.1"></a>
+<h4>9.6.1.1    Target</h4>
+<a name="255830"></a>
+The annotation type <code>annotation.Target</code> is intended to be used in meta-annotations that indicate the kind of program element that an annotation type is applicable to. <code>Target</code> has one element, of type <code>annotation.ElementType[]</code>. It is a compile-time error if a given enum constant appears more than once in an annotation whose corresponding type is <code>annotation.Target</code>. See sections <a href="packages.html#26621">&#167;7.4.1</a>, <a href="classes.html#21613">&#167;8.1.1</a>, <a href="classes.html#78091">&#167;8.3.1</a>, <a href="classes.html#38698">&#167;8.4.1</a>, <a href="classes.html#78188">&#167;8.4.3</a>, <a href="classes.html#42018">&#167;8.8.3</a>, <a href="classes.html#301020">&#167;8.9</a>, <a href="interfaces.html#235947">&#167;9.1.1</a>, <a href="interfaces.html#78642">&#167;9.3</a>, <a href="interfaces.html#78651">&#167;9.4</a>, <a href="interfaces.html#239527">&#167;9.6</a> and <a href="statements.html#5920">&#167;14.4</a> for the other effects of <code>@annotation.Target</code> annotations.<p>
+<a name="255829"></a>
+<a name="9.6.1.2"></a>
+<h4>9.6.1.2    Retention</h4>
+<a name="255873"></a>
+Annotations may be present only in the source code, or they may be present in the binary form of a class or interface. An annotation that is present in the binary may or may not be available at run-time via the reflective libraries of the Java platform.<p>
+<a name="255874"></a>
+The annotation type <code>annotation.Retention</code> is used to choose among the above possibilities. If an annotation <i>a</i> corresponds to a type <i>T,</i> and <i>T</i> has a (meta-)annotation <i>m</i> that corresponds to <code>annotation.Retention</code>, then:<p>
+<ul><a name="255883"></a>
+<li>If <i>m</i> has an element whose value is <code>annotation.RetentionPolicy.SOURCE</code>, then a Java compiler must ensure that <i>a</i> is not present in the binary representation of the class or interface in which <i>a</i> appears.
+<a name="255884"></a>
+<li>If <i>m</i> has an element whose value is <code>annotation.RetentionPolicy.CLASS</code>, or <code>annotation.RetentionPolicy.RUNTIME</code> a Java compiler must ensure that <i>a</i> is represented in the binary representation of the class or interface in which <i>a</i> appears, unless <i>m</i> annotates a local variable declaration. An annotation on a local variable declaration is never retained in the binary representation.
+</ul><a name="255921"></a>
+If <i>T</i> does not have a (meta-)annotation <i>m</i> that corresponds to <code>annotation.Retention</code>, then a Java compiler must treat <i>T</i> as if it does have such a meta-annotation <i>m</i> with an element whose value is <code>annotation.RetentionPolicy.CLASS</code>.<p>
+<hr>
+<a name="255940"></a>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255941"></a>
+ If <i>m</i> has an element whose value is <code>annotation.RetentionPolicy.RUNTIME</code>, the reflective libraries of the Java platform will make a available at run-time as well.<p>
+<hr>
+<a name="255942"></a>
+ <p>
+<a name="255872"></a>
+<a name="9.6.1.3"></a>
+<h4>9.6.1.3    Inherited</h4>
+<a name="255964"></a>
+The annotation type <code>annotation.Inherited</code> is used to indicate that annotations on a class <i>C</i> corresponding to a given annotation type are inherited by subclasses of <i>C.</i><p>
+<a name="255963"></a>
+<a name="9.6.1.4"></a>
+<h4>9.6.1.4    Override</h4>
+<a name="255572"></a>
+Programmers occasionally overload a method declaration when they mean to override it. <p>
+<hr>
+<a name="255575"></a>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255674"></a>
+ The classic example concerns the equals method. Programmers write the following: <p>
+<blockquote><pre>    public boolean equals(Foo that) { ... }
+</pre></blockquote><a name="255578"></a>
+when they mean to write: <p>
+<blockquote><pre>    public boolean equals(Object that) { ... }
+</pre></blockquote><a name="255582"></a>
+This is perfectly legal, but class <code>Foo</code> inherits the <code>equals</code> implementation from <code>Object</code>, which can cause some very subtle bugs. <p>
+<hr>
+<a name="255669"></a>
+ <p>
+<a name="255656"></a>
+The annotation type <code>Override</code> supports early detection of such problems. If a method declaration is annotated with the annotation <code>@Override</code>, but the method does not in fact override any method declared in a superclass, a compile-time error will occur.<p>
+<hr>
+<a name="255602"></a>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="260147"></a>
+ Note that if a method overrides a method from a superinterface but not from a superclass, using <code>@Override</code> will cause a compile-time error. <p>
+<a name="260162"></a>
+The rationale for this is that a concrete class that implements an interface will necessarily override all the interface's methods irrespective of the <code>@Override</code> annotation, and so it would be confusing to have the semantics of this annotation interact with the rules for implementing interfaces.<p>
+<a name="260165"></a>
+A by product of this rule is that it is never possible to use the <code>@Override</code> annotation in an interface declaration.<p>
+<hr>
+<a name="260148"></a>
+<p>
+<a name="260149"></a>
+ <p>
+<a name="255603"></a>
+<a name="9.6.1.5"></a>
+<h4>9.6.1.5    SuppressWarnings</h4>
+<a name="255605"></a>
+The annotation type <code>SuppressWarnings</code> supports programmer control over warnings otherwise issued by the Java compiler. It contains a single element that is an array of <code>String</code>. If a program declaration is annotated with the annotation <code>@SuppressWarnings(value = {</code><i>S<sub>1</sub>, ... , S<sub>k</sub></i>}), then a Java compiler must not report any warning identified by one of <i>S<sub>1</sub>, ... , S<sub>k</sub></i> if that warning would have been generated as a result of the annotated declaration or any of its parts.<p>
+<a name="258980"></a>
+Unchecked warnings are identified by the string <code>"unchecked"</code>.<p>
+<a name="255712"></a>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255707"></a>
+ Recent Java compilers issue more warnings than previous ones did, and these "lint-like" warnings are very useful. It is likely that more such warnings will be added over time. To encourage their use, there should be some way to disable a warning in a particular part of the program when the programmer knows that the warning is inappropriate. <p>
+ <hr>
+<a name="255717"></a>
+ <p>
+ <hr>
+<a name="255636"></a>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255779"></a>
+ Compiler vendors should document the warning names they support in conjunction with this annotation type. They are encouraged to cooperate to ensure that the same names work across multiple compilers.<p>
+ <hr>
+<a name="255729"></a>
+ <p>
+<a name="255732"></a>
+<a name="9.6.1.6"></a>
+<h4>9.6.1.6    Deprecated</h4>
+<a name="255700"></a>
+A program element annotated <code>@Deprecated</code> is one that programmers are discouraged from using, typically because it is dangerous, or because a better alternative exists. A Java compiler must produce a warning when a deprecated type, method, field, or constructor is used (overridden, invoked, or referenced by name) unless:<p>
+<ul><a name="255552"></a>
+<li>The use is within an entity that itself is is annotated with the annotation <code>@Deprecated</code>; or 
+<a name="255553"></a>
+<li>The declaration and use are both within the same outermost class; or 
+<a name="255554"></a>
+<li>The use site is within an entity that is annotated to suppress the warning with the annotation <code>@SuppressWarnings("deprecation")</code>
+</ul><a name="255555"></a>
+Use of the annotation <code>@Deprecated</code> on a local variable declaration or on a parameter declaration has no effect.<p>
+<a name="253695"></a>
+<a name="9.7"></a>
+<h2>9.7    Annotations</h2>
+<a name="253697"></a>
+An <i>annotation</i> is a modifier consisting of the name of an annotation type <a href="interfaces.html#239527">(&#167;9.6)</a> and zero or more element-value pairs, each of which associates a value with a different element of the annotation type. The purpose of an annotation is simply to associate information with the annotated program element. <p>
+<a name="254754"></a>
+Annotations must contain an element-value pair for every element of the corresponding annotation type, except for those elements with default values, or a compile-time error occurs. Annotations may, but are not required to, contain element-value pairs for elements with default values.<p>
+<a name="253702"></a>
+Annotations may be used as modifiers in any declaration, whether package <a href="packages.html#26619">(&#167;7.4)</a>, class <a href="classes.html#328796">(&#167;8)</a>, interface, field (<a href="classes.html#40898">&#167;8.3</a>, <a href="interfaces.html#78642">&#167;9.3</a>), method (<a href="classes.html#40420">&#167;8.4</a>, <a href="interfaces.html#78651">&#167;9.4</a>), parameter, constructor <a href="classes.html#41652">(&#167;8.8)</a>, or local variable <a href="statements.html#5920">(&#167;14.4)</a>. <p>
+<hr>
+<a name="255457"></a>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255459"></a>
+ Note that classes include enums <a href="classes.html#301020">(&#167;8.9)</a>, and interfaces include annotation types <a href="interfaces.html#239527">(&#167;9.6)</a><p>
+ <hr>
+<a name="255458"></a>
+ <p>
+<a name="255456"></a>
+Annotations may also be used on enum constants. Such annotations are placed immediately before the enum constant they annotate. <p>
+<a name="253717"></a>
+It is a compile-time error if a declaration is annotated with more than one annotation for a given annotation type.<p>
+<hr>
+<a name="254810"></a>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="254809"></a>
+ Annotations are conventionally placed before all other modifiers, but this is not a requirement; they may be freely intermixed with other modifiers. <p>
+ <hr>
+<a name="254812"></a>
+ <p>
+<a name="253720"></a>
+There are three kinds of annotations. The first (normal annotation) is fully general. The others (marker annotation and single-element annotation) are merely shorthands. <p>
+<blockquote><pre>
+<em>
+Annotations:
+        Annotation
+        Annotations Annotation
+
+    Annotation:
+        NormalAnnotation
+        MarkerAnnotation
+        SingleElementAnnotation
+        </em>
+</pre></blockquote><a name="253727"></a>
+A normal annotation is used to annotate a program element: <p>
+<blockquote><pre>
+    NormalAnnotation:
+        @ TypeName ( ElementValuePairs<sub>opt</sub> )
+
+    ElementValuePairs:
+        ElementValuePair
+        ElementValuePairs , ElementValuePair
+
+    ElementValuePair:
+        Identifier</em> =<em> ElementValue
+
+    ElementValue:
+        ConditionalExpression
+        Annotation
+        ElementValueArrayInitializer
+
+    ElementValueArrayInitializer:
+        { ElementValues<sub>opt ,opt</sub> }
+
+    ElementValues:
+        ElementValue
+        ElementValues , ElementValue
+        </em>
+        </pre></blockquote>
+<a name="253751"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255113"></a>
+ Note that the at-sign (@) is a token unto itself. Technically it is possible to put whitespace in between the at-sign and the <em>TypeName</em>, but this is discouraged. <p>
+ <hr>
+<a name="255114"></a>
+ <p>
+<a name="253753"></a>
+<em>TypeName</em> names the annotation type corresponding to the annotation. It is a compile-time error if <em>TypeName</em> does not name an annotation type. The annotation type named by an annotation must be accessible <a href="names.html#104285">(&#167;6.6)</a> at the point where the annotation is used, or a compile-time error occurs. <p>
+<a name="262082"></a>
+The <em>Identifier</em> in an <em>ElementValuePair</em> must be the simple name of one of the elements of the annotation type identified by <em>TypeName</em> in the containing annotation. Otherwise, a compile-time error occurs. (In other words, the identifier in an element-value pair must also be a method name in the interface identified by <em>TypeName</em>.) <p>
+<a name="261845"></a>
+The return type of this method defines the element type of the element-value pair. An <em>ElementValueArrayInitializer</em> is similar to a normal array initializer <a href="arrays.html#11358">(&#167;10.6)</a>, except that annotations are permitted in place of expressions.<p>
+<a name="255269"></a>
+An element type <i>T</i> is <i>commensurate</i> with an element value <i>V</i> if and only if one of the following conditions is true:<p>
+<ul><a name="255270"></a>
+<li><i>T</i> is an array type <i>E[]</i> and either:
+<ul>
+<a name="255429"></a>
+<li><i>V</i> is an <em>ElementValueArrayInitializer</em> and each <em>ElementValueInitializer</em> (analogous to a variable initializer in an array initializer) in <i>V</i> is commensurate with <i>E.</i> Or
+<a name="255277"></a>
+<li><i>V</i> is an <em>ElementValue</em> that is commensurate with <i>T.</i>
+</ul>
+<a name="255278"></a>
+<li>The type of <i>V</i> is assignment compatible <a href="conversions.html#184206">(&#167;5.2)</a> with <i>T</i> and, furthermore:
+<ul>
+<a name="255279"></a>
+<li>If <i>T</i> is a primitive type or <code>String</code>, <i>V</i> is a constant expression <a href="expressions.html#5313">(&#167;15.28)</a>. 
+<a name="258908"></a>
+<li><i>V</i> is not null.
+<a name="255292"></a>
+<li>if <i>T</i> is <code>Class</code>, or an invocation of <code>Class</code>, and <i>V</i> is a class literal <a href="expressions.html#251530">(&#167;15.8.2)</a>.
+<a name="255312"></a>
+<li>If <i>T</i> is an enum type, and <i>V</i> is an enum constant.
+</ul>
+</ul><a name="255271"></a>
+It is a compile-time error if the element type is not commensurate with the <em>ElementValue</em>. <p>
+<a name="255364"></a>
+If the element type is not an annotation type or an array type, <em>ElementValue</em> must be a <em>ConditionalExpression</em> <a href="expressions.html#290293">(&#167;15.25)</a>. <p>
+<a name="255123"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="255124"></a>
+ Note that <code>null</code> is not a legal element value for any element type. <p>
+<hr>
+<a name="255125"></a>
+ <p>
+<a name="253780"></a>
+If the element type is an array type and the corresponding <em>ElementValue</em> is not an <em>ElementValueArrayInitializer</em>, an array value whose sole element is the value represented by the <em>ElementValue</em> is associated with the element. Otherwise, the value represented by <em>ElementValue</em> is associated with the element.<p>
+<a name="253784"></a>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="254840"></a>
+ In other words, it is permissible to omit the curly braces when a single-element array is to be associated with an array-valued annotation type element. <p>
+<a name="255197"></a>
+Note that the array's element type cannot be an array type, that is, nested array types are not permitted as element types. (While the annotation syntax would permit this, the annotation type declaration syntax would not.) <p>
+<hr>
+<a name="254841"></a>
+ <p>
+<a name="253787"></a>
+An annotation on an annotation type declaration is known as a <i>meta-annotation</i>. An annotation type may be used to annotate its own declaration. More generally, circularities in the transitive closure of the "annotates" relation are permitted. For example, it is legal to annotate an annotation type declaration with another annotation type, and to annotate the latter type's declaration with the former type. (The pre-defined meta-annotation types contain several such circularities.) <p>
+<a name="253790"></a>
+<hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="253791"></a>
+ Here is an example of a normal annotation: <p>
+<blockquote><pre>// Normal annotation
+@RequestForEnhancement(
+    id       = 2868724,
+    synopsis = "Provide time-travel functionality",
+    engineer = "Mr. Peabody",
+    date     = "4/1/2004"
+)
+public static void travelThroughTime(Date destination) { ... }
+</pre></blockquote><a name="253801"></a>
+<p>
+<a name="253802"></a>
+Note that the types of the annotations in the examples in this section are the annotation types defined in the examples in <a href="interfaces.html#239527">&#167;9.6</a>. Note also that the elements are in the above annotation are in the same order as in the corresponding annotation type declaration. This is not required, but unless specific circumstances dictate otherwise, it is a reasonable convention to follow. <p>
+<hr>
+<a name="254847"></a>
+ <p>
+<a name="253805"></a>
+The second form of annotation, marker annotation, is a shorthand designed for use with marker annotation types: <p>
+<blockquote><pre>
+<em>
+    MarkerAnnotation:
+        @ TypeName
+        </em>
+</pre></blockquote><a name="253810"></a>
+It is simply a shorthand for the normal annotation: <p>
+<blockquote><pre>        @TypeName()
+</pre></blockquote>
+<a name="253814"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="254652"></a>
+ Example: <p>
+ <blockquote><pre>
+// Marker annotation
+@Preliminary public class TimeTravel { ... }
+</pre></blockquote><a name="253818"></a>
+<p>
+<a name="253819"></a>
+Note that it is legal to use marker annotations for annotation types with elements, so long as all the elements have default values. <p>
+<hr>
+<a name="255134"></a>
+ <p>
+<a name="253821"></a>
+The third form of annotation, single-element annotation, is a shorthand designed for use with single-element annotation types: <p>
+<blockquote><pre>
+<em>
+    SingleElementAnnotation:
+        @ TypeName ( ElementValue )
+</em>
+</pre></blockquote><a name="253826"></a>
+It is shorthand for the normal annotation: <p>
+<blockquote><pre>@TypeName ( value = ElementValue )
+</pre></blockquote>
+<a name="253829"></a>
+ <p>
+ <hr>
+ <p>
+ <b>Discussion</b>
+ </p>
+ <p>
+<a name="253830"></a>
+ Example: <p>
+<blockquote><pre>
+// Single-element annotation
+@Copyright("2002 Yoyodyne Propulsion Systems, Inc., All rights reserved.")
+public class OscillationOverthruster { ... }
+</pre></blockquote>
+<a name="253836"></a>
+ Example with array-valued single-element annotation: <p>
+ <blockquote><pre>
+// Array-valued single-element annotation
+@Endorsers({"Children", "Unscrupulous dentists"})
+public class Lollipop { ... }
+</pre></blockquote>
+<a name="253842"></a>
+ Example with single-element array-valued single-element annotation (note that the curly braces are omitted): <p>
+<blockquote><pre>
+// Single-element array-valued single-element annotation
+@Endorsers("Epicurus")
+public class Pleasure { ... }
+</pre></blockquote>
+<a name="253848"></a>
+ Example with complex annotation: <p>
+ <blockquote><pre>
+// Single-element complex annotation
+@Author(@Name(first = "Joe", last = "Hacker"))
+public class BitTwiddle { ... }
+</pre></blockquote>
+<a name="253854"></a>
+<p>
+ Note that it is legal to use single-element annotations for annotation types with multiple elements, so long as one element is named value, and all other elements have default values. <p>
+<a name="253856"></a>
+Here is an example of an annotation that takes advantage of default values: <p>
+<a name="253857"></a>
+<blockquote><pre>// Normal annotation with default values
+@RequestForEnhancement(
+    id       = 4561414,
+    synopsis = "Balance the federal budget"
+)
+public static void balanceFederalBudget() {
+    throw new UnsupportedOperationException("Not implemented");
+}
+</pre></blockquote>
+<a name="253867"></a>
+ Here is an example of an annotation with a Class element whose value is restricted by the use of a bounded wildcard. <p>
+ <blockquote><pre>
+// Single-element annotation with Class element restricted by bounded wildcard
+// The annotation presumes the existence of this class.
+class GorgeousFormatter implements Formatter { ... }
+@PrettyPrinter(GorgeousFormatter.class) public class Petunia {...}
+// This annotation is illegal, as String is not a subtype of Formatter!!
+@PrettyPrinter(String.class) public class Begonia { ... }
+</pre></blockquote>
+<a name="253879"></a>
+ Here is an example of an annotation using an enum type defined inside the annotation type: <p>
+ <blockquote><pre>
+// Annotation using enum type declared inside the annotation type
+@Quality(Quality.Level.GOOD)
+public class Karma {
+   ...
+}
+</pre></blockquote>
+<a name="254092"></a>
+<hr>
+<p>
+
+<hr>
+<!-- This inserts footnotes--><p>
+<table border="0" width="100%">
+<tr>
+<td><a href="j3TOC.html">Contents</a> | <a href="classes.html">Prev</a> | <a href="arrays.html">Next</a> | <a href="j3IX.html">Index</a></td>
+<td align=right><i>Java Language Specification</i><br>
+<font size="-1">Third Edition</font></td></tr></table>
+<p>
+<font size=-1>
+<i><a href="jcopyright.html">Copyright</a> &#169 1996-2005 Sun Microsystems, Inc.
+All rights reserved</i>
+<br>
+Please send any comments or corrections via our <a href="http://developers.sun.com/contact/feedback.jsp?&category=doc&mailsubject=Java%20Language%20Specification%20Feedback">feedback form</a>
+</font>
+</body></html>
+

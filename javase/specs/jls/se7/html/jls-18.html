@@ -1,0 +1,691 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Chapter&nbsp;18.&nbsp;Syntax</title>
+      <link rel="stylesheet" type="text/css" href="../../../javaspec.css">
+      <meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1">
+      <link rel="home" href="index.html" title="The Java&reg; Language Specification">
+      <link rel="up" href="index.html" title="The Java&reg; Language Specification">
+      <link rel="prev" href="jls-17.html" title="Chapter&nbsp;17.&nbsp;Threads and Locks">
+      <link rel="next" href="jls-0-index.html" title="Index">
+      <link rel="copyright" href="jls-0-front.html" title="Legal Notice">
+   <script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" id="logo">
+<img src="https://docs.oracle.com/javase/webdesign/other/im/oralogo_small.gif" alt="Oracle Logo"><br><p><a href="https://docs.oracle.com/javase/7/docs/">Java SE</a> &gt; <a href="../../../index.html">Java SE Specifications</a> &gt; <a href="index.html">Java Language Specification</a></p>
+      </div>
+      <div class="navheader">
+         <table width="100%" summary="Navigation header">
+            <tr>
+               <th colspan="3" align="center">Chapter&nbsp;18.&nbsp;Syntax</th>
+            </tr>
+            <tr>
+               <td width="20%" align="left"><a accesskey="p" href="jls-17.html">Prev</a>&nbsp;
+               </td>
+               <th width="60%" align="center">&nbsp;</th>
+               <td width="20%" align="right">&nbsp;<a accesskey="n" href="jls-0-index.html">Next</a></td>
+            </tr>
+         </table>
+         <hr>
+      </div>
+      <div lang="en" class="chapter" title="Chapter&nbsp;18.&nbsp;Syntax">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="jls-18"></a>Chapter&nbsp;18.&nbsp;Syntax
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p class="norm"><a name="jls-18-100"></a>This chapter presents a grammar
+            for the Java programming language.
+         </p>
+         <p class="norm"><a name="jls-18-110"></a>The grammar presented piecemeal
+            in the preceding chapters (<a class="xref" href="jls-2.html#jls-2.3" title="2.3.&nbsp;The Syntactic Grammar">&sect;2.3</a>) is much better
+            for exposition, but it is not well suited as a basis for a parser. The
+            grammar presented in this chapter is the basis for the reference
+            implementation. Note that it is not an LL(1) grammar, though in many
+            cases it minimizes the necessary look ahead.
+         </p>
+         <p class="norm"><a name="jls-18-120"></a>The grammar below uses the
+            following BNF-style conventions:
+         </p>
+         <div class="norm">
+            <ul class="norm" type="disc">
+               <li class="listitem">
+                  <p class="norm"><a name="jls-18-120-A"></a><span class="emphasis"><em>[x]</em></span>
+                         denotes zero or one occurrences of <span class="emphasis"><em>x</em></span>.
+                  </p>
+               </li>
+               <li class="listitem">
+                  <p class="norm"><a name="jls-18-120-B"></a><span class="emphasis"><em>{x}</em></span>
+                         denotes zero or more occurrences of <span class="emphasis"><em>x</em></span>.
+                  </p>
+               </li>
+               <li class="listitem">
+                  <p class="norm"><a name="jls-18-120-C"></a><span class="emphasis"><em>(x | y)</em></span>
+                         means one of either <span class="emphasis"><em>x</em></span> or <span class="emphasis"><em>y</em></span>.
+                  </p>
+               </li>
+            </ul>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Identifier:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;IDENTIFIER<br>
+               <br>
+               QualifiedIdentifier:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;{&nbsp;<code class="literal">.</code>&nbsp;Identifier&nbsp;}<br>
+               <br>
+               QualifiedIdentifierList:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;QualifiedIdentifier&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;QualifiedIdentifier&nbsp;}<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               CompilationUnit:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;[[Annotations]&nbsp;<code class="literal">package</code>&nbsp;QualifiedIdentifier&nbsp;<code class="literal">;</code>]<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ImportDeclaration}&nbsp;{TypeDeclaration}<br>
+               <br>
+               ImportDeclaration:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">import</code>&nbsp;[<code class="literal">static</code>]&nbsp;Identifier&nbsp;{&nbsp;<code class="literal">.</code>&nbsp;Identifier&nbsp;}&nbsp;[<code class="literal">.</code>&nbsp;<code class="literal">*</code>]&nbsp;<code class="literal">;</code><br>
+               <br>
+               TypeDeclaration:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ClassOrInterfaceDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">;</code><br>
+               <br>
+               ClassOrInterfaceDeclaration:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{Modifier}&nbsp;(ClassDeclaration&nbsp;|&nbsp;InterfaceDeclaration)<br>
+               <br>
+               ClassDeclaration:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;NormalClassDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;EnumDeclaration<br>
+               <br>
+               InterfaceDeclaration:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;NormalInterfaceDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeDeclaration<br>
+               <br>
+               <br>
+               <br>
+               NormalClassDeclaration:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">class</code>&nbsp;Identifier&nbsp;[TypeParameters]<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<code class="literal">extends</code>&nbsp;Type]&nbsp;[<code class="literal">implements</code>&nbsp;TypeList]&nbsp;ClassBody<br>
+               <br>
+               EnumDeclaration:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">enum</code>&nbsp;Identifier&nbsp;[<code class="literal">implements</code>&nbsp;TypeList]&nbsp;EnumBody<br>
+               <br>
+               NormalInterfaceDeclaration:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">interface</code>&nbsp;Identifier&nbsp;[TypeParameters]&nbsp;[<code class="literal">extends</code>&nbsp;TypeList]&nbsp;InterfaceBody<br>
+               <br>
+               AnnotationTypeDeclaration:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">@</code>&nbsp;<code class="literal">interface</code>&nbsp;Identifier&nbsp;AnnotationTypeBody<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Type:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;BasicType&nbsp;{<code class="literal">[]</code>}<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ReferenceType&nbsp;&nbsp;{<code class="literal">[]</code>}<br>
+               <br>
+               BasicType:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">byte</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">short</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">char</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">int</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">long</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">float</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">double</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">boolean</code><br>
+               <br>
+               ReferenceType:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;[TypeArguments]&nbsp;{&nbsp;<code class="literal">.</code>&nbsp;Identifier&nbsp;[TypeArguments]&nbsp;}<br>
+               <br>
+               TypeArguments:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;</code>&nbsp;TypeArgument&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;TypeArgument&nbsp;}&nbsp;<code class="literal">&gt;</code><br>
+               <br>
+               TypeArgument:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ReferenceType<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">?</code>&nbsp;[&nbsp;(<code class="literal">extends</code>&nbsp;|&nbsp;<code class="literal">super</code>)&nbsp;ReferenceType&nbsp;]<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               NonWildcardTypeArguments:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;</code>&nbsp;TypeList&nbsp;<code class="literal">&gt;</code><br>
+               <br>
+               TypeList:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ReferenceType&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;ReferenceType&nbsp;}<br>
+               <br>
+               <br>
+               <br>
+               TypeArgumentsOrDiamond:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;&nbsp;&gt;</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;TypeArguments<br>
+               <br>
+               NonWildcardTypeArgumentsOrDiamond:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;&nbsp;&gt;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;NonWildcardTypeArguments<br>
+               <br>
+               <br>
+               <br>
+               TypeParameters:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;</code>&nbsp;TypeParameter&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;TypeParameter&nbsp;}&nbsp;<code class="literal">&gt;</code><br>
+               <br>
+               TypeParameter:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;[<code class="literal">extends</code>&nbsp;Bound]<br>
+               <br>
+               Bound:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ReferenceType&nbsp;{&nbsp;<code class="literal">&amp;</code>&nbsp;ReferenceType&nbsp;}<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Modifier:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Annotation<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">public</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">protected</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">private</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">static</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">abstract</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">final</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">native</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">synchronized</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">transient</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">volatile</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">strictfp</code><br>
+               <br>
+               Annotations:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Annotation&nbsp;{Annotation}<br>
+               <br>
+               Annotation:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">@</code>&nbsp;QualifiedIdentifier&nbsp;[&nbsp;<code class="literal">(</code>&nbsp;[AnnotationElement]&nbsp;<code class="literal">)</code>&nbsp;]<br>
+               <br>
+               AnnotationElement:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ElementValuePairs<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ElementValue<br>
+               <br>
+               ElementValuePairs:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ElementValuePair&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;ElementValuePair&nbsp;}<br>
+               <br>
+               ElementValuePair:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;<code class="literal">=</code>&nbsp;ElementValue<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<br>
+               ElementValue:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Annotation<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Expression1&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ElementValueArrayInitializer<br>
+               <br>
+               ElementValueArrayInitializer:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;[ElementValues]&nbsp;[<code class="literal">,</code>]&nbsp;<code class="literal">}</code><br>
+               <br>
+               ElementValues:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ElementValue&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;ElementValue&nbsp;}<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               ClassBody:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;{&nbsp;ClassBodyDeclaration&nbsp;}&nbsp;<code class="literal">}</code><br>
+               <br>
+               ClassBodyDeclaration:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">;</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{Modifier}&nbsp;MemberDecl<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;[<code class="literal">static</code>]&nbsp;Block<br>
+               <br>
+               MemberDecl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;MethodOrFieldDecl<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">void</code>&nbsp;Identifier&nbsp;VoidMethodDeclaratorRest<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;ConstructorDeclaratorRest<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;GenericMethodOrConstructorDecl<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ClassDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;InterfaceDeclaration<br>
+               <br>
+               MethodOrFieldDecl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;Identifier&nbsp;MethodOrFieldRest<br>
+               <br>
+               MethodOrFieldRest:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;FieldDeclaratorsRest&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;MethodDeclaratorRest<br>
+               <br>
+               FieldDeclaratorsRest:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;VariableDeclaratorRest&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;VariableDeclarator&nbsp;}<br>
+               <br>
+               MethodDeclaratorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;FormalParameters&nbsp;{<code class="literal">[]</code>}&nbsp;[<code class="literal">throws</code>&nbsp;QualifiedIdentifierList]&nbsp;(Block&nbsp;|&nbsp;<code class="literal">;</code>)<br>
+               <br>
+               VoidMethodDeclaratorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;FormalParameters&nbsp;[<code class="literal">throws</code>&nbsp;QualifiedIdentifierList]&nbsp;(Block&nbsp;|&nbsp;<code class="literal">;</code>)<br>
+               <br>
+               ConstructorDeclaratorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;FormalParameters&nbsp;[<code class="literal">throws</code>&nbsp;QualifiedIdentifierList]&nbsp;Block<br>
+               <br>
+               GenericMethodOrConstructorDecl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;TypeParameters&nbsp;GenericMethodOrConstructorRest<br>
+               <br>
+               GenericMethodOrConstructorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;(Type&nbsp;|&nbsp;<code class="literal">void</code>)&nbsp;Identifier&nbsp;MethodDeclaratorRest<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;ConstructorDeclaratorRest<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               InterfaceBody:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;{&nbsp;InterfaceBodyDeclaration&nbsp;}&nbsp;<code class="literal">}</code><br>
+               <br>
+               InterfaceBodyDeclaration:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">;</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{Modifier}&nbsp;InterfaceMemberDecl<br>
+               <br>
+               InterfaceMemberDecl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;InterfaceMethodOrFieldDecl<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">void</code>&nbsp;Identifier&nbsp;VoidInterfaceMethodDeclaratorRest<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;InterfaceGenericMethodDecl<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ClassDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;InterfaceDeclaration<br>
+               <br>
+               InterfaceMethodOrFieldDecl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;Identifier&nbsp;InterfaceMethodOrFieldRest<br>
+               <br>
+               InterfaceMethodOrFieldRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ConstantDeclaratorsRest&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;InterfaceMethodDeclaratorRest<br>
+               <br>
+               ConstantDeclaratorsRest:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ConstantDeclaratorRest&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;ConstantDeclarator&nbsp;}<br>
+               <br>
+               ConstantDeclaratorRest:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{<code class="literal">[]</code>}&nbsp;<code class="literal">=</code>&nbsp;VariableInitializer<br>
+               <br>
+               ConstantDeclarator:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;ConstantDeclaratorRest<br>
+               <br>
+               InterfaceMethodDeclaratorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;FormalParameters&nbsp;{<code class="literal">[]</code>}&nbsp;[<code class="literal">throws</code>&nbsp;QualifiedIdentifierList]&nbsp;<code class="literal">;</code>&nbsp;<br>
+               <br>
+               VoidInterfaceMethodDeclaratorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;FormalParameters&nbsp;[<code class="literal">throws</code>&nbsp;QualifiedIdentifierList]&nbsp;<code class="literal">;</code>&nbsp;&nbsp;<br>
+               <br>
+               InterfaceGenericMethodDecl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;TypeParameters&nbsp;(Type&nbsp;|&nbsp;<code class="literal">void</code>)&nbsp;Identifier&nbsp;InterfaceMethodDeclaratorRest<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               FormalParameters:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">(</code>&nbsp;[FormalParameterDecls]&nbsp;<code class="literal">)</code><br>
+               <br>
+               FormalParameterDecls:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{VariableModifier}&nbsp;&nbsp;Type&nbsp;FormalParameterDeclsRest<br>
+               <br>
+               VariableModifier:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">final</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Annotation<br>
+               <br>
+               FormalParameterDeclsRest:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;VariableDeclaratorId&nbsp;[<code class="literal">,</code>&nbsp;FormalParameterDecls]<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">...</code>&nbsp;VariableDeclaratorId<br>
+               <br>
+               <br>
+               <br>
+               VariableDeclaratorId:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;{<code class="literal">[]</code>}<br>
+               <br>
+               <br>
+               <br>
+               VariableDeclarators:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;VariableDeclarator&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;VariableDeclarator&nbsp;}<br>
+               <br>
+               VariableDeclarator:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;VariableDeclaratorRest<br>
+               <br>
+               VariableDeclaratorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{<code class="literal">[]</code>}&nbsp;[&nbsp;<code class="literal">=</code>&nbsp;VariableInitializer&nbsp;]<br>
+               <br>
+               VariableInitializer:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ArrayInitializer<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Expression<br>
+               <br>
+               ArrayInitializer:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;[&nbsp;VariableInitializer&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;VariableInitializer&nbsp;}&nbsp;[<code class="literal">,</code>]&nbsp;]&nbsp;<code class="literal">}</code><br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Block:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;BlockStatements&nbsp;<code class="literal">}</code><br>
+               <br>
+               BlockStatements:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;BlockStatement&nbsp;}<br>
+               <br>
+               BlockStatement:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;LocalVariableDeclarationStatement<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ClassOrInterfaceDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;[Identifier&nbsp;<code class="literal">:</code>]&nbsp;Statement<br>
+               <br>
+               LocalVariableDeclarationStatement:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;VariableModifier&nbsp;}&nbsp;&nbsp;Type&nbsp;VariableDeclarators&nbsp;<code class="literal">;</code><br>
+               <br>
+               Statement:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Block<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;<code class="literal">:</code>&nbsp;Statement<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;StatementExpression&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">if</code>&nbsp;ParExpression&nbsp;Statement&nbsp;[<code class="literal">else</code>&nbsp;Statement]&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">assert</code>&nbsp;Expression&nbsp;[<code class="literal">:</code>&nbsp;Expression]&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">switch</code>&nbsp;ParExpression&nbsp;<code class="literal">{</code>&nbsp;SwitchBlockStatementGroups&nbsp;<code class="literal">}</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">while</code>&nbsp;ParExpression&nbsp;Statement<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">do</code>&nbsp;Statement&nbsp;<code class="literal">while</code>&nbsp;ParExpression&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">for</code>&nbsp;<code class="literal">(</code>&nbsp;ForControl&nbsp;<code class="literal">)</code>&nbsp;Statement<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">break</code>&nbsp;[Identifier]&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">continue</code>&nbsp;[Identifier]&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">return</code>&nbsp;[Expression]&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">throw</code>&nbsp;Expression&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">synchronized</code>&nbsp;ParExpression&nbsp;Block<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">try</code>&nbsp;Block&nbsp;(Catches&nbsp;|&nbsp;[Catches]&nbsp;Finally)<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">try</code>&nbsp;ResourceSpecification&nbsp;Block&nbsp;[Catches]&nbsp;[Finally]<br>
+               <br>
+               StatementExpression:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Expression<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Catches:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;CatchClause&nbsp;{&nbsp;CatchClause&nbsp;}<br>
+               <br>
+               CatchClause:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">catch</code>&nbsp;<code class="literal">(</code>&nbsp;{VariableModifier}&nbsp;CatchType&nbsp;Identifier&nbsp;<code class="literal">)</code>&nbsp;Block<br>
+               <br>
+               CatchType:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;QualifiedIdentifier&nbsp;{&nbsp;<code class="literal">|</code>&nbsp;QualifiedIdentifier&nbsp;}<br>
+               <br>
+               Finally:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">finally</code>&nbsp;Block<br>
+               <br>
+               ResourceSpecification:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">(</code>&nbsp;Resources&nbsp;[<code class="literal">;</code>]&nbsp;<code class="literal">)</code><br>
+               <br>
+               Resources:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Resource&nbsp;{&nbsp;<code class="literal">;</code>&nbsp;Resource&nbsp;}<br>
+               <br>
+               Resource:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{VariableModifier}&nbsp;ReferenceType&nbsp;VariableDeclaratorId&nbsp;<code class="literal">=</code>&nbsp;Expression&nbsp;<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               SwitchBlockStatementGroups:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;SwitchBlockStatementGroup&nbsp;}<br>
+               <br>
+               SwitchBlockStatementGroup:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;SwitchLabels&nbsp;BlockStatements<br>
+               <br>
+               SwitchLabels:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;SwitchLabel&nbsp;{&nbsp;SwitchLabel&nbsp;}<br>
+               <br>
+               SwitchLabel:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">case</code>&nbsp;Expression&nbsp;<code class="literal">:</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">case</code>&nbsp;EnumConstantName&nbsp;<code class="literal">:</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">default</code>&nbsp;<code class="literal">:</code><br>
+               <br>
+               EnumConstantName:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier<br>
+               <br>
+               <br>
+               <br>
+               ForControl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ForVarControl<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ForInit&nbsp;<code class="literal">;</code>&nbsp;[Expression]&nbsp;<code class="literal">;</code>&nbsp;[ForUpdate]<br>
+               <br>
+               ForVarControl:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{VariableModifier}&nbsp;Type&nbsp;VariableDeclaratorId&nbsp;&nbsp;ForVarControlRest<br>
+               <br>
+               ForVarControlRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ForVariableDeclaratorsRest&nbsp;<code class="literal">;</code>&nbsp;[Expression]&nbsp;<code class="literal">;</code>&nbsp;[ForUpdate]<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">:</code>&nbsp;Expression<br>
+               <br>
+               ForVariableDeclaratorsRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;[<code class="literal">=</code>&nbsp;VariableInitializer]&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;VariableDeclarator&nbsp;}<br>
+               <br>
+               ForInit:&nbsp;<br>
+               ForUpdate:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;StatementExpression&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;StatementExpression&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Expression:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Expression1&nbsp;[AssignmentOperator&nbsp;Expression1]<br>
+               <br>
+               AssignmentOperator:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">=</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">+=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">-=</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">*=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">/=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&amp;=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">|=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">^=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">%=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;&lt;=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&gt;&gt;=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&gt;&gt;&gt;=</code><br>
+               <br>
+               Expression1:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Expression2&nbsp;[Expression1Rest]<br>
+               <br>
+               Expression1Rest:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">?</code>&nbsp;Expression&nbsp;<code class="literal">:</code>&nbsp;Expression1<br>
+               <br>
+               Expression2:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Expression3&nbsp;[Expression2Rest]<br>
+               <br>
+               Expression2Rest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;InfixOp&nbsp;Expression3&nbsp;}<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">instanceof</code>&nbsp;Type<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               InfixOp:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">||</code>&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&amp;&amp;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">|</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">^</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&amp;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">==</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">!=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&gt;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&gt;=</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&lt;&lt;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&gt;&gt;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">&gt;&gt;&gt;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">+</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">-</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">*</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">/</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">%</code><br>
+               <br>
+               Expression3:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;PrefixOp&nbsp;Expression3<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">(</code>&nbsp;(Expression&nbsp;|&nbsp;Type)&nbsp;<code class="literal">)</code>&nbsp;Expression3<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Primary&nbsp;{&nbsp;Selector&nbsp;}&nbsp;{&nbsp;PostfixOp&nbsp;}<br>
+               <br>
+               PrefixOp:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">++</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">--</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">!</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">~</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">+</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">-</code><br>
+               <br>
+               PostfixOp:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">++</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">--</code><br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Primary:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Literal<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ParExpression<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">this</code>&nbsp;[Arguments]<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">super</code>&nbsp;SuperSuffix<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">new</code>&nbsp;Creator<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;NonWildcardTypeArguments&nbsp;(ExplicitGenericInvocationSuffix&nbsp;|&nbsp;<code class="literal">this</code>&nbsp;Arguments)<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;{&nbsp;<code class="literal">.</code>&nbsp;Identifier&nbsp;}&nbsp;[IdentifierSuffix]<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;BasicType&nbsp;{<code class="literal">[]</code>}&nbsp;<code class="literal">.</code>&nbsp;<code class="literal">class</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">void</code>&nbsp;<code class="literal">.</code>&nbsp;<code class="literal">class</code><br>
+               <br>
+               <br>
+               <br>
+               Literal:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;IntegerLiteral<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;FloatingPointLiteral<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;CharacterLiteral&nbsp;	<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;StringLiteral&nbsp;	<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;BooleanLiteral<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;NullLiteral<br>
+               <br>
+               ParExpression:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">(</code>&nbsp;Expression&nbsp;<code class="literal">)</code><br>
+               <br>
+               Arguments:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">(</code>&nbsp;[&nbsp;Expression&nbsp;{&nbsp;<code class="literal">,</code>&nbsp;Expression&nbsp;}&nbsp;]&nbsp;<code class="literal">)</code><br>
+               <br>
+               SuperSuffix:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Arguments&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">.</code>&nbsp;Identifier&nbsp;[Arguments]<br>
+               <br>
+               ExplicitGenericInvocationSuffix:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">super</code>&nbsp;SuperSuffix<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;Arguments<br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               Creator:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;NonWildcardTypeArguments&nbsp;CreatedName&nbsp;ClassCreatorRest<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;CreatedName&nbsp;(ClassCreatorRest&nbsp;|&nbsp;ArrayCreatorRest)<br>
+               <br>
+               CreatedName:&nbsp;&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;[TypeArgumentsOrDiamond]&nbsp;{&nbsp;<code class="literal">.</code>&nbsp;Identifier&nbsp;[TypeArgumentsOrDiamond]&nbsp;}<br>
+               <br>
+               ClassCreatorRest:&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Arguments&nbsp;[ClassBody]<br>
+               <br>
+               ArrayCreatorRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">[</code>&nbsp;(<code class="literal">]</code>&nbsp;{<code class="literal">[]</code>}&nbsp;ArrayInitializer&nbsp;&nbsp;|&nbsp;&nbsp;Expression&nbsp;<code class="literal">]</code>&nbsp;{<code class="literal">[</code>&nbsp;Expression&nbsp;<code class="literal">]</code>}&nbsp;{<code class="literal">[]</code>})<br>
+               <br>
+               <br>
+               <br>
+               IdentifierSuffix:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">[</code>&nbsp;({<code class="literal">[]</code>}&nbsp;<code class="literal">.</code>&nbsp;<code class="literal">class</code>&nbsp;|&nbsp;Expression)&nbsp;<code class="literal">]</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Arguments&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">.</code>&nbsp;(<code class="literal">class</code>&nbsp;|&nbsp;ExplicitGenericInvocation&nbsp;|&nbsp;<code class="literal">this</code>&nbsp;|&nbsp;<code class="literal">super</code>&nbsp;Arguments&nbsp;|<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">new</code>&nbsp;[NonWildcardTypeArguments]&nbsp;InnerCreator)<br>
+               <br>
+               ExplicitGenericInvocation:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;NonWildcardTypeArguments&nbsp;ExplicitGenericInvocationSuffix<br>
+               <br>
+               InnerCreator:&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;[NonWildcardTypeArgumentsOrDiamond]&nbsp;ClassCreatorRest<br>
+               <br>
+               <br>
+               <br>
+               Selector:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">.</code>&nbsp;Identifier&nbsp;[Arguments]<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">.</code>&nbsp;ExplicitGenericInvocation<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">.</code>&nbsp;<code class="literal">this</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">.</code>&nbsp;<code class="literal">super</code>&nbsp;SuperSuffix<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">.</code>&nbsp;<code class="literal">new</code>&nbsp;[NonWildcardTypeArguments]&nbsp;InnerCreator<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">[</code>&nbsp;Expression&nbsp;<code class="literal">]</code><br>
+               
+            </p>
+         </div>
+         <div class="literallayout">
+            <p><br>
+               EnumBody:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;[EnumConstants]&nbsp;[<code class="literal">,</code>]&nbsp;[EnumBodyDeclarations]&nbsp;<code class="literal">}</code><br>
+               <br>
+               EnumConstants:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;EnumConstant<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;EnumConstants&nbsp;<code class="literal">,</code>&nbsp;EnumConstant<br>
+               <br>
+               EnumConstant:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;[Annotations]&nbsp;Identifier&nbsp;[Arguments]&nbsp;[ClassBody]<br>
+               <br>
+               EnumBodyDeclarations:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">;</code>&nbsp;{ClassBodyDeclaration}<br>
+               <br>
+               <br>
+               <br>
+               AnnotationTypeBody:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;[AnnotationTypeElementDeclarations]&nbsp;<code class="literal">}</code><br>
+               <br>
+               AnnotationTypeElementDeclarations:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeElementDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeElementDeclarations&nbsp;AnnotationTypeElementDeclaration<br>
+               <br>
+               AnnotationTypeElementDeclaration:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;{Modifier}&nbsp;AnnotationTypeElementRest<br>
+               <br>
+               AnnotationTypeElementRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;Identifier&nbsp;AnnotationMethodOrConstantRest&nbsp;<code class="literal">;</code><br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ClassDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;InterfaceDeclaration<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;EnumDeclaration&nbsp;&nbsp;<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeDeclaration<br>
+               <br>
+               AnnotationMethodOrConstantRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;AnnotationMethodRest<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;ConstantDeclaratorsRest&nbsp;&nbsp;<br>
+               <br>
+               AnnotationMethodRest:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">(</code>&nbsp;<code class="literal">)</code>&nbsp;[<code class="literal">[]</code>]&nbsp;[<code class="literal">default</code>&nbsp;ElementValue]<br>
+               
+            </p>
+         </div>
+      </div>
+      <div class="navfooter">
+         <hr>
+         <table width="100%" summary="Navigation footer">
+            <tr>
+               <td width="40%" align="left"><a accesskey="p" href="jls-17.html">Prev</a>&nbsp;
+               </td>
+               <td width="20%" align="center">&nbsp;</td>
+               <td width="40%" align="right">&nbsp;<a accesskey="n" href="jls-0-index.html">Next</a></td>
+            </tr>
+            <tr>
+               <td width="40%" align="left" valign="top">Chapter&nbsp;17.&nbsp;Threads and Locks&nbsp;</td>
+               <td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td>
+               <td width="40%" align="right" valign="top">&nbsp;Index</td>
+            </tr>
+         </table>
+      </div>
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" class="navfooter">
+         <hr><a href="jls-0-front.html">
+                Legal Notice
+              </a></div>
+   </body>
+</html>

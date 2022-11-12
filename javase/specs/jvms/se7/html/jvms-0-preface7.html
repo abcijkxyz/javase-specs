@@ -1,0 +1,149 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Preface to the Java SE 7 Edition</title>
+      <link rel="stylesheet" type="text/css" href="../../../javaspec.css">
+      <meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1">
+      <link rel="home" href="index.html" title="The Java&reg; Virtual Machine Specification">
+      <link rel="up" href="index.html" title="The Java&reg; Virtual Machine Specification">
+      <link rel="prev" href="index.html" title="The Java&reg; Virtual Machine Specification">
+      <link rel="next" href="jvms-0-preface2.html" title="Preface to the Second Edition">
+      <link rel="copyright" href="jvms-0-front.html" title="Legal Notice">
+   <script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" id="logo">
+<img src="https://docs.oracle.com/javase/webdesign/other/im/oralogo_small.gif" alt="Oracle Logo"><br><p><a href="https://docs.oracle.com/javase/7/docs/">Java SE</a> &gt; <a href="../../../index.html">Java SE Specifications</a> &gt; <a href="index.html">Java Virtual Machine Specification</a></p>
+      </div>
+      <div class="navheader">
+         <table width="100%" summary="Navigation header">
+            <tr>
+               <th colspan="3" align="center">Preface to the Java SE 7 Edition</th>
+            </tr>
+            <tr>
+               <td width="20%" align="left"><a accesskey="p" href="index.html">Prev</a>&nbsp;
+               </td>
+               <th width="60%" align="center">&nbsp;</th>
+               <td width="20%" align="right">&nbsp;<a accesskey="n" href="jvms-0-preface2.html">Next</a></td>
+            </tr>
+         </table>
+         <hr>
+      </div>
+      <div lang="en" class="preface" title="Preface to the Java SE 7 Edition">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="jvms-0-preface7"></a>Preface to the Java SE 7 Edition
+                  </h2>
+               </div>
+               <div>
+                  <div class="authorgroup">
+                     <div class="author">
+                        <h3 class="author">Gilad Bracha</h3>
+                     </div>
+                     <div class="author">
+                        <h3 class="author">Alex Buckley</h3>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <p>The <span class="trademark">Java</span>&reg; SE 7 Edition of <em class="citetitle">The Java Virtual Machine Specification</em> incorporates all the changes
+            that have been made to the Java Virtual Machine since the Second Edition in 1999. In
+            addition, numerous corrections and clarifications have been made to
+            align with popular implementations of the Java Virtual Machine, and with concepts
+            common to the Java Virtual Machine and the Java programming language.
+         </p>
+         <p>Readers may send feedback about errors and ambiguities in <em class="citetitle">The Java Virtual Machine Specification</em>
+            to <code class="literal">jvms-comments_ww@oracle.com</code>.
+         </p>
+         <p>The Java SE 5.0 platform in 2004 brought momentous changes to
+            the Java programming language but had a relatively muted effect on the design of the
+            Java Virtual Machine. Additions were made to the <code class="literal">class</code> file format to support new
+            Java programming language features such as generics and variable arity
+            methods.
+         </p>
+         <p>The Java SE 6 platform in 2006 saw no changes to the Java programming language
+            but an entirely new approach to bytecode verification in the
+            Java Virtual Machine. Eva Rose, in her Master's Thesis, proposed a radical revision
+            of bytecode verification in the context of the Java Card
+            platform. This led to an implementation for Java ME CLDC, and
+            eventually to the revision of the Java SE verification process
+            documented in Chapter 4.
+         </p>
+         <p>Sheng Liang implemented the Java ME CLDC verifier. Antero
+            Taivalsaari led the overall specification of Java ME CLDC and Gilad
+            Bracha was responsible for specifying the verifier. Alessandro
+            Coglio's analysis of bytecode verification was the most extensive,
+            realistic, and thorough study of the topic, and contributed greatly to
+            the specification. Wei Tao, together with Frank Yellin, Tim Lindholm,
+            and Gilad Bracha, implemented the Prolog verifier that formed the
+            basis for the specification in both Java ME and Java SE. Wei then
+            implemented the specification "for real" in the HotSpot JVM. Later,
+            Mingyao Yang improved the design and specification, and implemented
+            the final version that shipped in the Reference Implementation of Java
+            SE 6. The specification also benefited from the efforts of the JSR 202
+            Expert Group: Peter Burka, Alessandro Coglio, Sanghoon Jin, Christian
+            Kemper, Larry Rau, Eva Rose, and Mark Stolz.
+         </p>
+         <p>The Java SE 7 platform in 2011 made good on the promise given in
+            the First Edition of <em class="citetitle">The Java Virtual Machine Specification</em> in 1997: "In the future, we will consider
+            bounded extensions to the Java virtual machine to provide better
+            support for other languages." Gilad Bracha, in his work on
+            hotswapping, anticipated the burden of the Java Virtual Machine's static type system
+            on implementers of dynamically-typed languages. Consequently, the
+            <span class="emphasis"><em>invokedynamic</em></span> instruction and its supporting infrastructure were
+            developed by John Rose and the JSR 292 Expert Group: Ola Bini, R&eacute;mi
+            Forax, Dan Heidinga, Fredrik &Ouml;hrstr&ouml;m, and Jochen Theodorou, with
+            special contributions from Charlie Nutter and Christian
+            Thalinger.
+         </p>
+         <p>More people than we can mention here have, over time,
+            contributed to the design and implementation of the Java Virtual Machine. The
+            excellent performance we see in the Java Virtual Machine implementations of today
+            would never have been possible without the technological foundation
+            laid by David Ungar and his colleagues at the Self project at Sun
+            Labs. This technology took a convoluted path, from Self on through the
+            Animorphic Smalltalk VM to eventually become the HotSpot JVM. Lars Bak
+            and Urs H&ouml;lzle are the two people who were present through all these
+            stages, and are more responsible than anyone else for the high
+            performance we take for granted in Java Virtual Machine implementations today.
+         </p>
+         <p>This specification has been significantly improved thanks to
+            contributions from Martin Buchholz, Brian Goetz, Paul Hohensee, David
+            Holmes, Karen Kinnear, Keith McGuigan, Jeff Nisewanger, Mark Reinhold,
+            Naoto Sato, and Bill Pugh, as well as Uday Dhanikonda, Janet Koenig,
+            Adam Messinger, John Pampuch, Georges Saab, and Bernard Traversat. Jon
+            Courtney and Roger Riggs helped to ensure this specification is
+            applicable to Java ME as much as Java SE. Leonid Arbouzov, Stanislav
+            Avzan, Yuri Gaevsky, Ilya Mukhin, Sergey Reznick, and Kirill Shirokov
+            have done outstanding work in the Java Compatibility Kit to ensure
+            this specification is both testable and tested.
+         </p>
+      </div>
+      <div class="navfooter">
+         <hr>
+         <table width="100%" summary="Navigation footer">
+            <tr>
+               <td width="40%" align="left"><a accesskey="p" href="index.html">Prev</a>&nbsp;
+               </td>
+               <td width="20%" align="center">&nbsp;</td>
+               <td width="40%" align="right">&nbsp;<a accesskey="n" href="jvms-0-preface2.html">Next</a></td>
+            </tr>
+            <tr>
+               <td width="40%" align="left" valign="top">The <span class="trademark">Java</span>&reg; Virtual Machine Specification&nbsp;
+               </td>
+               <td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td>
+               <td width="40%" align="right" valign="top">&nbsp;Preface to the Second Edition</td>
+            </tr>
+         </table>
+      </div>
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" class="navfooter">
+         <hr><a href="jvms-0-front.html">
+                Legal Notice
+              </a></div>
+   </body>
+</html>

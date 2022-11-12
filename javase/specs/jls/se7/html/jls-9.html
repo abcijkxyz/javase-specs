@@ -1,0 +1,2166 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Chapter&nbsp;9.&nbsp;Interfaces</title>
+      <link rel="stylesheet" type="text/css" href="../../../javaspec.css">
+      <meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1">
+      <link rel="home" href="index.html" title="The Java&reg; Language Specification">
+      <link rel="up" href="index.html" title="The Java&reg; Language Specification">
+      <link rel="prev" href="jls-8.html" title="Chapter&nbsp;8.&nbsp;Classes">
+      <link rel="next" href="jls-10.html" title="Chapter&nbsp;10.&nbsp;Arrays">
+      <link rel="copyright" href="jls-0-front.html" title="Legal Notice">
+   <script>window.ohcglobal || document.write('<script src="https://docs.oracle.com/en/dcommon/js/global.js">\x3C/script>')</script></head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" id="logo">
+<img src="https://docs.oracle.com/javase/webdesign/other/im/oralogo_small.gif" alt="Oracle Logo"><br><p><a href="https://docs.oracle.com/javase/7/docs/">Java SE</a> &gt; <a href="../../../index.html">Java SE Specifications</a> &gt; <a href="index.html">Java Language Specification</a></p>
+      </div>
+      <div class="navheader">
+         <table width="100%" summary="Navigation header">
+            <tr>
+               <th colspan="3" align="center">Chapter&nbsp;9.&nbsp;Interfaces</th>
+            </tr>
+            <tr>
+               <td width="20%" align="left"><a accesskey="p" href="jls-8.html">Prev</a>&nbsp;
+               </td>
+               <th width="60%" align="center">&nbsp;</th>
+               <td width="20%" align="right">&nbsp;<a accesskey="n" href="jls-10.html">Next</a></td>
+            </tr>
+         </table>
+         <hr>
+      </div>
+      <div lang="en" class="chapter" title="Chapter&nbsp;9.&nbsp;Interfaces">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="jls-9"></a>Chapter&nbsp;9.&nbsp;Interfaces
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="jls-9.html#jls-9.1">9.1. Interface Declarations</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.1.1">9.1.1. Interface Modifiers</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.1.1.1">9.1.1.1. <code class="literal">abstract</code> Interfaces</a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.1.1.2">9.1.1.2. <code class="literal">strictfp</code> Interfaces</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.1.2">9.1.2. Generic Interfaces and Type Parameters</a></span></dt>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.1.3">9.1.3. Superinterfaces and Subinterfaces</a></span></dt>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.1.4">9.1.4. Interface Body and Member Declarations</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="jls-9.html#jls-9.2">9.2. Interface Members</a></span></dt>
+               <dt><span class="section"><a href="jls-9.html#jls-9.3">9.3. Field (Constant) Declarations</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.3.1">9.3.1. Initialization of Fields in Interfaces</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="jls-9.html#jls-9.4">9.4. Abstract Method Declarations</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.4.1">9.4.1. Inheritance and Overriding</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.4.1.1">9.4.1.1. Overriding (by Instance Methods)</a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.4.1.2">9.4.1.2. Requirements in Overriding</a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.4.1.3">9.4.1.3. Inheriting Methods with Override-Equivalent Signatures</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.4.2">9.4.2. Overloading</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="jls-9.html#jls-9.5">9.5. Member Type Declarations</a></span></dt>
+               <dt><span class="section"><a href="jls-9.html#jls-9.6">9.6. Annotation Types</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.6.1">9.6.1. Annotation Type Elements</a></span></dt>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.6.2">9.6.2. Defaults for Annotation Type Elements</a></span></dt>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.6.3">9.6.3. Predefined Annotation Types</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.6.3.1">9.6.3.1. <code class="literal">@Target</code></a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.6.3.2">9.6.3.2. <code class="literal">@Retention</code></a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.6.3.3">9.6.3.3. <code class="literal">@Inherited</code></a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.6.3.4">9.6.3.4. <code class="literal">@Override</code></a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.6.3.5">9.6.3.5. <code class="literal">@SuppressWarnings</code></a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.6.3.6">9.6.3.6. <code class="literal">@Deprecated</code></a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.6.3.7">9.6.3.7. <code class="literal">@SafeVarargs</code></a></span></dt>
+                        </dl>
+                     </dd>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="jls-9.html#jls-9.7">9.7. Annotations</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.7.1">9.7.1. Normal Annotations</a></span></dt>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.7.2">9.7.2. Marker Annotations</a></span></dt>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.7.3">9.7.3. Single-Element Annotations</a></span></dt>
+                  </dl>
+               </dd>
+            </dl>
+         </div>
+         <p class="norm"><a name="jls-9-100"></a>An interface declaration
+            introduces a new reference type whose members are classes, interfaces,
+            constants, and abstract methods. This type has no implementation, but
+            otherwise unrelated classes can implement it by providing
+            implementations for its abstract methods.
+         </p>
+         <p class="norm"><a name="jls-9-110"></a>A <span class="emphasis"><em>nested
+                  interface</em></span> is any interface whose declaration occurs within
+            the body of another class or interface.
+         </p>
+         <p class="norm"><a name="jls-9-120"></a>A <span class="emphasis"><em>top level
+                  interface</em></span> is an interface that is not a nested
+            interface.
+         </p>
+         <p class="norm"><a name="jls-9-130"></a>We distinguish between two kinds
+            of interfaces - normal interfaces and annotation types.
+         </p>
+         <p class="norm"><a name="jls-9-140"></a>This chapter discusses the common
+            semantics of all interfaces - normal interfaces, both top level
+            (<a class="xref" href="jls-7.html#jls-7.6" title="7.6.&nbsp;Top Level Type Declarations">&sect;7.6</a>) and nested (<a class="xref" href="jls-8.html#jls-8.5" title="8.5.&nbsp;Member Type Declarations">&sect;8.5</a>,
+            <a class="xref" href="jls-9.html#jls-9.5" title="9.5.&nbsp;Member Type Declarations">&sect;9.5</a>), and annotation types
+            (<a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>). Details that are specific to particular
+            kinds of interfaces are discussed in the sections dedicated to these
+            constructs.
+         </p>
+         <p class="norm"><a name="jls-9-150"></a>Programs can use interfaces to
+            make it unnecessary for related classes to share a common <code class="literal">abstract</code>
+            superclass or to add methods to <code class="literal">Object</code>.
+         </p>
+         <p class="norm"><a name="jls-9-160"></a>An interface may be declared to
+            be a <span class="emphasis"><em>direct extension</em></span> of one or more other
+            interfaces, meaning that it implicitly specifies all the member types,
+            abstract methods, and constants of the interfaces it extends, except
+            for any member types and constants that it may hide.
+         </p>
+         <p class="norm"><a name="jls-9-170"></a>A class may be declared
+            to <span class="emphasis"><em>directly implement</em></span> one or more interfaces,
+            meaning that any instance of the class implements all the <code class="literal">abstract</code>
+            methods specified by the interface or interfaces. A class necessarily
+            implements all the interfaces that its direct superclasses and direct
+            superinterfaces do. This (multiple) interface inheritance allows
+            objects to support (multiple) common behaviors without sharing any
+            implementation.
+         </p>
+         <p class="norm"><a name="jls-9-180"></a>A variable whose declared type is
+            an interface type may have as its value a reference to any instance of
+            a class which implements the specified interface. It is not sufficient
+            that the class happen to implement all the <code class="literal">abstract</code> methods of the
+            interface; the class or one of its superclasses must actually be
+            declared to implement the interface, or else the class is not
+            considered to implement the interface.
+         </p>
+         <div class="section" title="9.1.&nbsp;Interface Declarations">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both"><a name="jls-9.1"></a>9.1.&nbsp;Interface Declarations
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p class="norm-static"><a name="jls-9.1-100"></a>An <span class="emphasis"><em>interface declaration</em></span>
+               specifies a new named reference type. There are two kinds of interface
+               declarations - <span class="emphasis"><em>normal interface declarations</em></span>
+               and <span class="emphasis"><em>annotation type declarations</em></span>
+               (<a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>).
+            </p>
+            <div class="literallayout">
+               <p><br>
+                  InterfaceDeclaration:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;NormalInterfaceDeclaration<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeDeclaration<br>
+                  
+               </p>
+            </div>
+            <div class="literallayout">
+               <p><br>
+                  NormalInterfaceDeclaration:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;InterfaceModifiers<sub>opt</sub>&nbsp;<code class="literal">interface</code>&nbsp;Identifier<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;TypeParameters<sub>opt</sub>&nbsp;ExtendsInterfaces<sub>opt</sub>&nbsp;InterfaceBody<br>
+                  
+               </p>
+            </div>
+            <p class="norm-static"><a name="jls-9.1-130"></a>The
+               <span class="emphasis"><em>Identifier</em></span> in an interface declaration specifies the name of the
+               interface.
+            </p>
+            <p class="norm-error"><a name="jls-9.1-200"></a>It is a
+               compile-time error if an interface has the same simple name as any of
+               its enclosing classes or interfaces.
+            </p>
+            <p class="norm-static"><a name="jls-9.1-210"></a>The scope and shadowing of an
+               interface declaration is specified in <a class="xref" href="jls-6.html#jls-6.3" title="6.3.&nbsp;Scope of a Declaration">&sect;6.3</a> and
+               <a class="xref" href="jls-6.html#jls-6.4" title="6.4.&nbsp;Shadowing and Obscuring">&sect;6.4</a>.
+            </p>
+            <div class="section" title="9.1.1.&nbsp;Interface Modifiers">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.1.1"></a>9.1.1.&nbsp;Interface Modifiers
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.1.1-100"></a>An
+                  interface declaration may include <span class="emphasis"><em>interface
+                        modifiers</em></span>.
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     InterfaceModifiers:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;InterfaceModifier<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;InterfaceModifiers&nbsp;InterfaceModifier<br>
+                     <br>
+                     InterfaceModifier:&nbsp;one&nbsp;of<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;Annotation&nbsp;<code class="literal">public</code>&nbsp;<code class="literal">protected</code>&nbsp;<code class="literal">private</code><br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">abstract</code>&nbsp;<code class="literal">static</code>&nbsp;<code class="literal">strictfp</code><br>
+                     
+                  </p>
+               </div>
+               <p class="norm-error"><a name="jls-9.1.1-200"></a>If an
+                  annotation <code class="varname">a</code> (<a class="xref" href="jls-9.html#jls-9.7" title="9.7.&nbsp;Annotations">&sect;9.7</a>) on an
+                  interface declaration corresponds to an annotation type <span class="type">T</span>
+                  (<a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>), and <span class="type">T</span> has a
+                  (meta-)annotation <code class="varname">m</code> that corresponds to <code class="literal">java.lang.annotation.Target</code>,
+                  then <code class="varname">m</code> must have an element whose value is
+                  <code class="literal">java.lang.annotation.ElementType.TYPE</code>, or a compile-time error occurs.
+               </p>
+               <p class="note">The access modifier <code class="literal">public</code>
+                  (<a class="xref" href="jls-6.html#jls-6.6" title="6.6.&nbsp;Access Control">&sect;6.6</a>) pertains to every kind of interface
+                  declaration.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.1-300"></a>The access modifiers <code class="literal">protected</code>
+                  and <code class="literal">private</code> pertain only to member interfaces within a directly
+                  enclosing class or enum declaration
+                  (<a class="xref" href="jls-8.html#jls-8.5.1" title="8.5.1.&nbsp;Static Member Type Declarations">&sect;8.5.1</a>).
+               </p>
+               <p class="norm-static"><a name="jls-9.1.1-310"></a>The
+                  modifier <code class="literal">static</code> pertains only to member interfaces
+                  (<a class="xref" href="jls-8.html#jls-8.5.1" title="8.5.1.&nbsp;Static Member Type Declarations">&sect;8.5.1</a>, <a class="xref" href="jls-9.html#jls-9.5" title="9.5.&nbsp;Member Type Declarations">&sect;9.5</a>), not to top
+                  level interfaces (<a class="xref" href="jls-7.html#jls-7.6" title="7.6.&nbsp;Top Level Type Declarations">&sect;7.6</a>).
+               </p>
+               <p class="norm-error"><a name="jls-9.1.1-400"></a>It is a
+                  compile-time error if the same modifier appears more than once in an
+                  interface declaration.
+               </p>
+               <p class="note">If two or more (distinct) interface modifiers appear
+                  in an interface declaration, then it is customary, though not
+                  required, that they appear in the order consistent with that shown
+                  above in the production
+                  for <span class="emphasis"><em>InterfaceModifier</em></span>.
+               </p>
+               <div class="section" title="9.1.1.1.&nbsp;abstract Interfaces">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.1.1.1"></a>9.1.1.1.&nbsp;<code class="literal">abstract</code> Interfaces
+                           </h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.1.1.1-100"></a>Every
+                     interface is implicitly <code class="literal">abstract</code>.
+                  </p>
+                  <p class="note">This modifier is obsolete and should not be used in
+                     new programs.
+                  </p>
+               </div>
+               <div class="section" title="9.1.1.2.&nbsp;strictfp Interfaces">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.1.1.2"></a>9.1.1.2.&nbsp;<code class="literal">strictfp</code> Interfaces
+                           </h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.1.1.2-100"></a>The
+                     effect of the <code class="literal">strictfp</code> modifier is to make all <code class="literal">float</code> or <code class="literal">double</code>
+                     expressions within the interface declaration be explicitly FP-strict
+                     (<a class="xref" href="jls-15.html#jls-15.4" title="15.4.&nbsp;FP-strict Expressions">&sect;15.4</a>).
+                  </p>
+                  <p class="norm-static"><a name="jls-9.1.1.2-110"></a>This
+                     implies that all nested types declared in the interface are implicitly
+                     <code class="literal">strictfp</code>.
+                  </p>
+               </div>
+            </div>
+            <div class="section" title="9.1.2.&nbsp;Generic Interfaces and Type Parameters">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.1.2"></a>9.1.2.&nbsp;Generic Interfaces and Type Parameters
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.1.2-100"></a>An
+                  interface is <span class="emphasis"><em>generic</em></span> if it declares one or more
+                  type variables (<a class="xref" href="jls-4.html#jls-4.4" title="4.4.&nbsp;Type Variables">&sect;4.4</a>).
+               </p>
+               <p class="norm-static"><a name="jls-9.1.2-110"></a>These type
+                  variables are known as the <span class="emphasis"><em>type parameters</em></span> of the
+                  interface. The type parameter section follows the interface name and
+                  is delimited by angle brackets. 
+               </p>
+               <p class="norm-static"><a name="jls-9.1.2-200"></a>In an
+                  interface's type parameter section, a type variable
+                  <span class="type">T</span> <span class="emphasis"><em>directly depends</em></span> on a type variable <span class="type">S</span> if
+                  <span class="type">S</span> is the bound of <span class="type">T</span>, while <span class="type">T</span> <span class="emphasis"><em>depends</em></span> on <span class="type">S</span>
+                  if either <span class="type">T</span> directly depends on <span class="type">S</span> or <span class="type">T</span> directly depends on a
+                  type variable <span class="type">U</span> that depends on <span class="type">S</span> (using this definition
+                  recursively).
+               </p>
+               <p class="norm-error"><a name="jls-9.1.2-210"></a>It is a
+                  compile-time error if a type variable in a interface's type parameter
+                  section depends on itself.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.2-300"></a>The scope
+                  of an interface's type parameter is specified in
+                  <a class="xref" href="jls-6.html#jls-6.3" title="6.3.&nbsp;Scope of a Declaration">&sect;6.3</a>.
+               </p>
+               <p class="norm-error"><a name="jls-9.1.2-310"></a>It is a
+                  compile-time error to refer to a type parameter of an interface <span class="type">I</span>
+                  anywhere in the declaration of a field or type member of <span class="type">I</span>.
+               </p>
+               <p class="norm-dynamic"><a name="jls-9.1.2-400"></a>A generic
+                  interface declaration defines a set of parameterized types
+                  (<a class="xref" href="jls-4.html#jls-4.5" title="4.5.&nbsp;Parameterized Types">&sect;4.5</a>), one for each possible invocation of the
+                  type parameter section by type arguments. All of these parameterized
+                  types share the same interface at run time.
+               </p>
+            </div>
+            <div class="section" title="9.1.3.&nbsp;Superinterfaces and Subinterfaces">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.1.3"></a>9.1.3.&nbsp;Superinterfaces and Subinterfaces
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.1.3-100"></a>If an
+                  <code class="literal">extends</code> clause is provided, then the interface being declared
+                  extends each of the other named interfaces and therefore inherits the
+                  member types, methods, and constants of each of the other named
+                  interfaces.
+               </p>
+               <p class="norm"><a name="jls-9.1.3-110"></a>These other named interfaces
+                  are the <span class="emphasis"><em>direct superinterfaces</em></span> of the interface
+                  being declared.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.3-120"></a>Any class
+                  that <code class="literal">implements</code> the declared interface is also considered to
+                  implement all the interfaces that this interface <code class="literal">extends</code>.
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     ExtendsInterfaces:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">extends</code>&nbsp;InterfaceTypeList<br>
+                     
+                  </p>
+               </div>
+               <p class="note">The following is repeated from
+                  <a class="xref" href="jls-4.html#jls-4.3" title="4.3.&nbsp;Reference Types and Values">&sect;4.3</a> and <a class="xref" href="jls-8.html#jls-8.1.5" title="8.1.5.&nbsp;Superinterfaces">&sect;8.1.5</a> to make the
+                  presentation here clearer:
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     InterfaceTypeList:<br>
+                     &nbsp;&nbsp;&nbsp;InterfaceType<br>
+                     &nbsp;&nbsp;&nbsp;InterfaceTypeList&nbsp;<code class="literal">,</code>&nbsp;InterfaceType<br>
+                     <br>
+                     InterfaceType:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;TypeDeclSpecifier&nbsp;TypeArguments<sub>opt</sub><br>
+                     
+                  </p>
+               </div>
+               <p class="norm-static"><a name="jls-9.1.3-200"></a>Given a
+                  (possibly generic) interface declaration for
+                  <span class="type">I</span><code class="literal">&lt;</code><span class="type">F<sub>1</sub></span>,...,<span class="type">F<sub>n</sub></span><code class="literal">&gt;</code> (<span class="emphasis"><em>n</em></span> &#8805; 0),
+                  the <span class="emphasis"><em>direct superinterfaces</em></span> of the interface type
+                  <span class="type">I</span><code class="literal">&lt;</code><span class="type">F<sub>1</sub></span>,...,<span class="type">F<sub>n</sub></span><code class="literal">&gt;</code> are the types given in the <code class="literal">extends</code>
+                  clause of the declaration of <span class="type">I</span> if an <code class="literal">extends</code> clause is
+                  present.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.3-210"></a>Let
+                  <span class="type">I</span><code class="literal">&lt;</code><span class="type">F<sub>1</sub></span>,...,<span class="type">F<sub>n</sub></span><code class="literal">&gt;</code> (<span class="emphasis"><em>n</em></span> &gt; 0), be a generic
+                  interface declaration. The direct superinterfaces of the parameterized
+                  interface type <span class="type">I</span><code class="literal">&lt;</code><span class="type">T<sub>1</sub></span>,...,<span class="type">T<sub>n</sub></span><code class="literal">&gt;</code>, where <span class="type">T<sub>i</sub></span> (1 &#8804;
+                  <span class="emphasis"><em>i</em></span> &#8804; <span class="emphasis"><em>n</em></span>) is a type, are all types <span class="type">J</span><code class="literal">&lt;</code><span class="type">U<sub>1</sub></span>
+                  &#952;,...,<span class="type">U<sub>k</sub></span> &#952;<code class="literal">&gt;</code>, where
+                  <span class="type">J</span><code class="literal">&lt;</code><span class="type">U<sub>1</sub></span>,...,<span class="type">U<sub>k</sub></span><code class="literal">&gt;</code> is a direct superinterface of
+                  <span class="type">I</span><code class="literal">&lt;</code><span class="type">F<sub>1</sub></span>,...,<span class="type">F<sub>n</sub></span><code class="literal">&gt;</code>, and &#952; is the
+                  substitution <code class="literal">[<span class="type">F<sub>1</sub></span>:=<span class="type">T<sub>1</sub></span>,...,<span class="type">F<sub>n</sub></span>:=<span class="type">T<sub>n</sub></span>]</code>.
+               </p>
+               <p class="norm-error"><a name="jls-9.1.3-220"></a>Each <span class="emphasis"><em>InterfaceType</em></span> in the
+                  <code class="literal">extends</code> clause of an interface declaration must name an accessible
+                  (<a class="xref" href="jls-6.html#jls-6.6" title="6.6.&nbsp;Access Control">&sect;6.6</a>) interface type; otherwise a compile-time
+                  error occurs.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.3-300"></a>The <span class="emphasis"><em>superinterface</em></span>
+                  relationship is the transitive closure of the direct superinterface
+                  relationship. An interface <span class="type">K</span> is a superinterface of interface <span class="type">I</span> if
+                  either of the following is true:
+               </p>
+               <div class="norm">
+                  <ul class="norm" type="disc">
+                     <li class="listitem">
+                        <p class="norm-static"><a name="jls-9.1.3-300-A"></a><span class="type">K</span>
+                                 is a direct superinterface of <span class="type">I</span>.
+                        </p>
+                     </li>
+                     <li class="listitem">
+                        <p class="norm-static"><a name="jls-9.1.3-300-B"></a>There exists an interface <span class="type">J</span> such that
+                                 <span class="type">K</span> is a superinterface of <span class="type">J</span>, and <span class="type">J</span> is a superinterface of
+                                 <span class="type">I</span>,applying this definition recursively.
+                        </p>
+                     </li>
+                  </ul>
+               </div>
+               <p class="norm-static"><a name="jls-9.1.3-310"></a>Interface
+                  <span class="type">I</span> is said to be a <span class="emphasis"><em>subinterface</em></span> of interface <span class="type">K</span>
+                  whenever <span class="type">K</span> is a superinterface of <span class="type">I</span>.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.3-320"></a>While
+                  every class is an extension of class <code class="literal">Object</code>, there is no single
+                  interface of which all interfaces are extensions.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.3-400"></a>An
+                  interface <span class="type">I</span> <span class="emphasis"><em>directly depends</em></span> on a type <span class="type">T</span> if
+                  <span class="type">T</span> is mentioned in the <code class="literal">extends</code> clause of <span class="type">I</span> either as a
+                  superinterface or as a qualifier within a superinterface name.
+               </p>
+               <p class="norm-static"><a name="jls-9.1.3-410"></a>An
+                  interface <span class="type">I</span> <span class="emphasis"><em>depends</em></span> on a reference type <span class="type">T</span> if
+                  any of the following conditions hold:
+               </p>
+               <div class="norm">
+                  <ul class="norm" type="disc">
+                     <li class="listitem">
+                        <p class="norm-static"><a name="jls-9.1.3-410-A"></a><span class="type">I</span>
+                                 directly depends on <span class="type">T</span>.
+                        </p>
+                     </li>
+                     <li class="listitem">
+                        <p class="norm-static"><a name="jls-9.1.3-410-B"></a><span class="type">I</span>
+                                 directly depends on a class <span class="type">C</span> that depends
+                                 (<a class="xref" href="jls-8.html#jls-8.1.5" title="8.1.5.&nbsp;Superinterfaces">&sect;8.1.5</a>) on <span class="type">T</span>.
+                        </p>
+                     </li>
+                     <li class="listitem">
+                        <p class="norm-static"><a name="jls-9.1.3-410-C"></a><span class="type">I</span>
+                                 directly depends on an interface <span class="type">J</span> that depends on <span class="type">T</span> (using
+                                 this definition recursively).
+                        </p>
+                     </li>
+                  </ul>
+               </div>
+               <p class="norm-error"><a name="jls-9.1.3-420"></a>It is a
+                  compile-time error if an interface depends on itself.
+               </p>
+               <p class="norm-dynamic"><a name="jls-9.1.3-430"></a>If
+                  circularly declared interfaces are detected at run time, as interfaces
+                  are loaded (<a class="xref" href="jls-12.html#jls-12.2" title="12.2.&nbsp;Loading of Classes and Interfaces">&sect;12.2</a>), then a
+                  <code class="literal">ClassCircularityError</code> is thrown.
+               </p>
+            </div>
+            <div class="section" title="9.1.4.&nbsp;Interface Body and Member Declarations">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.1.4"></a>9.1.4.&nbsp;Interface Body and Member Declarations
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.1.4-100"></a>The body
+                  of an interface may declare members of the interface, that is, fields
+                  (<a class="xref" href="jls-9.html#jls-9.3" title="9.3.&nbsp;Field (Constant) Declarations">&sect;9.3</a>), methods (<a class="xref" href="jls-9.html#jls-9.4" title="9.4.&nbsp;Abstract Method Declarations">&sect;9.4</a>),
+                  classes (<a class="xref" href="jls-9.html#jls-9.5" title="9.5.&nbsp;Member Type Declarations">&sect;9.5</a>), and interfaces
+                  (<a class="xref" href="jls-9.html#jls-9.5" title="9.5.&nbsp;Member Type Declarations">&sect;9.5</a>).
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     InterfaceBody:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;InterfaceMemberDeclarations<sub>opt</sub>&nbsp;<code class="literal">}</code><br>
+                     <br>
+                     InterfaceMemberDeclarations:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;InterfaceMemberDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;InterfaceMemberDeclarations&nbsp;InterfaceMemberDeclaration<br>
+                     <br>
+                     InterfaceMemberDeclaration:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ConstantDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;AbstractMethodDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ClassDeclaration&nbsp;<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;InterfaceDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">;</code>				<br>
+                     
+                  </p>
+               </div>
+               <p class="norm-static"><a name="jls-9.1.4-120"></a>The scope
+                  of a declaration of a member <code class="varname">m</code> declared in or
+                  inherited by an interface type <span class="type">I</span> is specified in
+                  <a class="xref" href="jls-6.html#jls-6.3" title="6.3.&nbsp;Scope of a Declaration">&sect;6.3</a>.
+               </p>
+            </div>
+         </div>
+         <div class="section" title="9.2.&nbsp;Interface Members">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both"><a name="jls-9.2"></a>9.2.&nbsp;Interface Members
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p class="norm-static"><a name="jls-9.2-100"></a>The members
+               of an interface are:
+            </p>
+            <div class="norm">
+               <ul class="norm" type="disc">
+                  <li class="listitem">
+                     <p class="norm-static"><a name="jls-9.2-100-A"></a>Those
+                              members declared in the interface.
+                     </p>
+                  </li>
+                  <li class="listitem">
+                     <p class="norm-static"><a name="jls-9.2-100-B"></a>Those
+                              members inherited from direct superinterfaces.
+                     </p>
+                  </li>
+                  <li class="listitem">
+                     <p class="norm-static"><a name="jls-9.2-100-C"></a>If an
+                              interface has no direct superinterfaces, then the interface
+                              implicitly declares a <code class="literal">public</code> <code class="literal">abstract</code> member
+                              method <code class="varname">m</code> with signature <span class="type">s</span>,
+                              return type <span class="type">r</span>, and <code class="literal">throws</code> clause <span class="type">t</span>
+                              corresponding to each <code class="literal">public</code> instance
+                              method <code class="varname">m</code> with signature <span class="type">s</span>,
+                              return type <span class="type">r</span>, and <code class="literal">throws</code> clause <span class="type">t</span>
+                              declared in <code class="literal">Object</code>, unless a method with the same signature,
+                              same return type, and a compatible <code class="literal">throws</code> clause is explicitly
+                              declared by the interface.
+                     </p>
+                     <p class="norm-error"><a name="jls-9.2-100-C.1"></a>It is
+                              a compile-time error if the interface explicitly declares such a
+                              method <code class="varname">m</code> in the case
+                              where <code class="varname">m</code> is declared to be <code class="literal">final</code> in
+                              <code class="literal">Object</code>.
+                     </p>
+                     <p class="norm-error"><a name="jls-9.2-100-C.2"></a>It
+                              follows that is a compile-time error if the interface declares a
+                              method with a signature that is override-equivalent
+                              (<a class="xref" href="jls-8.html#jls-8.4.2" title="8.4.2.&nbsp;Method Signature">&sect;8.4.2</a>) to a <code class="literal">public</code> method of <code class="literal">Object</code>,
+                              but has a different return type or incompatible <code class="literal">throws</code>
+                              clause.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+            <p class="norm-static"><a name="jls-9.2-110"></a>The
+               interface inherits, from the interfaces it extends, all members of
+               those interfaces, except for (a) fields, classes, and interfaces that
+               it hides and (b) methods that it overrides
+               (<a class="xref" href="jls-9.html#jls-9.4.1" title="9.4.1.&nbsp;Inheritance and Overriding">&sect;9.4.1</a>).
+            </p>
+            <p class="norm-static"><a name="jls-9.2-120"></a>Fields,
+               methods, and member types of an interface type may have the same name,
+               since they are used in different contexts and are disambiguated by
+               different lookup procedures (<a class="xref" href="jls-6.html#jls-6.5" title="6.5.&nbsp;Determining the Meaning of a Name">&sect;6.5</a>). However, this
+               is discouraged as a matter of style.
+            </p>
+         </div>
+         <div class="section" title="9.3.&nbsp;Field (Constant) Declarations">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both"><a name="jls-9.3"></a>9.3.&nbsp;Field (Constant) Declarations
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="literallayout">
+               <p><br>
+                  ConstantDeclaration:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;ConstantModifiers<sub>opt</sub>&nbsp;Type&nbsp;VariableDeclarators&nbsp;<code class="literal">;</code><br>
+                  <br>
+                  ConstantModifiers:&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;ConstantModifier<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;ConstantModifier&nbsp;ConstantModifers&nbsp;<br>
+                  <br>
+                  ConstantModifier:&nbsp;one&nbsp;of<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Annotation&nbsp;<code class="literal">public</code>&nbsp;<code class="literal">static</code>&nbsp;<code class="literal">final</code><br>
+                  
+               </p>
+            </div>
+            <p class="norm-error"><a name="jls-9.3-110"></a>If an
+               annotation <code class="varname">a</code> (<a class="xref" href="jls-9.html#jls-9.7" title="9.7.&nbsp;Annotations">&sect;9.7</a>) on a field
+               declaration corresponds to an annotation type <span class="type">T</span>
+               (<a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>), and <code class="varname">T</code> has a
+               (meta-)annotation <code class="varname">m</code> that corresponds to <code class="literal">java.lang.annotation.Target</code>,
+               then <code class="varname">m</code> must have an element whose value is
+               <code class="literal">java.lang.annotation.ElementType.FIELD</code>, or a compile-time error occurs.
+            </p>
+            <p class="norm-static"><a name="jls-9.3-120"></a>Every field
+               declaration in the body of an interface is implicitly <code class="literal">public</code>,
+               <code class="literal">static</code>, and <code class="literal">final</code>. It is permitted to redundantly specify any or
+               all of these modifiers for such fields.
+            </p>
+            <p class="note">If two or more (distinct) field modifiers appear in
+               a field declaration, it is customary, though not required, that they
+               appear in the order consistent with that shown above in the production
+               for <span class="emphasis"><em>ConstantModifier</em></span>.
+            </p>
+            <p class="norm-error"><a name="jls-9.3-130"></a>It is a compile-time error if the
+               same modifier appears more than once in a field declaration.
+            </p>
+            <p class="norm-error"><a name="jls-9.3-140"></a>It is a
+               compile-time error for the body of an interface declaration to declare
+               two fields with the same name.
+            </p>
+            <p class="norm-static"><a name="jls-9.3-200"></a>The declared type of a field is
+               denoted by the <span class="emphasis"><em>Type</em></span> that appears in the field
+               declaration, followed by any bracket pairs that follow the
+               <span class="emphasis"><em>Identifier</em></span> in the declarator.
+            </p>
+            <p class="norm-static"><a name="jls-9.3-300"></a>If the
+               interface declares a field with a certain name, then the declaration
+               of that field is said to <span class="emphasis"><em>hide</em></span> any and all
+               accessible declarations of fields with the same name in
+               superinterfaces of the interface.
+            </p>
+            <p class="norm-error"><a name="jls-9.3-400"></a>It is
+               possible for an interface to inherit more than one field with the same
+               name. Such a situation does not in itself cause a compile-time
+               error. However, any attempt within the body of the interface to refer
+               to any such field by its simple name will result in a compile-time
+               error, because such a reference is ambiguous.
+            </p>
+            <p class="norm-static"><a name="jls-9.3-410"></a>There might
+               be several paths by which the same field declaration might be
+               inherited from an interface. In such a situation, the field is
+               considered to be inherited only once, and it may be referred to by its
+               simple name without ambiguity.
+            </p>
+            <div class="example"><a name="d5e12665"></a><p class="title"><b>Example&nbsp;9.3-1.&nbsp;Ambiguous Inherited Fields</b></p>
+               <div class="example-contents">
+                  <p class="note">If two fields with the same name are inherited by an
+                     interface because, for example, two of its direct superinterfaces
+                     declare fields with that name, then a single ambiguous member
+                     results. Any use of this ambiguous member will result in a
+                     compile-time error. In the program:
+                  </p><pre class="programlisting">
+interface BaseColors {
+    int RED = 1, GREEN = 2, BLUE = 4;
+}
+interface RainbowColors extends BaseColors {
+    int YELLOW = 3, ORANGE = 5, INDIGO = 6, VIOLET = 7;
+}
+interface PrintColors extends BaseColors {
+    int YELLOW = 8, CYAN = 16, MAGENTA = 32;
+}
+interface LotsOfColors extends RainbowColors, PrintColors {
+    int FUCHSIA = 17, VERMILION = 43, CHARTREUSE = RED+90;
+}
+</pre><p class="note">the interface <code class="literal">LotsOfColors</code>
+                     inherits two fields named <code class="literal">YELLOW</code>. This is all right
+                     as long as the interface does not contain any reference by simple name
+                     to the field <code class="literal">YELLOW</code>. (Such a reference could occur
+                     within a variable initializer for a field.)
+                  </p>
+                  <p class="note">Even if interface <code class="literal">PrintColors</code>
+                     were to give the value <code class="literal">3</code>
+                     to <code class="literal">YELLOW</code> rather than the
+                     value <code class="literal">8</code>, a reference to
+                     field <code class="literal">YELLOW</code> within
+                     interface <code class="literal">LotsOfColors</code> would still be considered
+                     ambiguous.
+                  </p>
+               </div>
+            </div><br class="example-break"><div class="example"><a name="d5e12680"></a><p class="title"><b>Example&nbsp;9.3-2.&nbsp;Multiply Inherited Fields</b></p>
+               <div class="example-contents">
+                  <p class="note">If a single field is inherited multiple times from
+                     the same interface because, for example, both this interface and one
+                     of this interface's direct superinterfaces extend the interface that
+                     declares the field, then only a single member results. This situation
+                     does not in itself cause a compile-time error.
+                  </p>
+                  <p class="note">In the previous example, the
+                     fields <code class="literal">RED</code>, <code class="literal">GREEN</code>,
+                     and <code class="literal">BLUE</code> are inherited by
+                     interface <code class="literal">LotsOfColors</code> in more than one way,
+                     through interface <code class="literal">RainbowColors</code> and also through
+                     interface <code class="literal">PrintColors</code>, but the reference to
+                     field <code class="literal">RED</code> in
+                     interface <code class="literal">LotsOfColors</code> is not considered ambiguous
+                     because only one actual declaration of the
+                     field <code class="literal">RED</code> is involved.
+                  </p>
+               </div>
+            </div><br class="example-break"><div class="section" title="9.3.1.&nbsp;Initialization of Fields in Interfaces">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.3.1"></a>9.3.1.&nbsp;Initialization of Fields in Interfaces
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-error"><a name="jls-9.3.1-100"></a>Every field
+                  in the body of an interface must have an initialization expression,
+                  which need not be a constant expression (<a class="xref" href="jls-15.html#jls-15.28" title="15.28.&nbsp;Constant Expressions">&sect;15.28</a>),
+                  or a compile-time error occurs.
+               </p>
+               <p class="norm-error"><a name="jls-9.3.1-110"></a>It is a
+                  compile-time error if an initialization expression for an interface
+                  field contains a reference by simple name to the same field or to
+                  another field whose declaration occurs textually later in the same
+                  interface.
+               </p>
+               <div class="example"><a name="d5e12698"></a><p class="title"><b>Example&nbsp;9.3.1-1.&nbsp;Forward Reference to a Field</b></p>
+                  <div class="example-contents"><pre class="programlisting">
+interface Test {
+    float f = j;
+    int   j = 1;
+    int   k = k + 1;
+}
+</pre><p class="note">This program causes two compile-time errors,
+                        because <code class="literal">j</code> is referred to in the initialization
+                        of <code class="literal">f</code> before <code class="literal">j</code> is declared, and
+                        because the initialization of <code class="literal">k</code> refers
+                        to <code class="literal">k</code> itself.
+                     </p>
+                  </div>
+               </div><br class="example-break"><p class="norm-error"><a name="jls-9.3.1-120"></a>If the
+                  keyword <code class="literal">this</code> (<a class="xref" href="jls-15.html#jls-15.8.3" title="15.8.3.&nbsp;this">&sect;15.8.3</a>) or the keyword <code class="literal">super</code>
+                  (<a class="xref" href="jls-15.html#jls-15.11.2" title="15.11.2.&nbsp;Accessing Superclass Members using super">&sect;15.11.2</a>, <a class="xref" href="jls-15.html#jls-15.12" title="15.12.&nbsp;Method Invocation Expressions">&sect;15.12</a>) occurs in
+                  an initialization expression for a field of an interface, then unless
+                  the occurrence is within the body of an anonymous class
+                  (<a class="xref" href="jls-15.html#jls-15.9.5" title="15.9.5.&nbsp;Anonymous Class Declarations">&sect;15.9.5</a>), a compile-time error occurs.
+               </p>
+               <p class="norm-dynamic"><a name="jls-9.3.1-200"></a>The
+                  variable initializer is evaluated and the assignment performed exactly
+                  once, when the interface is initialized
+                  (<a class="xref" href="jls-12.html#jls-12.4.2" title="12.4.2.&nbsp;Detailed Initialization Procedure">&sect;12.4.2</a>).
+               </p>
+               <p class="norm"><a name="jls-9.3.1-210"></a>At run time, interface fields
+                  that are initialized with constant expressions
+                  (<a class="xref" href="jls-15.html#jls-15.28" title="15.28.&nbsp;Constant Expressions">&sect;15.28</a>) are initialized first
+                  (<a class="xref" href="jls-12.html#jls-12.4.2" title="12.4.2.&nbsp;Detailed Initialization Procedure">&sect;12.4.2</a>). This also applies to <code class="literal">static</code> <code class="literal">final</code>
+                  fields in classes (<a class="xref" href="jls-8.html#jls-8.3.2.1" title="8.3.2.1.&nbsp;Initializers for Class Variables">&sect;8.3.2.1</a>). These fields are
+                  "constants" that will never be observed to have their default initial
+                  values (<a class="xref" href="jls-4.html#jls-4.12.5" title="4.12.5.&nbsp;Initial Values of Variables">&sect;4.12.5</a>), even by devious programs
+                  (<a class="xref" href="jls-13.html#jls-13.4.9" title="13.4.9.&nbsp;final Fields and Constants">&sect;13.4.9</a>).
+               </p>
+            </div>
+         </div>
+         <div class="section" title="9.4.&nbsp;Abstract Method Declarations">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both"><a name="jls-9.4"></a>9.4.&nbsp;Abstract Method Declarations
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <div class="literallayout">
+               <p><br>
+                  AbstractMethodDeclaration:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;AbstractMethodModifiers<sub>opt</sub>&nbsp;TypeParameters<sub>opt</sub>&nbsp;Result<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MethodDeclarator&nbsp;Throws<sub>opt</sub>&nbsp;<code class="literal">;</code><br>
+                  <br>
+                  AbstractMethodModifiers:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;AbstractMethodModifier<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;AbstractMethodModifiers&nbsp;AbstractMethodModifier<br>
+                  <br>
+                  AbstractMethodModifier:&nbsp;one&nbsp;of<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Annotation&nbsp;<code class="literal">public</code>&nbsp;<code class="literal">abstract</code><br>
+                  
+               </p>
+            </div>
+            <p class="norm-error"><a name="jls-9.4-110"></a>If an
+               annotation <code class="varname">a</code> (<a class="xref" href="jls-9.html#jls-9.7" title="9.7.&nbsp;Annotations">&sect;9.7</a>) on a
+               method declaration corresponds to an annotation type <span class="type">T</span>
+               (<a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>), and <span class="type">T</span> has a
+               (meta-)annotation <code class="varname">m</code> that corresponds to <code class="literal">java.lang.annotation.Target</code>,
+               then <code class="varname">m</code> must have an element whose value is
+               <code class="literal">java.lang.annotation.ElementType.METHOD</code>, or a compile-time error occurs.
+            </p>
+            <p class="norm-static"><a name="jls-9.4-120"></a>Every method
+               declaration in the body of an interface is implicitly <code class="literal">public</code>
+               (<a class="xref" href="jls-6.html#jls-6.6" title="6.6.&nbsp;Access Control">&sect;6.6</a>).
+            </p>
+            <p class="norm-static"><a name="jls-9.4-130"></a>Every method
+               declaration in the body of an interface is implicitly <code class="literal">abstract</code>, so
+               its body is always represented by a semicolon, not a block.
+            </p>
+            <p class="norm-static"><a name="jls-9.4-140"></a>It is
+               permitted, but discouraged as a matter of style, to redundantly
+               specify the <code class="literal">public</code> and/or <code class="literal">abstract</code> modifier for a method declared
+               in an interface.
+            </p>
+            <p class="norm-error"><a name="jls-9.4-200"></a>It is a
+               compile-time error if the same modifier appears more than once on a
+               method declared in an interface.
+            </p>
+            <p class="norm-error"><a name="jls-9.4-210"></a>It is a
+               compile-time error if a method declared in an interface is declared
+               <code class="literal">static</code>, because <code class="literal">static</code> methods cannot be <code class="literal">abstract</code>.
+            </p>
+            <p class="norm-error"><a name="jls-9.4-220"></a>It is a
+               compile-time error if a method declared in an interface is <code class="literal">strictfp</code>
+               or <code class="literal">native</code> or <code class="literal">synchronized</code>, because those keywords describe
+               implementation properties rather than interface properties.
+            </p>
+            <p class="norm-static"><a name="jls-9.4-230"></a>However, a
+               method declared in an interface may be implemented by a method that is
+               declared <code class="literal">strictfp</code> or <code class="literal">native</code> or <code class="literal">synchronized</code> in a class that
+               implements the interface.
+            </p>
+            <p class="norm-error"><a name="jls-9.4-240"></a>It is a
+               compile-time error if a method declared in an interface is declared
+               <code class="literal">final</code>.
+            </p>
+            <p class="norm-static"><a name="jls-9.4-250"></a>However, a
+               method declared in an interface may be implemented by a method that is
+               declared <code class="literal">final</code> in a class that implements the interface.
+            </p>
+            <p class="norm-error"><a name="jls-9.4-260"></a>It is a
+               compile-time error for the body of an interface to declare, explicitly
+               or implicitly, two methods with override-equivalent signatures
+               (<a class="xref" href="jls-8.html#jls-8.4.2" title="8.4.2.&nbsp;Method Signature">&sect;8.4.2</a>).
+            </p>
+            <p class="norm-static"><a name="jls-9.4-270"></a>However, an
+               interface may inherit several methods with such signatures
+               (<a class="xref" href="jls-9.html#jls-9.4.1" title="9.4.1.&nbsp;Inheritance and Overriding">&sect;9.4.1</a>).
+            </p>
+            <p class="norm-static"><a name="jls-9.4-300"></a>A method in
+               an interface may be generic. The rules for type parameters of a
+               generic method in an interface are the same as for a generic method in
+               a class (<a class="xref" href="jls-8.html#jls-8.4.4" title="8.4.4.&nbsp;Generic Methods">&sect;8.4.4</a>).
+            </p>
+            <div class="section" title="9.4.1.&nbsp;Inheritance and Overriding">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.4.1"></a>9.4.1.&nbsp;Inheritance and Overriding
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.4.1-100"></a>An
+                  interface inherits from its direct superinterfaces all methods of the
+                  superinterfaces that are not overridden by a declaration in the
+                  interface.
+               </p>
+               <p class="norm-static"><a name="jls-9.4.1-110"></a>Methods
+                  are overridden on a signature-by-signature basis.
+               </p>
+               <p class="note">If, for example, an interface declares two <code class="literal">public</code>
+                  methods with the same name (<a class="xref" href="jls-9.html#jls-9.4.2" title="9.4.2.&nbsp;Overloading">&sect;9.4.2</a>), and a
+                  subinterface overrides one of them, the subinterface still inherits
+                  the other method.
+               </p>
+               <div class="section" title="9.4.1.1.&nbsp;Overriding (by Instance Methods)">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.4.1.1"></a>9.4.1.1.&nbsp;Overriding (by Instance Methods)
+                           </h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.4.1.1-100"></a>An
+                     instance method <code class="varname">m<sub>1</sub></code> declared in an interface <span class="type">I</span> overrides another
+                     instance method, <code class="varname">m<sub>2</sub></code>, declared in interface <span class="type">J</span> iff both of the
+                     following are true:
+                  </p>
+                  <div class="norm">
+                     <ul class="norm" type="disc">
+                        <li class="listitem">
+                           <p class="norm-static"><a name="jls-9.4.1.1-100-A"></a><span class="type">I</span>
+                                    is a subinterface of <span class="type">J</span>.
+                           </p>
+                        </li>
+                        <li class="listitem">
+                           <p class="norm-static"><a name="jls-9.4.1.1-100-B"></a>The
+                                    signature of <code class="varname">m<sub>1</sub></code> is a subsignature
+                                    (<a class="xref" href="jls-8.html#jls-8.4.2" title="8.4.2.&nbsp;Method Signature">&sect;8.4.2</a>) of the signature of <code class="varname">m<sub>2</sub></code>.
+                           </p>
+                        </li>
+                     </ul>
+                  </div>
+                  <div class="example"><a name="d5e12802"></a><p class="title"><b>Example&nbsp;9.4.1.1-1.&nbsp;Overriding an <code class="literal">abstract</code> Method Declaration</b></p>
+                     <div class="example-contents">
+                        <p class="note">Methods declared in interfaces are <code class="literal">abstract</code> and
+                           thus contain no implementation. About all that can be accomplished by
+                           an overriding method declaration, other than to affirm a method
+                           signature, is to refine the return type or to restrict the exceptions
+                           that might be thrown by an implementation of the method. Here is a
+                           variation of the example shown in
+                           (<a class="xref" href="jls-8.html#jls-8.4.3.1" title="8.4.3.1.&nbsp;abstract Methods">&sect;8.4.3.1</a>):
+                        </p><pre class="programlisting">
+class BufferEmpty     extends Exception {}
+class BufferException extends Exception {} 
+
+interface Buffer {
+    char get() throws BufferEmpty, BufferException;
+}
+interface InfiniteBuffer extends Buffer {
+    char get() throws BufferException;  // override
+}
+</pre></div>
+                  </div><br class="example-break"></div>
+               <div class="section" title="9.4.1.2.&nbsp;Requirements in Overriding">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.4.1.2"></a>9.4.1.2.&nbsp;Requirements in Overriding
+                           </h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.4.1.2-100"></a>The
+                     relationship between the return type of an interface method and the
+                     return types of any overridden interface methods is specified in
+                     <a class="xref" href="jls-8.html#jls-8.4.8.3" title="8.4.8.3.&nbsp;Requirements in Overriding and Hiding">&sect;8.4.8.3</a>.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.4.1.2-200"></a>The
+                     relationship between the <code class="literal">throws</code> clause of an interface method and
+                     the <code class="literal">throws</code> clauses of any overridden interface methods are specified
+                     in <a class="xref" href="jls-8.html#jls-8.4.8.3" title="8.4.8.3.&nbsp;Requirements in Overriding and Hiding">&sect;8.4.8.3</a>.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.4.1.2-300"></a>The
+                     relationship between the signature of an interface method and the
+                     signatures of overridden interface methods are specified in
+                     <a class="xref" href="jls-8.html#jls-8.4.8.3" title="8.4.8.3.&nbsp;Requirements in Overriding and Hiding">&sect;8.4.8.3</a>.
+                  </p>
+               </div>
+               <div class="section" title="9.4.1.3.&nbsp;Inheriting Methods with Override-Equivalent Signatures">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.4.1.3"></a>9.4.1.3.&nbsp;Inheriting Methods with Override-Equivalent Signatures
+                           </h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.4.1.3-100"></a>It is
+                     possible for an interface to inherit several methods with
+                     override-equivalent signatures (<a class="xref" href="jls-8.html#jls-8.4.2" title="8.4.2.&nbsp;Method Signature">&sect;8.4.2</a>). Such a
+                     situation does not in itself cause a compile-time error. The interface
+                     is considered to inherit all the methods.
+                  </p>
+                  <p class="norm-error"><a name="jls-9.4.1.3-110"></a>However,
+                     one of the inherited methods must be return-type-substitutable for
+                     every other inherited method; otherwise, a compile-time error
+                     occurs. (The <code class="literal">throws</code> clauses do not cause errors in this
+                     case.)
+                  </p>
+                  <p class="norm-static"><a name="jls-9.4.1.3-200"></a>There
+                     might be several paths by which the same method declaration is
+                     inherited from an interface. This fact causes no difficulty and never,
+                     of itself, results in a compile-time error.
+                  </p>
+               </div>
+            </div>
+            <div class="section" title="9.4.2.&nbsp;Overloading">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.4.2"></a>9.4.2.&nbsp;Overloading
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.4.2-100"></a>If two
+                  methods of an interface (whether both declared in the same interface,
+                  or both inherited by an interface, or one declared and one inherited)
+                  have the same name but different signatures that are not
+                  override-equivalent (<a class="xref" href="jls-8.html#jls-8.4.2" title="8.4.2.&nbsp;Method Signature">&sect;8.4.2</a>), then the method
+                  name is said to be <span class="emphasis"><em>overloaded</em></span>.
+               </p>
+               <p class="norm"><a name="jls-9.4.2-110"></a>This fact causes no
+                  difficulty and never of itself results in a compile-time error. There
+                  is no required relationship between the return types or between the
+                  <code class="literal">throws</code> clauses of two methods with the same name but different
+                  signatures that are not override-equivalent.
+               </p>
+               <div class="example"><a name="d5e12833"></a><p class="title"><b>Example&nbsp;9.4.2-1.&nbsp;Overloading an <code class="literal">abstract</code> Method Declaration</b></p>
+                  <div class="example-contents"><pre class="programlisting">
+interface PointInterface {
+    void move(int dx, int dy);
+}
+interface RealPointInterface extends PointInterface {
+    void move(float dx, float dy);
+    void move(double dx, double dy);
+}
+</pre><p class="note">Here, the method named <code class="literal">move</code> is
+                        overloaded in interface <code class="literal">RealPointInterface</code> with
+                        three different signatures, two of them declared and one
+                        inherited. Any non-<code class="literal">abstract</code> class that implements
+                        interface <code class="literal">RealPointInterface</code> must provide
+                        implementations of all three method signatures.
+                     </p>
+                  </div>
+               </div><br class="example-break"></div>
+         </div>
+         <div class="section" title="9.5.&nbsp;Member Type Declarations">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both"><a name="jls-9.5"></a>9.5.&nbsp;Member Type Declarations
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p class="norm-static"><a name="jls-9.5-100"></a>Interfaces
+               may contain member type declarations
+               (<a class="xref" href="jls-8.html#jls-8.5" title="8.5.&nbsp;Member Type Declarations">&sect;8.5</a>).
+            </p>
+            <p class="norm-static"><a name="jls-9.5-110"></a>A member type declaration in an
+               interface is implicitly <code class="literal">static</code> and <code class="literal">public</code>. It is permitted to
+               redundantly specify either or both of these modifiers.
+            </p>
+            <p class="norm-error"><a name="jls-9.5-120"></a>It is a compile-time error if the
+               same modifier appears more than once in a member type declaration in
+               an interface.
+            </p>
+            <p class="norm-static"><a name="jls-9.5-200"></a>If an interface declares a member
+               type with a certain name, then the declaration of
+               that  type is said
+               to <span class="emphasis"><em>hide</em></span> any and all accessible declarations of
+               member types with the same name in superinterfaces of the
+               interface.
+            </p>
+            <p class="norm-static"><a name="jls-9.5-300"></a>An interface
+               inherits from its direct superinterfaces all the non-<code class="literal">private</code> member
+               types of the superinterfaces that are both accessible to code in the
+               interface and not hidden by a declaration in the interface.
+            </p>
+            <p class="norm-error"><a name="jls-9.5-310"></a>An interface
+               may inherit two or more type declarations with the same name. It is a
+               compile-time error to attempt to refer to any ambiguously inherited
+               class or interface by its simple name.
+            </p>
+            <p class="norm-static"><a name="jls-9.5-320"></a>If the same
+               type declaration is inherited from an interface by multiple paths, the
+               class or interface is considered to be inherited only once; it may be
+               referred to by its simple name without ambiguity.
+            </p>
+         </div>
+         <div class="section" title="9.6.&nbsp;Annotation Types">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both"><a name="jls-9.6"></a>9.6.&nbsp;Annotation Types
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p class="norm-static"><a name="jls-9.6-100"></a>An <span class="emphasis"><em>annotation type
+                     declaration</em></span> is a special kind of interface declaration. To
+               distinguish an annotation type declaration from an ordinary interface
+               declaration, the keyword <code class="literal">interface</code> is preceded by an at-sign
+               (<code class="literal">@</code>). 
+            </p>
+            <div class="literallayout">
+               <p><br>
+                  AnnotationTypeDeclaration:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;InterfaceModifiers<sub>opt</sub>&nbsp;<code class="literal">@</code>&nbsp;<code class="literal">interface</code>&nbsp;Identifier&nbsp;AnnotationTypeBody<br>
+                  <br>
+                  AnnotationTypeBody:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;AnnotationTypeElementDeclarations<sub>opt</sub>&nbsp;<code class="literal">}</code><br>
+                  <br>
+                  AnnotationTypeElementDeclarations:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeElementDeclaration<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeElementDeclarations&nbsp;AnnotationTypeElementDeclaration<br>
+                  
+               </p>
+            </div>
+            <p class="note">Note that the at-sign (<code class="literal">@</code>) and the keyword
+               <code class="literal">interface</code> are two distinct tokens. Technically it is possible to
+               separate them with whitespace, but this is discouraged as a matter of
+               style.
+            </p>
+            <p class="norm-error"><a name="jls-9.6-120"></a>If an
+               annotation <code class="varname">a</code> (<a class="xref" href="jls-9.html#jls-9.7" title="9.7.&nbsp;Annotations">&sect;9.7</a>) on an
+               annotation type declaration corresponds to an annotation type <span class="type">T</span>, and
+               <span class="type">T</span> has a (meta-)annotation <code class="varname">m</code> that corresponds to
+               <code class="literal">java.lang.annotation.Target</code>, then <code class="varname">m</code> must have either an element whose
+               value is <code class="literal">java.lang.annotation.ElementType.ANNOTATION_TYPE</code>, or an element whose value is
+               <code class="literal">java.lang.annotation.ElementType.TYPE</code>, or a compile-time error occurs.
+            </p>
+            <p class="norm-static"><a name="jls-9.6-200"></a>The
+               <span class="emphasis"><em>Identifier</em></span> in an annotation type declaration specifies the name of
+               the annotation type.
+            </p>
+            <p class="norm-error"><a name="jls-9.6-210"></a>It is a
+               compile-time error if an annotation type has the same simple name as
+               any of its enclosing classes or interfaces.
+            </p>
+            <p class="norm-static"><a name="jls-9.6-300"></a>The direct
+               superinterface of an annotation type is always <code class="literal">java.lang.annotation.Annotation</code>.
+            </p>
+            <p class="note">By virtue of
+               the <span class="emphasis"><em>AnnotationTypeDeclaration</em></span> syntax, an
+               annotation type declaration cannot be generic, and no <code class="literal">extends</code> clause
+               is permitted.
+            </p>
+            <p class="note">A consequence of the fact that an annotation type
+               cannot explicitly declare a superclass or superinterface is that a
+               subclass or subinterface of an annotation type is never itself an
+               annotation type. Similarly, <code class="literal">java.lang.annotation.Annotation</code> is not itself an annotation
+               type.
+            </p>
+            <p class="norm-static"><a name="jls-9.6-310"></a>An
+               annotation type declaration inherits several members from
+               <code class="literal">java.lang.annotation.Annotation</code>, including the implicitly declared methods corresponding
+               to the instance methods in <code class="literal">Object</code>, yet these methods do not define
+               elements (<a class="xref" href="jls-9.html#jls-9.6.1" title="9.6.1.&nbsp;Annotation Type Elements">&sect;9.6.1</a>) of the annotation type and it
+               is illegal to use them in annotations.
+            </p>
+            <p class="note">Without this rule, we could not ensure that the
+               elements were of the types representable in annotations, or that
+               accessor methods for them would be available.
+            </p>
+            <p class="norm-static"><a name="jls-9.6-320"></a>Unless
+               explicitly modified herein, all of the rules that apply to ordinary
+               interface declarations apply to annotation type declarations.
+            </p>
+            <p class="note">For example, annotation types share the same
+               namespace as ordinary class and interface types; and annotation type
+               declarations are legal wherever interface declarations are legal, and
+               have the same scope and accessibility.
+            </p>
+            <div class="section" title="9.6.1.&nbsp;Annotation Type Elements">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.6.1"></a>9.6.1.&nbsp;Annotation Type Elements
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.6.1-100"></a>Each
+                  method declaration in an annotation type declaration defines
+                  an <span class="emphasis"><em>element</em></span> of the annotation type.
+               </p>
+               <p class="norm-static"><a name="jls-9.6.1-110"></a>Annotation
+                  types can have zero or more elements. An annotation type has no
+                  elements other than those defined by the methods it explicitly
+                  declares.
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     AnnotationTypeElementDeclaration:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;AbstractMethodModifiers<sub>opt</sub>&nbsp;Type&nbsp;Identifier&nbsp;<code class="literal">(&nbsp;)</code>&nbsp;Dims<sub>opt</sub>&nbsp;DefaultValue<sub>opt</sub>&nbsp;<code class="literal">;</code><br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ConstantDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ClassDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;InterfaceDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;EnumDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;AnnotationTypeDeclaration<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">;</code><br>
+                     <br>
+                     DefaultValue:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">default</code>&nbsp;ElementValue<br>
+                     
+                  </p>
+               </div>
+               <p class="note">By virtue of
+                  the <span class="emphasis"><em>AnnotationTypeElementDeclaration</em></span> syntax, a
+                  method declaration in an annotation type declaration cannot have any
+                  formal parameters or type parameters, or a <code class="literal">throws</code> clause.
+               </p>
+               <p class="note">By convention,
+                  no <span class="emphasis"><em>AbstractMethodModifiers</em></span> should be present on
+                  an annotation type element except for annotations.
+               </p>
+               <div class="example"><a name="d5e12917"></a><p class="title"><b>Example&nbsp;9.6.1-1.&nbsp;Annotation Type Declarations</b></p>
+                  <div class="example-contents">
+                     <p class="note">The following annotation type declaration defines an
+                        annotation type with several elements:
+                     </p><pre class="programlisting">
+/**
+ * Describes the "request-for-enhancement" (RFE)
+ * that led to the presence of the annotated API element.
+ */
+@interface RequestForEnhancement {
+    int    id();        // Unique ID number associated with RFE
+    String synopsis();  // Synopsis of RFE
+    String engineer();  // Name of engineer who implemented RFE
+    String date();      // Date RFE was implemented
+}
+</pre><p class="note">The following annotation type declaration defines an
+                        annotation type with no elements, termed a
+                        <span class="emphasis"><em>marker annotation type</em></span>:
+                     </p><pre class="programlisting">
+/**
+ * An annotation with this type indicates that the 
+ * specification of the annotated API element is 
+ * preliminary and subject to change.
+ */
+@interface Preliminary {}
+</pre></div>
+               </div><br class="example-break"><p class="norm-error"><a name="jls-9.6.1-200"></a>It is a
+                  compile-time error if the return type of a method declared in an
+                  annotation type is not one of the following: a primitive type,
+                  <code class="literal">String</code>, <code class="literal">Class</code>, any parameterized invocation of <code class="literal">Class</code>, an enum
+                  type (<a class="xref" href="jls-8.html#jls-8.9" title="8.9.&nbsp;Enums">&sect;8.9</a>), an annotation type, or an array type
+                  (<a class="xref" href="jls-10.html" title="Chapter&nbsp;10.&nbsp;Arrays">&sect;10</a>) whose element 
+                  type is one of the preceding types.
+               </p>
+               <div class="informalexample">
+                  <p class="note">This specification precludes elements whose types
+                     are nested arrays. For example, this annotation type declaration is
+                     illegal:
+                  </p><pre class="programlisting">
+@interface Verboten {
+    String[][] value();
+}
+</pre></div>
+               <p class="norm-error"><a name="jls-9.6.1-210"></a>It is a
+                  compile-time error if any method declared in an annotation type has a
+                  signature that is override-equivalent to that of any <code class="literal">public</code> or
+                  <code class="literal">protected</code> method declared in class <code class="literal">Object</code> or in the interface
+                  <code class="literal">java.lang.annotation.Annotation</code>.
+               </p>
+               <p class="norm-error"><a name="jls-9.6.1-220"></a>It is a
+                  compile-time error if an annotation type declaration <span class="type">T</span> contains an
+                  element of type <span class="type">T</span>, either directly or indirectly.
+               </p>
+               <div class="informalexample">
+                  <p class="note">For example, this is illegal:</p><pre class="programlisting">
+@interface SelfRef { SelfRef value(); }
+</pre><p class="note">and so is this:</p><pre class="programlisting">
+@interface Ping { Pong value(); }
+@interface Pong { Ping value(); }
+</pre></div>
+               <p class="norm-static"><a name="jls-9.6.1-300"></a>By
+                  convention, the name of the sole element in a single-element
+                  annotation type is <code class="literal">value</code>. Linguistic support for
+                  this convention is provided by the single element annotation construct
+                  (<a class="xref" href="jls-9.html#jls-9.7.3" title="9.7.3.&nbsp;Single-Element Annotations">&sect;9.7.3</a>); one must obey the convention in order
+                  to take advantage of the construct.
+               </p>
+               <div class="example"><a name="d5e12949"></a><p class="title"><b>Example&nbsp;9.6.1-2.&nbsp;Single-Element Annotation Type Declarations</b></p>
+                  <div class="example-contents">
+                     <p class="note">The convention is illustrated in the following
+                        annotation type declaration:
+                     </p><pre class="programlisting">
+/**
+ * Associates a copyright notice with the annotated API element.
+ */
+@interface Copyright {
+    String value();
+}
+</pre><p class="note">The following annotation type declaration defines a
+                        single-element annotation type whose sole element has an array
+                        type:
+                     </p><pre class="programlisting">
+/**
+ * Associates a list of endorsers with the annotated class.
+ */
+@interface Endorsers {
+    String[] value();
+}
+</pre><p class="note">The following annotation type declaration shows a
+                        <code class="literal">Class</code> annotation whose value is restricted by a bounded
+                        wildcard:
+                     </p><pre class="programlisting">
+interface Formatter {}
+
+// Designates a formatter to pretty-print the annotated class
+@interface PrettyPrinter {
+    Class&lt;? extends Formatter&gt; value();
+}
+</pre><p class="note">Note that the grammar for annotation type
+                        declarations permits other element declarations besides method
+                        declarations. For example, one might choose to declare a nested enum
+                        for use in conjunction with an annotation type:
+                     </p><pre class="programlisting">
+@interface Quality {
+    enum Level { BAD, INDIFFERENT, GOOD }
+    Level value();
+}
+</pre></div>
+               </div><br class="example-break"><div class="example"><a name="d5e12960"></a><p class="title"><b>Example&nbsp;9.6.2-3.&nbsp;Complex Annotation Type Declaration</b></p>
+                  <div class="example-contents">
+                     <p class="note">Here is an example of a complex annotation type,
+                        that is, an annotation type that contains one or more elements whose
+                        types are also annotation types.
+                     </p><pre class="programlisting">
+/**
+ * A person's name.  This annotation type is not designed
+ * to be used directly to annotate program elements, but to
+ * define elements of other annotation types.
+ */
+@interface Name {
+    String first();
+    String last();
+}
+/**
+ * Indicates the author of the annotated program element.
+ */
+@interface Author {
+    Name value();
+}
+/**
+ * Indicates the reviewer of the annotated program element.
+ */
+@interface Reviewer {
+    Name value();
+}
+</pre></div>
+               </div><br class="example-break"></div>
+            <div class="section" title="9.6.2.&nbsp;Defaults for Annotation Type Elements">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.6.2"></a>9.6.2.&nbsp;Defaults for Annotation Type Elements
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.6.2-100"></a>An
+                  annotation type element may have a default value specified for
+                  it. This is done by following its (empty) parameter list with the
+                  keyword <code class="literal">default</code> and the default value of the element.
+               </p>
+               <p class="norm-static"><a name="jls-9.6.2-110"></a>Defaults
+                  are applied dynamically at the time annotations are read; default
+                  values are not compiled into annotations. Thus, changing a default
+                  value affects annotations even in classes that were compiled before
+                  the change was made (presuming these annotations lack an explicit
+                  value for the defaulted element).
+               </p>
+               <p class="norm-static"><a name="jls-9.6.2-120"></a>An <span class="emphasis"><em>ElementValue</em></span>
+                  (<a class="xref" href="jls-9.html#jls-9.7" title="9.7.&nbsp;Annotations">&sect;9.7</a>) is used to specify a default value.
+               </p>
+               <p class="norm-error"><a name="jls-9.6.2-130"></a>It is a
+                  compile-time error if the type of the element is not commensurate
+                  (<a class="xref" href="jls-9.html#jls-9.7" title="9.7.&nbsp;Annotations">&sect;9.7</a>) with the default value specified.
+               </p>
+               <div class="example"><a name="d5e12974"></a><p class="title"><b>Example&nbsp;9.6.2-1.&nbsp;Annotation Type Declaration With Default Values</b></p>
+                  <div class="example-contents"><pre class="programlisting">
+@interface RequestForEnhancementDefault {
+    int    id();       // No default - must be specified in 
+                       // each annotation
+    String synopsis(); // No default - must be specified in 
+                       // each annotation
+    String engineer()  default "[unassigned]";
+    String date()      default "[unimplemented]";
+}
+</pre></div>
+               </div><br class="example-break"></div>
+            <div class="section" title="9.6.3.&nbsp;Predefined Annotation Types">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.6.3"></a>9.6.3.&nbsp;Predefined Annotation Types
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.6.3-100"></a>Several
+                  annotation types are predefined in the libraries of the
+                  Java SE platform. Some of these predefined annotation types have special
+                  semantics. These semantics are specified in this section. This section
+                  does not provide a complete specification for the predefined
+                  annotations contained here in; that is the role of the appropriate API
+                  specifications. Only those semantics that require special behavior on
+                  the part of a Java compiler or Java Virtual Machine implementation are specified
+                  here.
+               </p>
+               <div class="section" title="9.6.3.1.&nbsp;@Target">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.6.3.1"></a>9.6.3.1.&nbsp;<code class="literal">@Target</code></h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.6.3.1-100"></a>The
+                     annotation type <code class="literal">java.lang.annotation.Target</code> is intended to be used in meta-annotations
+                     that indicate the kind of program element that an annotation type is
+                     applicable to.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.6.3.1-110"></a><code class="literal">java.lang.annotation.Target</code>
+                     has one element, of type <code class="literal">java.lang.annotation.ElementType</code><code class="literal">[]</code>.
+                  </p>
+                  <p class="norm-error"><a name="jls-9.6.3.1-120"></a> It is a
+                     compile-time error if a given enum constant appears more than once in
+                     an annotation whose corresponding type is <code class="literal">java.lang.annotation.Target</code>.
+                  </p>
+                  <p class="note">See <a class="xref" href="jls-7.html#jls-7.4.1" title="7.4.1.&nbsp;Named Packages">&sect;7.4.1</a>,
+                     <a class="xref" href="jls-8.html#jls-8.1.1" title="8.1.1.&nbsp;Class Modifiers">&sect;8.1.1</a>, <a class="xref" href="jls-8.html#jls-8.3.1" title="8.3.1.&nbsp;Field Modifiers">&sect;8.3.1</a>,
+                     <a class="xref" href="jls-8.html#jls-8.4.1" title="8.4.1.&nbsp;Formal Parameters">&sect;8.4.1</a>, <a class="xref" href="jls-8.html#jls-8.4.3" title="8.4.3.&nbsp;Method Modifiers">&sect;8.4.3</a>,
+                     <a class="xref" href="jls-8.html#jls-8.8.3" title="8.8.3.&nbsp;Constructor Modifiers">&sect;8.8.3</a>, <a class="xref" href="jls-8.html#jls-8.9" title="8.9.&nbsp;Enums">&sect;8.9</a>,
+                     <a class="xref" href="jls-9.html#jls-9.1.1" title="9.1.1.&nbsp;Interface Modifiers">&sect;9.1.1</a>, <a class="xref" href="jls-9.html#jls-9.3" title="9.3.&nbsp;Field (Constant) Declarations">&sect;9.3</a>,
+                     <a class="xref" href="jls-9.html#jls-9.4" title="9.4.&nbsp;Abstract Method Declarations">&sect;9.4</a>, <a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a> and
+                     <a class="xref" href="jls-14.html#jls-14.4" title="14.4.&nbsp;Local Variable Declaration Statements">&sect;14.4</a> for the other effects of <code class="literal">java.lang.annotation.Target</code>
+                     annotations.
+                  </p>
+               </div>
+               <div class="section" title="9.6.3.2.&nbsp;@Retention">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.6.3.2"></a>9.6.3.2.&nbsp;<code class="literal">@Retention</code></h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.6.3.2-100"></a>Annotations may be present only in source
+                     code, or they may be present in the binary form of a class or
+                     interface. An annotation that is present in the binary form may or may
+                     not be available at run time via the reflection libraries of the
+                     Java SE platform. The annotation type <code class="literal">java.lang.annotation.Retention</code> is used to choose among
+                     these possibilities.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.6.3.2-110"></a>If an
+                     annotation <code class="varname">a</code> corresponds to a type <span class="type">T</span>, and <span class="type">T</span> has
+                     a (meta-)annotation <code class="varname">m</code> that corresponds to
+                     <code class="literal">java.lang.annotation.Retention</code>, then:
+                  </p>
+                  <div class="norm">
+                     <ul class="norm" type="disc">
+                        <li class="listitem">
+                           <p class="norm-static"><a name="jls-9.6.3.2-110-A"></a>If <code class="varname">m</code> has an element
+                                   whose value is <code class="literal">java.lang.annotation.RetentionPolicy.SOURCE</code>, then a Java compiler must
+                                   ensure that <code class="varname">a</code> is not present in the binary
+                                   representation of the class or interface in
+                                   which <code class="varname">a</code> appears.
+                           </p>
+                        </li>
+                        <li class="listitem">
+                           <p class="norm-static"><a name="jls-9.6.3.2-110-B"></a>If <code class="varname">m</code> has an
+                                    element whose value is <code class="literal">java.lang.annotation.RetentionPolicy.CLASS</code> or
+                                    <code class="literal">java.lang.annotation.RetentionPolicy.RUNTIME</code>, then a Java compiler must ensure
+                                    that <code class="varname">a</code> is represented in the binary
+                                    representation of the class or interface in
+                                    which <code class="varname">a</code> appears, unless <code class="varname">m</code>
+                                    annotates a local variable declaration.
+                           </p>
+                           <p class="norm-static"><a name="jls-9.6.3.2-110-B.1"></a>An annotation on a local variable
+                                    declaration is never retained in the binary
+                                    representation.
+                           </p>
+                           <p class="norm-static"><a name="jls-9.6.3.2-110-B.2"></a>In addition,
+                                    if <code class="varname">m</code> has an element whose value is
+                                    <code class="literal">java.lang.annotation.RetentionPolicy.RUNTIME</code>, the reflection libraries of the
+                                    Java SE platform must make <code class="varname">a</code> available at run
+                                    time.
+                           </p>
+                        </li>
+                     </ul>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.6.3.2-120"></a>If <span class="type">T</span>
+                     does not have a (meta-)annotation <code class="varname">m</code> that
+                     corresponds to <code class="literal">java.lang.annotation.Retention</code>, then a Java compiler must treat <span class="type">T</span> as if
+                     it does have such a meta-annotation <code class="varname">m</code> with an
+                     element whose value is <code class="literal">java.lang.annotation.RetentionPolicy.CLASS</code>.
+                  </p>
+               </div>
+               <div class="section" title="9.6.3.3.&nbsp;@Inherited">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.6.3.3"></a>9.6.3.3.&nbsp;<code class="literal">@Inherited</code></h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.6.3.3-100"></a>The
+                     annotation type <code class="literal">java.lang.annotation.Inherited</code> is used to indicate that annotations on a
+                     class <span class="type">C</span> corresponding to a given annotation type are inherited by
+                     subclasses of <span class="type">C</span>.
+                  </p>
+               </div>
+               <div class="section" title="9.6.3.4.&nbsp;@Override">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.6.3.4"></a>9.6.3.4.&nbsp;<code class="literal">@Override</code></h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.6.3.4-100"></a>Programmers occasionally overload a method
+                     declaration when they mean to override it, leading to subtle
+                     problems. The annotation type <code class="literal">Override</code> supports early detection of
+                     such problems.
+                  </p>
+                  <div class="informalexample">
+                     <p class="note">The classic example concerns
+                        the <code class="literal">equals</code> method. Programmers write the following
+                        in class <code class="literal">Foo</code>:
+                     </p><pre class="screen">
+public boolean equals(Foo that) { ... }
+</pre><p class="note">when they mean to write:</p><pre class="screen">
+public boolean equals(Object that) { ... }
+</pre><p class="note">This is perfectly legal, but
+                        class <code class="literal">Foo</code> inherits the <code class="literal">equals</code>
+                        implementation from <code class="literal">Object</code>, which can cause some very subtle
+                        bugs.
+                     </p>
+                  </div>
+                  <p class="norm-error"><a name="jls-9.6.3.4-200"></a>If a method
+                     declaration is annotated with the annotation <code class="literal">@Override</code>, but the
+                     method does not override  or implement  a
+                     method declared in a   supertype, or is
+                     not override-equivalent to a <code class="literal">public</code> method of <code class="literal">Object</code>, 
+                     a compile-time error occurs.
+                  </p>
+                  <p class="note">This behavior differs from Java SE 5.0, where
+                     <code class="literal">@Override</code> only caused a compile-time error if applied to a method
+                     that implemented a method from a superinterface that was not also
+                     present in a superclass.
+                  </p>
+                  <div class="informalexample">
+                     <p class="note">The clause about overriding a <code class="literal">public</code> method is
+                        motivated by use of <code class="literal">@Override</code> in an interface. Consider the
+                        following type declarations:
+                     </p><pre class="screen">
+class Foo     { @Override public int hashCode() {..} }
+interface Bar { @Override int hashCode(); }
+</pre><p class="note">The use of <code class="literal">@Override</code> in the class declaration is
+                        legal by the first clause, because <code class="literal">Foo.hashCode</code>
+                        overrides <code class="literal">Object.hashCode</code>
+                        (<a class="xref" href="jls-8.html#jls-8.4.8" title="8.4.8.&nbsp;Inheritance, Overriding, and Hiding">&sect;8.4.8</a>).
+                     </p>
+                     <p class="note">For the interface declaration, consider that while
+                        an interface does not have <code class="literal">Object</code> as a supertype, an interface does
+                        have <code class="literal">public</code> <code class="literal">abstract</code> members that correspond to the <code class="literal">public</code>
+                        members of <code class="literal">Object</code> (<a class="xref" href="jls-9.html#jls-9.2" title="9.2.&nbsp;Interface Members">&sect;9.2</a>). If an interface
+                        chooses to declare them explicitly (i.e. to declare members that are
+                        override-equivalent to <code class="literal">public</code> methods of <code class="literal">Object</code>), then the
+                        interface is deemed to override them (<a class="xref" href="jls-8.html#jls-8.4.8" title="8.4.8.&nbsp;Inheritance, Overriding, and Hiding">&sect;8.4.8</a>),
+                        and use of <code class="literal">@Override</code> is allowed.
+                     </p>
+                     <p class="note">However, consider an interface that attempts to use
+                        <code class="literal">@Override</code> on a <code class="literal">clone</code> method:
+                        (<code class="literal">finalize</code> could also be used in this
+                        example)
+                     </p><pre class="screen">
+interface Quux { @Override Object clone(); }
+</pre><p class="note">Because <code class="literal">Object.clone</code> is not
+                        <code class="literal">public</code>, there is no member called <code class="literal">clone</code>
+                        implicitly declared in <code class="literal">Quux</code>. Therefore, the
+                        explicit declaration of <code class="literal">clone</code>
+                        in <code class="literal">Quux</code> is not deemed to "implement" any other
+                        method, and it is erroneous to use <code class="literal">@Override</code>. (The fact
+                        that <code class="literal">Quux.clone</code> is <code class="literal">public</code> is not
+                        relevant.)
+                     </p>
+                     <p class="note">In contrast, a class declaration that
+                        declares <code class="literal">clone</code> is simply
+                        overriding <code class="literal">Object.clone</code>, so is able to use
+                        <code class="literal">@Override</code>:
+                     </p><pre class="screen">
+class Beep { @Override protected Object clone() {..} }
+</pre></div>
+               </div>
+               <div class="section" title="9.6.3.5.&nbsp;@SuppressWarnings">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.6.3.5"></a>9.6.3.5.&nbsp;<code class="literal">@SuppressWarnings</code></h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm"><a name="jls-9.6.3.5-100"></a>Java compilers are
+                     increasingly capable of issuing helpful "lint-like" warnings. To
+                     encourage the use of such warnings, there should be some way to
+                     disable a warning in a part of the program when the programmer knows
+                     that the warning is inappropriate.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.6.3.5-110"></a>The
+                     annotation type <code class="literal">SuppressWarnings</code> supports programmer control over
+                     warnings otherwise issued by a Java compiler. It contains a single
+                     element that is an array of <code class="literal">String</code>.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.6.3.5-120"></a>If a
+                     program declaration is annotated with the annotation
+                     <code class="literal">@SuppressWarnings</code><code class="literal">(value = {<span class="type">S<sub>1</sub></span>, ..., <span class="type">S<sub>k</sub></span>})</code>,
+                     then a Java compiler must not report any warning identified by one of
+                     <span class="type">S<sub>1</sub></span> ... <span class="type">S<sub>k</sub></span> if that warning would have been generated as a result of
+                     the annotated declaration or any of its parts.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.6.3.5-130"></a>Unchecked warnings are identified by the
+                     string "<code class="literal">unchecked</code>".
+                  </p>
+                  <p class="note">Compiler vendors should document the warning names
+                     they support in conjunction with this annotation type. Vendors are
+                     encouraged to cooperate to ensure that the same names work across
+                     multiple compilers.
+                  </p>
+               </div>
+               <div class="section" title="9.6.3.6.&nbsp;@Deprecated">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.6.3.6"></a>9.6.3.6.&nbsp;<code class="literal">@Deprecated</code></h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm"><a name="jls-9.6.3.6-100"></a>A program element annotated
+                     <code class="literal">@Deprecated</code> is one that programmers are discouraged from using,
+                     typically because it is dangerous, or because a better alternative
+                     exists.
+                  </p>
+                  <p class="norm-warning"><a name="jls-9.6.3.6-110"></a>A Java
+                     compiler must produce a deprecation warning when a type, method,
+                     field, or constructor whose declaration is annotated with the
+                     annotation <code class="literal">@Deprecated</code> is used (i.e. overridden, invoked, or
+                     referenced by name), unless:
+                  </p>
+                  <div class="norm">
+                     <ul class="norm" type="disc">
+                        <li class="listitem">
+                           <p class="norm-static"><a name="jls-9.6.3.6-110-A"></a>The use is within an entity that is
+                                    itself annotated with the annotation <code class="literal">@Deprecated</code>; or
+                           </p>
+                        </li>
+                        <li class="listitem">
+                           <p class="norm-static"><a name="jls-9.6.3.6-110-B"></a>The use is within an entity that is
+                                    annotated to suppress the warning with the annotation
+                                    <code class="literal">@SuppressWarnings</code><code class="literal">("deprecation")</code>; or
+                           </p>
+                        </li>
+                        <li class="listitem">
+                           <p class="norm-static"><a name="jls-9.6.3.6-110-C"></a>The use and declaration are both
+                                    within the same outermost class.
+                           </p>
+                        </li>
+                     </ul>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.6.3.6-120"></a>Use of
+                     the <code class="literal">@Deprecated</code> annotation on a local variable declaration or on a
+                     parameter declaration has no effect.
+                  </p>
+               </div>
+               <div class="section" title="9.6.3.7.&nbsp;@SafeVarargs">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h4 class="title"><a name="jls-9.6.3.7"></a>9.6.3.7.&nbsp;<code class="literal">@SafeVarargs</code></h4>
+                        </div>
+                     </div>
+                  </div>
+                  <p class="norm-static"><a name="jls-9.6.3.7-100"></a>A variable arity
+                     parameter with a non-reifiable element type
+                     (<a class="xref" href="jls-4.html#jls-4.7" title="4.7.&nbsp;Reifiable Types">&sect;4.7</a>) can cause heap pollution
+                     (<a class="xref" href="jls-4.html#jls-4.12.2" title="4.12.2.&nbsp;Variables of Reference Type">&sect;4.12.2</a>) and give rise to compile-time unchecked
+                     warnings (<a class="xref" href="jls-5.html#jls-5.1.9" title="5.1.9.&nbsp;Unchecked Conversion">&sect;5.1.9</a>). Such warnings are
+                     uninformative if the body of the variable arity method is well-behaved
+                     with respect to the variable arity parameter.
+                  </p>
+                  <p class="norm-static"><a name="jls-9.6.3.7-110"></a>The annotation
+                     type <code class="literal">SafeVarargs</code>, when used to annotate a method or constructor
+                     declaration, makes a programmer assertion that prevents a Java
+                     compiler from reporting unchecked warnings for the declaration or
+                     invocation of a variable arity method or constructor where the
+                     compiler would otherwise do so due to the variable arity parameter
+                     having a non-reifiable element type.
+                  </p>
+                  <p class="note">The <code class="literal">SafeVarargs</code> annotation has non-local effects
+                     because it suppresses unchecked warnings at method invocation
+                     expressions in addition to an unchecked warning pertaining to the
+                     declaration of the variable arity method itself
+                     (<a class="xref" href="jls-8.html#jls-8.4.1" title="8.4.1.&nbsp;Formal Parameters">&sect;8.4.1</a>). In contrast, the
+                     <code class="literal">@SuppressWarnings</code><code class="literal">("unchecked")</code> annotation has
+                     local effects because it only suppresses unchecked warnings pertaining
+                     to the declaration of a method.
+                  </p>
+                  <div class="informalexample">
+                     <p class="note">The canonical target for a <code class="literal">SafeVarargs</code> annotation
+                        is a method like
+                        <code class="literal">java.util.Collections.addAll</code>, whose declaration
+                        starts with:
+                     </p><pre class="screen">
+public static &lt;T&gt; boolean
+  addAll(Collection&lt;? super T&gt; c, T... elements)
+</pre><p class="note">The variable arity parameter has declared type
+                        <code class="literal">T</code><code class="literal">[]</code>, which is non-reifiable. However, the
+                        method fundamentally just reads from the input array and adds the
+                        elements to a collection, both of which are safe operations with
+                        respect to the array. Therefore, any compile-time unchecked warnings
+                        at method invocation expressions
+                        for <code class="literal">java.util.Collections.addAll</code> are arguably
+                        spurious and uninformative. Applying a <code class="literal">SafeVarargs</code> annotation to the
+                        method declaration prevents generation of these unchecked warnings at
+                        the method invocation expressions.
+                     </p>
+                  </div>
+                  <p class="norm-error"><a name="jls-9.6.3.7-200"></a>It is a
+                     compile-time error if a fixed arity method or constructor declaration
+                     is annotated with the <code class="literal">SafeVarargs</code> annotation.
+                  </p>
+                  <p class="norm-error"><a name="jls-9.6.3.7-210"></a>It is a
+                     compile-time error if a variable arity method declaration that is
+                     neither <code class="literal">static</code> nor <code class="literal">final</code> is annotated with the <code class="literal">SafeVarargs</code>
+                     annotation.
+                  </p>
+                  <p class="note">Since a <code class="literal">SafeVarargs</code> annotation is only applicable
+                     to <code class="literal">static</code> methods, <code class="literal">final</code> instance methods, and constructors, the
+                     annotation is not usable where method overriding occurs. Annotation
+                     inheritance only works on classes (not methods, interfaces, or
+                     constructors), so a <code class="literal">SafeVarargs</code>-style annotation cannot be passed
+                     through instance methods in classes or through interfaces.
+                  </p>
+               </div>
+            </div>
+         </div>
+         <div class="section" title="9.7.&nbsp;Annotations">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h2 class="title" style="clear: both"><a name="jls-9.7"></a>9.7.&nbsp;Annotations
+                     </h2>
+                  </div>
+               </div>
+            </div>
+            <p class="norm-static"><a name="jls-9.7-100"></a>An <span class="emphasis"><em>annotation</em></span> is a modifier
+               consisting of the name of an annotation type
+               (<a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>) and zero or more element-value pairs, each
+               of which associates a value with a different element of the annotation
+               type.
+            </p>
+            <p class="norm"><a name="jls-9.7-110"></a>The purpose of an annotation is
+               simply to associate information with the annotated program
+               element.
+            </p>
+            <p class="norm-error"><a name="jls-9.7-120"></a>Annotations
+               must contain an element-value pair for every element of the
+               corresponding annotation type, except for those elements with default
+               values, or a compile-time error occurs.
+            </p>
+            <p class="norm-static"><a name="jls-9.7-130"></a>Annotations
+               may, but are not required to, contain element-value pairs for elements
+               with default values.
+            </p>
+            <p class="norm-static"><a name="jls-9.7-200"></a>Annotations
+               may be used as modifiers in any declaration, whether package
+               (<a class="xref" href="jls-7.html#jls-7.4.1" title="7.4.1.&nbsp;Named Packages">&sect;7.4.1</a>), class (<a class="xref" href="jls-8.html#jls-8.1.1" title="8.1.1.&nbsp;Class Modifiers">&sect;8.1.1</a>)
+               (including enums (<a class="xref" href="jls-8.html#jls-8.9" title="8.9.&nbsp;Enums">&sect;8.9</a>)), interface
+               (<a class="xref" href="jls-9.html#jls-9.1.1" title="9.1.1.&nbsp;Interface Modifiers">&sect;9.1.1</a>) (including annotation types
+               (<a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>)), field (<a class="xref" href="jls-8.html#jls-8.3.1" title="8.3.1.&nbsp;Field Modifiers">&sect;8.3.1</a>,
+               <a class="xref" href="jls-9.html#jls-9.3" title="9.3.&nbsp;Field (Constant) Declarations">&sect;9.3</a>), method (<a class="xref" href="jls-8.html#jls-8.4.3" title="8.4.3.&nbsp;Method Modifiers">&sect;8.4.3</a>,
+               <a class="xref" href="jls-9.html#jls-9.4" title="9.4.&nbsp;Abstract Method Declarations">&sect;9.4</a>), formal parameter
+               (<a class="xref" href="jls-8.html#jls-8.4.1" title="8.4.1.&nbsp;Formal Parameters">&sect;8.4.1</a>), constructor
+               (<a class="xref" href="jls-8.html#jls-8.8.3" title="8.8.3.&nbsp;Constructor Modifiers">&sect;8.8.3</a>), or local variable
+               (<a class="xref" href="jls-14.html#jls-14.4.1" title="14.4.1.&nbsp;Local Variable Declarators and Types">&sect;14.4.1</a>).
+            </p>
+            <p class="norm-static"><a name="jls-9.7-210"></a>Annotations
+               may also be used on enum constants. Such annotations are placed
+               immediately before the enum constant they annotate.
+            </p>
+            <p class="norm-error"><a name="jls-9.7-220"></a>It is a
+               compile-time error if a declaration is annotated with more than one
+               annotation for a given annotation type.
+            </p>
+            <p class="note">Annotations are conventionally placed before all
+               other modifiers, but this is not a requirement; they may be freely
+               intermixed with other modifiers.
+            </p>
+            <div class="literallayout">
+               <p><br>
+                  Annotations:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Annotation<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Annotations&nbsp;Annotation<br>
+                  <br>
+                  Annotation:<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;NormalAnnotation<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;MarkerAnnotation<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;SingleElementAnnotation<br>
+                  
+               </p>
+            </div>
+            <p class="norm"><a name="jls-9.7-300"></a>There are three kinds of
+               annotations. The first (normal annotation) is fully general. The
+               others (marker annotation and single-element annotation) are merely
+               shorthands.
+            </p>
+            <div class="section" title="9.7.1.&nbsp;Normal Annotations">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.7.1"></a>9.7.1.&nbsp;Normal Annotations
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.7.1-100"></a>A <span class="emphasis"><em>normal annotation</em></span> is
+                  used to annotate a program element.
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     NormalAnnotation:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">@</code>&nbsp;TypeName&nbsp;<code class="literal">(</code>&nbsp;ElementValuePairs<sub>opt</sub>&nbsp;<code class="literal">)</code><br>
+                     <br>
+                     ElementValuePairs:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ElementValuePair<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ElementValuePairs&nbsp;<code class="literal">,</code>&nbsp;ElementValuePair<br>
+                     <br>
+                     ElementValuePair:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;<code class="literal">=</code>&nbsp;ElementValue<br>
+                     <br>
+                     ElementValue:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ConditionalExpression<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;Annotation<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ElementValueArrayInitializer<br>
+                     <br>
+                     ElementValueArrayInitializer:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">{</code>&nbsp;ElementValues<sub>opt</sub>&nbsp;<code class="literal">,</code><sub>opt</sub>&nbsp;<code class="literal">}</code><br>
+                     <br>
+                     ElementValues:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ElementValue<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;ElementValues&nbsp;<code class="literal">,</code>&nbsp;ElementValue<br>
+                     
+                  </p>
+               </div>
+               <p class="norm-static"><a name="jls-9.7.1-120"></a>The <span class="emphasis"><em>TypeName</em></span> names the
+                  annotation type corresponding to the annotation.
+               </p>
+               <p class="note">Note that the at-sign (<code class="literal">@</code>) is a token unto
+                  itself. Technically it is possible to put whitespace between it and
+                  the <span class="emphasis"><em>TypeName</em></span>, but this is discouraged as a matter
+                  of style.
+               </p>
+               <p class="norm-error"><a name="jls-9.7.1-200"></a>It is a
+                  compile-time error if <span class="emphasis"><em>TypeName</em></span> does not name an
+                  annotation type that is accessible (<a class="xref" href="jls-6.html#jls-6.6" title="6.6.&nbsp;Access Control">&sect;6.6</a>) at the
+                  point where the annotation is used.
+               </p>
+               <p class="norm-error"><a name="jls-9.7.1-210"></a>The
+                  <span class="emphasis"><em>Identifier</em></span> in an <span class="emphasis"><em>ElementValuePair</em></span> must be the
+                  simple name of one of the elements (i.e. methods) of the annotation
+                  type identified by <span class="emphasis"><em>TypeName</em></span>; otherwise, a
+                  compile-time error occurs.
+               </p>
+               <p class="norm-static"><a name="jls-9.7.1-220"></a>The return
+                  type of this method defines the element type of the element-value
+                  pair.
+               </p>
+               <p class="norm-static"><a name="jls-9.7.1-230"></a>An <span class="emphasis"><em>ElementValueArrayInitializer</em></span>
+                  is similar to a normal array initializer (<a class="xref" href="jls-10.html#jls-10.6" title="10.6.&nbsp;Array Initializers">&sect;10.6</a>),
+                  except that annotations are permitted in place of expressions.
+               </p>
+               <p class="norm-static"><a name="jls-9.7.1-300"></a>An element
+                  type <span class="type">T</span> is <span class="emphasis"><em>commensurate</em></span> with an element
+                  value <code class="varname">V</code> if and only if one of the following
+                  conditions is true:
+               </p>
+               <div class="norm">
+                  <ul class="norm" type="disc">
+                     <li class="listitem">
+                        <p class="norm-static"><a name="jls-9.7.1-300-A"></a><span class="type">T</span>
+                               is an array type <span class="type">E</span><code class="literal">[]</code> and either:
+                        </p>
+                        <div class="norm">
+                           <ul class="norm" type="circle">
+                              <li class="listitem">
+                                 <p class="norm-static"><a name="jls-9.7.1-300-A-1"></a><code class="varname">V</code> is
+                                    	an <span class="emphasis"><em>ElementValueArrayInitializer</em></span> and
+                                    	each <span class="emphasis"><em>ElementValue</em></span> (analogous to a
+                                    	<span class="emphasis"><em>VariableInitializer</em></span> in an array
+                                    	initializer) in <code class="varname">V</code> is commensurate with <span class="type">E</span>;
+                                    	or
+                                 </p>
+                              </li>
+                              <li class="listitem">
+                                 <p class="norm-static"><a name="jls-9.7.1-300-A-2"></a><code class="varname">V</code> is
+                                    	an <span class="emphasis"><em>ElementValue</em></span> that is commensurate with
+                                    	 <span class="type">E</span>.
+                                 </p>
+                              </li>
+                           </ul>
+                        </div>
+                     </li>
+                     <li class="listitem">
+                        <p class="norm-static"><a name="jls-9.7.1-300-B"></a>The
+                               type of <code class="varname">V</code> is assignment compatible
+                               (<a class="xref" href="jls-5.html#jls-5.2" title="5.2.&nbsp;Assignment Conversion">&sect;5.2</a>) with <span class="type">T</span>, and furthermore:
+                        </p>
+                        <div class="norm">
+                           <ul class="norm" type="circle">
+                              <li class="listitem">
+                                 <p class="norm-static"><a name="jls-9.7.1-300-B-1"></a>If <span class="type">T</span> is a primitive type or
+                                    	<code class="literal">String</code>, and <code class="varname">V</code> is a constant expression
+                                    	(<a class="xref" href="jls-15.html#jls-15.28" title="15.28.&nbsp;Constant Expressions">&sect;15.28</a>).
+                                 </p>
+                              </li>
+                              <li class="listitem">
+                                 <p class="norm-static"><a name="jls-9.7.1-300-B-2"></a><code class="varname">V</code> is not
+                                    	<code class="literal">null</code>.
+                                 </p>
+                              </li>
+                              <li class="listitem">
+                                 <p class="norm-static"><a name="jls-9.7.1-300-B-3"></a>If <span class="type">T</span> is <code class="literal">Class</code>, or an invocation
+                                    	of <code class="literal">Class</code>, and <code class="varname">V</code> is a class literal
+                                    	(<a class="xref" href="jls-15.html#jls-15.8.2" title="15.8.2.&nbsp;Class Literals">&sect;15.8.2</a>).
+                                 </p>
+                              </li>
+                              <li class="listitem">
+                                 <p class="norm-static"><a name="jls-9.7.1-300-B-4"></a>If <span class="type">T</span> is an enum type,
+                                    	and <code class="varname">V</code> is an enum constant.
+                                 </p>
+                              </li>
+                           </ul>
+                        </div>
+                     </li>
+                  </ul>
+               </div>
+               <p class="note">Note that <code class="literal">null</code> is not a legal element value for
+                  any element type.
+               </p>
+               <p class="norm-error"><a name="jls-9.7.1-310"></a>It is a
+                  compile-time error if the element type is not commensurate with
+                  the <span class="emphasis"><em>ElementValue</em></span>.
+               </p>
+               <p class="norm-static"><a name="jls-9.7.1-400"></a>If the
+                  element type is not an annotation type or an array
+                  type, <span class="emphasis"><em>ElementValue</em></span> must be
+                  a <span class="emphasis"><em>ConditionalExpression</em></span>
+                  (<a class="xref" href="jls-15.html#jls-15.25" title="15.25.&nbsp;Conditional Operator ? :">&sect;15.25</a>).
+               </p>
+               <p class="note">A <span class="emphasis"><em>ConditionalExpression</em></span> is
+                  simply an expression without assignments, and not necessarily an
+                  expression involving the conditional operator
+                  (<code class="literal">? :</code>). <span class="emphasis"><em>ConditionalExpression</em></span> is preferred
+                  over <span class="emphasis"><em>Expression</em></span>
+                  in <span class="emphasis"><em>ElementValue</em></span> because an element value has a
+                  simple structure (constant expression or class literal or enum
+                  constant) that may easily be represented in binary form.
+               </p>
+               <p class="norm-static"><a name="jls-9.7.1-410"></a>If the
+                  element type is an array type and the
+                  corresponding <span class="emphasis"><em>ElementValue</em></span> is not
+                  an <span class="emphasis"><em>ElementValueArrayInitializer</em></span>, then an array
+                  value whose sole element is the value represented by
+                  the <span class="emphasis"><em>ElementValue</em></span> is associated with the
+                  element. Otherwise, if the
+                  corresponding <span class="emphasis"><em>ElementValue</em></span> is
+                  an <span class="emphasis"><em>ElementValueArrayInitializer</em></span>, then the array
+                  value represented by
+                  the <span class="emphasis"><em>ElementValueArrayInitializer</em></span> is associated
+                  with the element.
+               </p>
+               <p class="note">In other words, it is permissible to omit the curly
+                  braces when a single-element array is to be associated with an
+                  array-valued annotation type element.
+               </p>
+               <p class="note">Note that the array's element type cannot be an
+                  array type. That is, nested array types are not permitted as element
+                  types. (While the annotation syntax would permit this, the annotation
+                  type declaration syntax would not.)
+               </p>
+               <p class="norm-static"><a name="jls-9.7.1-500"></a>An <span class="emphasis"><em>ElementValue</em></span> is always
+                  FP-strict (<a class="xref" href="jls-15.html#jls-15.4" title="15.4.&nbsp;FP-strict Expressions">&sect;15.4</a>).
+               </p>
+               <p class="norm"><a name="jls-9.7.1-600"></a>An annotation on an
+                  annotation type declaration is known as
+                  a <span class="emphasis"><em>meta-annotation</em></span>.
+               </p>
+               <p class="norm-static"><a name="jls-9.7.1-610"></a>An
+                  annotation type may be used to annotate its own declaration. More
+                  generally, circularities in the transitive closure of the "annotates"
+                  relation are permitted.
+               </p>
+               <p class="note">For example, it is legal to annotate an annotation
+                  type declaration with another annotation type, and to annotate the
+                  latter type's declaration with the former type. (The pre-defined
+                  meta-annotation types contain several such circularities.)
+               </p>
+               <div class="example"><a name="d5e13328"></a><p class="title"><b>Example&nbsp;9.7.1-1.&nbsp;Normal Annotations</b></p>
+                  <div class="example-contents">
+                     <p class="note">Here is an example of a normal annotation.</p><pre class="programlisting">
+
+@RequestForEnhancement(
+    id       = 2868724,
+    synopsis = "Provide time-travel functionality",
+    engineer = "Mr. Peabody",
+    date     = "4/1/2004"
+)
+public static void travelThroughTime(Date destination) { ... }
+
+</pre><p class="note">Here is an example of a normal annotation that takes
+                        advantage of default values.
+                     </p><pre class="programlisting">
+
+@RequestForEnhancement(
+    id       = 4561414,
+    synopsis = "Balance the federal budget"
+)
+public static void balanceFederalBudget() {
+    throw new UnsupportedOperationException("Not implemented");
+}
+
+</pre><p class="note">Note that the types of the annotations in the
+                        examples in this section are the annotation types defined in the
+                        examples in <a class="xref" href="jls-9.html#jls-9.6" title="9.6.&nbsp;Annotation Types">&sect;9.6</a>. Note also that the elements are
+                        in the above annotation are in the same order as in the corresponding
+                        annotation type declaration. This is not required, but unless specific
+                        circumstances dictate otherwise, it is a reasonable convention to
+                        follow.
+                     </p>
+                  </div>
+               </div><br class="example-break"></div>
+            <div class="section" title="9.7.2.&nbsp;Marker Annotations">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.7.2"></a>9.7.2.&nbsp;Marker Annotations
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.7.2-100"></a>The second
+                  form of annotation, <span class="emphasis"><em>marker annotation</em></span>, is a
+                  shorthand designed for use with marker annotation types.
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     MarkerAnnotation:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">@</code>&nbsp;Identifier<br>
+                     
+                  </p>
+               </div>
+               <p class="norm-static"><a name="jls-9.7.2-120"></a>It is
+                  shorthand for the normal annotation:
+               </p><a name="jls-9.7.2-130"></a><pre class="screen">
+@Identifier()
+</pre><p class="norm-static"><a name="jls-9.7.2-200"></a>It is
+                  legal to use the marker annotation form for annotation types with
+                  elements, so long as all the elements have default values.
+               </p>
+               <div class="example"><a name="d5e13345"></a><p class="title"><b>Example&nbsp;9.7.2-1.&nbsp;Marker Annotations</b></p>
+                  <div class="example-contents">
+                     <p class="note">Here is an example using
+                        the <code class="literal">Preliminary</code> marker annotation type from
+                        <a class="xref" href="jls-9.html#jls-9.6.1" title="9.6.1.&nbsp;Annotation Type Elements">&sect;9.6.1</a>:
+                     </p><pre class="screen">
+@Preliminary public class TimeTravel { ... }
+</pre></div>
+               </div><br class="example-break"></div>
+            <div class="section" title="9.7.3.&nbsp;Single-Element Annotations">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h3 class="title"><a name="jls-9.7.3"></a>9.7.3.&nbsp;Single-Element Annotations
+                        </h3>
+                     </div>
+                  </div>
+               </div>
+               <p class="norm-static"><a name="jls-9.7.3-100"></a>The third
+                  form of annotation, <span class="emphasis"><em>single-element annotation</em></span>, is
+                  a shorthand designed for use with single-element annotation
+                  types.
+               </p>
+               <div class="literallayout">
+                  <p><br>
+                     SingleElementAnnotation:<br>
+                     &nbsp;&nbsp;&nbsp;&nbsp;<code class="literal">@</code>&nbsp;Identifier&nbsp;<code class="literal">(</code>&nbsp;ElementValue&nbsp;<code class="literal">)</code><br>
+                     
+                  </p>
+               </div>
+               <p class="norm-static"><a name="jls-9.7.3-120"></a>It is
+                  shorthand for the normal annotation:
+               </p><a name="jls-9.7.3-130"></a><pre class="screen">
+@Identifier(value = ElementValue)
+</pre><p class="norm-static"><a name="jls-9.7.3-200"></a>It is
+                  legal to use single-element annotations for annotation types with
+                  multiple elements, so long as one element is
+                  named <code class="literal">value</code>, and all other elements have default
+                  values.
+               </p>
+               <div class="example"><a name="d5e13363"></a><p class="title"><b>Example&nbsp;9.7.3-1.&nbsp;Single-Element Annotations</b></p>
+                  <div class="example-contents">
+                     <p class="note">Here is an example of a single-element
+                        annotation.
+                     </p><pre class="programlisting">
+
+@Copyright("2002 Yoyodyne Propulsion Systems, Inc.")
+public class OscillationOverthruster { ... }
+
+</pre><p class="note">Here is an example of an array-valued single-element
+                        annotation.
+                     </p><pre class="programlisting">
+
+@Endorsers({"Children", "Unscrupulous dentists"})
+public class Lollipop { ... }
+
+</pre><p class="note">Here is an example of a single-element array-valued
+                        single-element annotation. Note that the curly braces are
+                        omitted.
+                     </p><pre class="programlisting">
+
+@Endorsers("Epicurus")
+public class Pleasure { ... }
+
+</pre><p class="note">Here is an example with of a single-element
+                        annotation that contains a normal annotation.
+                     </p><pre class="programlisting">
+
+@Author(@Name(first = "Joe", last = "Hacker"))
+public class BitTwiddle { ... }
+
+</pre><p class="note">Here is an example of a single-element annotation
+                        with a <code class="literal">Class</code> element whose value is restricted by the use of a
+                        bounded wildcard.
+                     </p><pre class="programlisting">
+
+class GorgeousFormatter implements Formatter { ... }
+
+@PrettyPrinter(GorgeousFormatter.class)
+public class Petunia { ... }
+
+// Illegal; String is not a subtype of Formatter
+@PrettyPrinter(String.class)
+public class Begonia { ... }
+
+</pre><p class="note">Here is an example of a single-element annotation
+                        using an enum type defined inside the annotation type.
+                     </p><pre class="programlisting">
+
+@Quality(Quality.Level.GOOD)
+public class Karma { ... }
+
+</pre></div>
+               </div><br class="example-break"></div>
+         </div>
+      </div>
+      <div class="navfooter">
+         <hr>
+         <table width="100%" summary="Navigation footer">
+            <tr>
+               <td width="40%" align="left"><a accesskey="p" href="jls-8.html">Prev</a>&nbsp;
+               </td>
+               <td width="20%" align="center">&nbsp;</td>
+               <td width="40%" align="right">&nbsp;<a accesskey="n" href="jls-10.html">Next</a></td>
+            </tr>
+            <tr>
+               <td width="40%" align="left" valign="top">Chapter&nbsp;8.&nbsp;Classes&nbsp;</td>
+               <td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td>
+               <td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;10.&nbsp;Arrays</td>
+            </tr>
+         </table>
+      </div>
+      <div xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions" class="navfooter">
+         <hr><a href="jls-0-front.html">
+                Legal Notice
+              </a></div>
+   </body>
+</html>
